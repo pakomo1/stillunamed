@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Computer
   layers:
   - Default
   - TransparentFX
@@ -11,9 +12,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Background
+  - Player
+  - Furniture
   - 
   - 
   - 
@@ -40,4 +41,16 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1643819531
+    locked: 0
+  - name: Room
+    uniqueID: 765540017
+    locked: 0
+  - name: Furniture
+    uniqueID: 2543747509
+    locked: 0
+  - name: Player
+    uniqueID: 534852243
     locked: 0
