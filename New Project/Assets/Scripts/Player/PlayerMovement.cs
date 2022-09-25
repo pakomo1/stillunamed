@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private AnimationController animCtrl;
 
-    private Vector2 movementDirection;  
+    private Vector2 movementDirection; 
 
     //Animation States
     private const string WALKFRONT = "WalkFront";
