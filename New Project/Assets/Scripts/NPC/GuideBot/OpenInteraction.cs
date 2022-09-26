@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class OpenInteraction : MonoBehaviour
 {
     //[SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private GameObject dialogueUI;
+    [SerializeField] private CameraTarget cameraTarget;
     private bool triggerActive;
 
     private void Awake()
@@ -33,9 +36,18 @@ public class OpenInteraction : MonoBehaviour
         //Check if interaction is available
         if (triggerActive && Input.GetKeyDown(KeyCode.E))
         {
-            print(true);
+            dialogueUI.active = true;
         }
-
+        if (dialogueUI.active)
+        {
+            cameraTarget.target = cameraTarget.guideBotTransform;
+            cameraTarget.threshold = 0.6f;
+        }
+        else
+        {
+            cameraTarget.target = cameraTarget.playerTransform;
+            cameraTarget.threshold = 0.2f;
+        }
         //If interaction is available highlight the object
         /*if (triggerActive)
         {
