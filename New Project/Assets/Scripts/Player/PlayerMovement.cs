@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
 
     [SerializeField] private float moveSpeed;
@@ -30,12 +31,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!IsOwner) { return; }
         //Moves the player
         rb.AddForce(movementDirection * moveSpeed);
     }
 
     private void Update()
     {
+        if (!IsOwner) { return; }
         //Change the rotation of the Player
         if (movementDirection.x != 0)
         {
