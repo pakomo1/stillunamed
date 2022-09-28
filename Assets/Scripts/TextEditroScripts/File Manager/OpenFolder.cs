@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
-using System.IO;
 
 public class OpenFolder : MonoBehaviour
 {
+    private TheManager theManager;
+    public string path;
+   // [SerializeField]private RawImage image;
 
-   public string path;
-    public string[] files;
-    [SerializeField]private RawImage image;
 
+    private void Awake()
+    {
+        theManager = FindObjectOfType<TheManager>();
+    }
     public void OpenExplorer()
     {
         path = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
-        files = Directory.GetFiles(path);
+        theManager.UpdatePath(path);
+
     }
 
     // Start is called before the first frame update
@@ -27,6 +31,5 @@ public class OpenFolder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 }
