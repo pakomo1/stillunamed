@@ -9,12 +9,15 @@ using Cysharp.Threading.Tasks;
 
 public class Oauth2AccessToken : MonoBehaviour
 {
+    [SerializeField] private GameObject uiAfterCompletion;
+    [SerializeField] private GameObject uiBeforeCompletion;
     private string code;
     private string clientId = "086490aaf0f9ef0b33e4";
     private string clientSecret = "f1fe8180ea2712c9ce2a282a035799e9f2129093";
     private GitHubClient client = new GitHubClient(new ProductHeaderValue("TestApp"));
     private string result;
     private string[] prefixes = new string[1] { "http://localhost:3000/callback/" };
+    private GameObject playerObjectPrefab;
 
     public async void AuthorizeBegin()
     {
@@ -54,11 +57,22 @@ public class Oauth2AccessToken : MonoBehaviour
         // Get Access Token with code
         result = await Authorize();
         print(result);
+
+        AssignToken();
     }
     public async UniTask<string> Authorize()
     {
         var request = new OauthTokenRequest(clientId, clientSecret, code);
         var token = await client.Oauth.CreateAccessToken(request);
         return token.AccessToken;
+    }
+
+    private void AssignToken()
+    {
+        // Assign Access Token to Player
+        playerObjectPrefab = GameObject.FindWithTag("Player");
+        playerObjectPrefab.GetComponentInChildren<AccessToken>().accessToken = result;
+        uiBeforeCompletion.SetActive(false);
+        uiAfterCompletion.SetActive(true);
     }
 }
