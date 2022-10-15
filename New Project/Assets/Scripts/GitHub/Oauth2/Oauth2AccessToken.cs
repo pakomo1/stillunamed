@@ -37,7 +37,7 @@ public class Oauth2AccessToken : MonoBehaviour
         HttpListenerResponse response = context.Response;
 
         // Construct a response.
-        string responseString = "<HTML><BODY>DONE!</BODY></HTML>";
+        string responseString = "<HTML><BODY>DONE</BODY></HTML>";
         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 
         // Get a response stream and write the response to it.
