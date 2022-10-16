@@ -5,8 +5,10 @@ using UnityEngine;
 public class OpenServer : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer sprite;
-    [SerializeField] private GameObject UI;
+    [SerializeField] private GameObject authorizationUi;
+    [SerializeField] private GameObject gitHubUi;
     private bool triggerActive;
+    public bool authorized;
 
     private void Awake()
     {
@@ -34,7 +36,14 @@ public class OpenServer : MonoBehaviour
         //Check if interaction is available
         if (triggerActive && Input.GetKeyDown(KeyCode.E))
         {
-            UI.SetActive(true);
+            if (!authorized)
+            {
+                authorizationUi.SetActive(true);
+            }
+            else
+            {
+                gitHubUi.SetActive(true);
+            }
         }
 
         //If interaction is available highlight the object

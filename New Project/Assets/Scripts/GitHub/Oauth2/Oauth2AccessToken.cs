@@ -70,9 +70,24 @@ public class Oauth2AccessToken : MonoBehaviour
     private void AssignToken()
     {
         // Assign Access Token to Player
-        playerObjectPrefab = GameObject.FindWithTag("Player");
-        playerObjectPrefab.GetComponentInChildren<AccessToken>().accessToken = result;
+        //playerObjectPrefab = GameObject.FindWithTag("Player");
+        //playerObjectPrefab.GetComponentInChildren<AccessToken>().accessToken = result;
+
+        //Initialize the save system
+        SaveSystem.INIT();
+        
+        //Turn the access token info into a json format
+        SaveToken saveToken = new SaveToken() { accessToken = result };
+        string json = JsonUtility.ToJson(saveToken);
+        SaveSystem.Save(json, "/accessToken.txt");
+
+        //UI panel switch
         uiBeforeCompletion.SetActive(false);
         uiAfterCompletion.SetActive(true);
+    }
+
+    public class SaveToken
+    {
+        public string accessToken;
     }
 }
