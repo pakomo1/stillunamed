@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 public class ValidAccessToken : MonoBehaviour
 {
     [SerializeField] private OpenServer openServer; 
-    private HttpWebResponse httpResponse;
     private string accessToken;
     private string url = "https://api.github.com/user/repos";
 

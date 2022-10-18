@@ -5,11 +5,11 @@ using Unity.Netcode;
 
 public class IndividualCameraController : NetworkBehaviour
 {
-    [SerializeField] private GameObject camera;
+    [SerializeField] private new GameObject camera;
 
     private void Update()
     {
         if (!IsOwner) return;
-        camera.active = true;
+        camera.SetActive(true);
     }
 }
