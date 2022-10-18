@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 40234412}
   - component: {fileID: 40234411}
   - component: {fileID: 40234413}
+  - component: {fileID: 40234414}
   m_Layer: 0
   m_Name: ReposPanel
   m_TagString: Untagged
@@ -227,6 +228,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &40234414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40234409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6137d09e57d9d9a4a923a476c037596d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonTemplate: {fileID: 1327962080}
 --- !u!1 &68097934
 GameObject:
   m_ObjectHideFlags: 0
@@ -3626,7 +3640,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1327962081
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3646,10 +3660,10 @@ RectTransform:
   m_Father: {fileID: 40234410}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 90.0757}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 280, y: -55.03785}
+  m_SizeDelta: {x: 540, y: 90.0757}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1327962082
 MonoBehaviour:
@@ -3790,7 +3804,7 @@ GameObject:
   - component: {fileID: 1344251942}
   - component: {fileID: 1344251941}
   m_Layer: 0
-  m_Name: Image
+  m_Name: PublicPrivate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
