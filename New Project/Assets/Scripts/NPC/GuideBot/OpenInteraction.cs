@@ -36,9 +36,9 @@ public class OpenInteraction : MonoBehaviour
         //Check if interaction is available
         if (triggerActive && Input.GetKeyDown(KeyCode.E))
         {
-            dialogueUI.active = true;
+            dialogueUI.SetActive(true);
         }
-        if (dialogueUI.active)
+        if (dialogueUI.activeInHierarchy)
         {
             cameraTarget.target = cameraTarget.guideBotTransform;
             cameraTarget.threshold = 0.6f;
