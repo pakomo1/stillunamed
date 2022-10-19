@@ -9,13 +9,7 @@ public class RepoButtonTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject buttonTemplate;
 
-    private void Awake()
-    {
-        createButton("test", "desc", "https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg", false);
-        createButton("test2", "desc2", "https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg", true);
-    }
-
-    private async void createButton(string text, string description, string profilePicUrl, bool visibility)
+    public async void CreateButton(string text, string description, string profilePicUrl, bool visibility)
     {
         var button = Instantiate(buttonTemplate, transform);
         button.SetActive(true);
