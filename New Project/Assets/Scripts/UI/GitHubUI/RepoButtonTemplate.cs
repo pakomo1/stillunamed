@@ -16,12 +16,12 @@ public class RepoButtonTemplate : MonoBehaviour
         button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
         button.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = description;
         Sprite image = await GetImage(profilePicUrl);
-        button.transform.GetChild(2).GetComponent<Image>().sprite = image;
-        if (visibility)
+        button.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = image;
+        if (!visibility)
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.green;
         }
-        else if(!visibility)
+        else if(visibility)
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
         }

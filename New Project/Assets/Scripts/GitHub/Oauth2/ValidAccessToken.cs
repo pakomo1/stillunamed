@@ -12,14 +12,12 @@ public class ValidAccessToken : MonoBehaviour
 
     private void Awake()
     {
-        //Get the access token from accessToken.txt
-        accessToken = GetAccessToken();
-
         ValidateToken();
     }
 
-    private async void ValidateToken()
-    {
+    public async void ValidateToken()
+    {   
+        accessToken = GetAccessToken();
         using var www = UnityWebRequest.Get(url);
         www.SetRequestHeader("Authorization", "Bearer " + accessToken);
         var operation = www.SendWebRequest();
