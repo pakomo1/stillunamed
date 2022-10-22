@@ -5,22 +5,19 @@ using UnityEngine.Networking;
 
 public class ValidAccessToken : MonoBehaviour
 {
-    [SerializeField] private OpenServer openServer; 
+    [SerializeField] private OpenServer openServer;
+    [SerializeField] private GetUserRepoInfo repoInfo;
     private string accessToken;
     private string url = "https://api.github.com/user/repos";
 
     private void Awake()
     {
-        //Get the access token from accessToken.txt
-        string json = SaveSystem.Load("accessToken.txt");
-        var loadedJson = JsonUtility.FromJson<Oauth2AccessToken.SaveToken>(json);
-        accessToken = loadedJson.accessToken;
-
         ValidateToken();
     }
 
-    private async void ValidateToken()
-    {
+    public async void ValidateToken()
+    {   
+        accessToken = GetAccessToken();
         using var www = UnityWebRequest.Get(url);
         www.SetRequestHeader("Authorization", "Bearer " + accessToken);
         var operation = www.SendWebRequest();
@@ -33,6 +30,8 @@ public class ValidAccessToken : MonoBehaviour
             if (www.responseCode == 200)
             {
                 openServer.authorized = true;
+                repoInfo.json = www.downloadHandler.text;
+                repoInfo.GenerateButtons();
             }
             else
             {
@@ -42,6 +41,12 @@ public class ValidAccessToken : MonoBehaviour
         else
         {
             Debug.Log("Error" + www.error);
-        }
+        }      
+    }
+    public string GetAccessToken()
+    {
+        string json = SaveSystem.Load("accessToken.txt");
+        var loadedJson = JsonUtility.FromJson<Oauth2AccessToken.SaveToken>(json);
+        return loadedJson.accessToken;
     }
 }
