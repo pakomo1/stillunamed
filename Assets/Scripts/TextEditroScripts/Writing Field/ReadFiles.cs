@@ -15,6 +15,13 @@ public class ReadFiles : MonoBehaviour
     {
         //i should take the file form the file manager since there you select which file you want to read
         //for now i am just going to use a static file form a static dir
+
+        //also a VERY IMPORTANT THING that you should not forget!!!
+        /*
+         * 
+         * you can select files only ONLY form the directory you are in and that is the path that you select in the OpenFolder.cs file
+         * 
+         */
         selectedFilePath =@"C:\Users\Maixm\Documents\file.cs";
 
           string[] files = Directory.GetFiles(@"D:\");
