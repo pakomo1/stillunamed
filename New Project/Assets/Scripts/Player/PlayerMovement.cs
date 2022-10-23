@@ -13,7 +13,7 @@ public class PlayerMovement : NetworkBehaviour
     private Rigidbody2D rb;
     private AnimationController animCtrl;
 
-    private Vector2 movementDirection; 
+    public Vector2 movementDirection; 
 
     //Animation States
     private const string WALKFRONT = "WalkFront";

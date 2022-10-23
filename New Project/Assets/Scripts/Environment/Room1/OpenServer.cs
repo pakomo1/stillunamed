@@ -8,6 +8,7 @@ public class OpenServer : MonoBehaviour
     [SerializeField] private GameObject authorizationUi;
     [SerializeField] private GameObject gitHubUi;
     private bool triggerActive;
+    private GameObject player;
     public bool authorized;
 
     private void Awake()
@@ -44,6 +45,16 @@ public class OpenServer : MonoBehaviour
             {
                 gitHubUi.SetActive(true);
             }
+        }
+
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player");
+        }
+
+        if (authorizationUi.activeSelf || gitHubUi.activeSelf)
+        {
+            player.transform.GetChild(0).GetComponent<PlayerMovement>().movementDirection = Vector2.zero;
         }
 
         //If interaction is available highlight the object
