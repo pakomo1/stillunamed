@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using TMPro;
 using UnityEngine;
 
 public class Authorization : MonoBehaviour
 {
     [SerializeField] private Oauth2AccessToken Oauth2AC;
+    [SerializeField] private GameObject loadingMessage;
+    [SerializeField] private GameObject authorizationButton;
     string clientId = "086490aaf0f9ef0b33e4";
     string systemRedirectUri;
 
@@ -25,6 +28,8 @@ public class Authorization : MonoBehaviour
 
     public void Open()
     {
+        authorizationButton.SetActive(false);
+        loadingMessage.SetActive(true);
         Application.OpenURL(systemRedirectUri);
         Oauth2AC.AuthorizeBegin();
     }
