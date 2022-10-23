@@ -212,6 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 594266041}
   - component: {fileID: 594266042}
+  - component: {fileID: 594266043}
   m_Layer: 5
   m_Name: TextFieldManager
   m_TagString: Untagged
@@ -253,6 +254,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputfield: {fileID: 2134634527}
   selectedFilePath: C:\Users\Maixm\Documents\file.js
+--- !u!114 &594266043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 594266040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ee67b7a02086574eaaf73f48f3a047f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TextFieldManager: {fileID: 594266040}
 --- !u!1 &661690043
 GameObject:
   m_ObjectHideFlags: 0

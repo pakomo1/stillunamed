@@ -56,7 +56,6 @@ public class MonoCompiler : MonoBehaviour
     {
         try
         {
-            print(targetDir);
             if (!File.Exists($@"{targetDir}\{Path.GetFileName(filePath)}"))
             {
             File.Move(filePath, $@"{targetDir}\{Path.GetFileName(filePath)}");
@@ -92,16 +91,17 @@ public class MonoCompiler : MonoBehaviour
             process.Start();
             int id = process.Id;
 
+         
+            while (!process.StandardOutput.EndOfStream)
+            {
+                var line = process.StandardOutput.ReadLine();
+                print("Your output is: " + line);
+            }
             //The code below kills the process created so it does not take memory 
             Process[] processes = Process.GetProcessesByName("hello");
             foreach (Process proc in processes)
             {
                 proc.Kill();
-            }
-            while (!process.StandardOutput.EndOfStream)
-            {
-                var line = process.StandardOutput.ReadLine();
-                print("Your output is: " + line);
             }
         }
         catch (Exception err)

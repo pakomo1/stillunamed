@@ -8,7 +8,7 @@ using System.IO;
 public class ReadFiles : MonoBehaviour
 {
 
-    [SerializeField] private TMP_InputField inputfield;
+    [SerializeField] public TMP_InputField inputfield;
     public string selectedFilePath;
     // Start is called before the first frame update
     void Start()
@@ -26,12 +26,7 @@ public class ReadFiles : MonoBehaviour
 
           string[] files = Directory.GetFiles(@"D:\");
 
-
-        List<string> lines = File.ReadAllLines(selectedFilePath).ToList();
-        foreach (string line in lines)
-        {
-            inputfield.text+= line + "\n";
-        }
+        inputfield.text = File.ReadAllText(selectedFilePath);
 
     }
 
