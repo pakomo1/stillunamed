@@ -4,36 +4,59 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
 public class RepoButtonTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject buttonTemplate;
+    [SerializeField] private GameObject mainPanel;
 
-    public async void CreateButton(string text, string description, string profilePicUrl, bool visibility)
+    public void CreateButton(string text, string description, string profilePicUrl, bool visibility)
     {
-        var button = Instantiate(buttonTemplate, transform);
-        button.SetActive(true);
-        button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
-        button.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = description;
-        Sprite image = await GetImage(profilePicUrl);
-        button.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = image;
-        if (!visibility)
+        if (mainPanel.activeSelf)
         {
-            button.transform.GetChild(3).GetComponent<Image>().color = Color.green;
-        }
-        else if(visibility)
-        {
-            button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
+            var button = Instantiate(buttonTemplate, transform);
+            button.SetActive(true);
+            button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
+            button.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = description;
+
+            StartCoroutine(GetImage(profilePicUrl, button.transform.GetChild(2).GetChild(0).GetComponent<Image>()));
+
+
+
+            if (!visibility)
+            {
+                button.transform.GetChild(3).GetComponent<Image>().color = Color.green;
+            }
+            else if (visibility)
+            {
+                button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
+            }
         }
     }
 
-    private async Task<Sprite> GetImage(string url)
+    private  IEnumerator GetImage(string url, Image img)
     {
-        WWW www = new WWW(url);
-        while (!www.isDone)
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+       
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.ConnectionError|| www.result == UnityWebRequest.Result.ProtocolError)
         {
-            await Task.Yield();
+            print("Error: "+www.error);
         }
-        return Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+        else
+        {
+            DownloadHandlerTexture textureDownloadHandler = (DownloadHandlerTexture)www.downloadHandler;
+            Texture2D texture = textureDownloadHandler.texture;
+            Sprite image = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0, 0));
+            img.sprite = image;
+        }
+        /*WWW www = new WWW(url);
+         while (!www.isDone)
+         {
+             await Task.Yield();
+         }
+         return Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));*/
     }
 }
