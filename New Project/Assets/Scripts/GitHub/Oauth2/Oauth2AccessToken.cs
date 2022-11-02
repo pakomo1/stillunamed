@@ -37,7 +37,7 @@ public class Oauth2AccessToken : MonoBehaviour
         HttpListenerResponse response = context.Response;
 
         // Construct a response.
-        string responseString = "<HTML><BODY>DONE</BODY></HTML>";
+        string responseString = SaveSystem.Load("/main.txt", "/WebPage/");
         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
 
         // Get a response stream and write the response to it.
@@ -74,12 +74,12 @@ public class Oauth2AccessToken : MonoBehaviour
         //playerObjectPrefab.GetComponentInChildren<AccessToken>().accessToken = result;
 
         //Initialize the save system
-        SaveSystem.INIT();
+        SaveSystem.INIT("/Saves/");
         
         //Turn the access token info into a json format
         SaveToken saveToken = new SaveToken() { accessToken = result };
         string json = JsonUtility.ToJson(saveToken);
-        SaveSystem.Save(json, "/accessToken.txt");
+        SaveSystem.Save(json, "/accessToken.txt", "/Saves/");
 
         //UI panel switch
         uiBeforeCompletion.SetActive(false);

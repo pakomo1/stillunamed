@@ -5,28 +5,28 @@ using UnityEngine;
 
 public static class SaveSystem 
 {
-    public static readonly string SAVE_FOLDER = Application.dataPath + "/Saves/";
+    public static readonly string APP_PATH = Application.dataPath;
 
-    public static void INIT()
+    public static void INIT(string fileDirectory)
     {
         //Test if save folder exists
-        if (!Directory.Exists(SAVE_FOLDER))
+        if (!Directory.Exists(APP_PATH + fileDirectory))
         {
             //Create save folder
-            Directory.CreateDirectory(SAVE_FOLDER);
+            Directory.CreateDirectory(APP_PATH + fileDirectory);
         }
     }
 
-    public static void Save(string saveString, string fileToSaveIn)
+    public static void Save(string saveString, string fileToSaveIn, string fileDirectory)
     {
-        File.WriteAllText(SAVE_FOLDER + fileToSaveIn, saveString);
+        File.WriteAllText((APP_PATH + fileDirectory) + fileToSaveIn, saveString);
     }
 
-    public static string Load(string fileToRead)
+    public static string Load(string fileToRead, string fileDirectory)
     {
-        if (File.Exists(SAVE_FOLDER + fileToRead))
+        if (File.Exists((APP_PATH + fileDirectory) + fileToRead))
         {
-            string saveString = File.ReadAllText(SAVE_FOLDER + fileToRead);
+            string saveString = File.ReadAllText((APP_PATH + fileDirectory) + fileToRead);
             return saveString;
         }
         else
