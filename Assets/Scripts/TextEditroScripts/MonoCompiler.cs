@@ -1,78 +1,74 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
 using System.Diagnostics;
-using System.Threading;
+using UnityEngine.UI;
+using System.Threading.Tasks;
+using System.Collections;
 
 public class MonoCompiler : MonoBehaviour
 {
 
     private ReadFiles readFiles;
     [SerializeField] private GameObject FileReader;
-
+    [SerializeField] public Button runButton;
     private string selectedFilePath;
+
+    private string nameOfFile;
+    private string pathToFile;
+    private string EXEfile;
+    private string path;
+
+
+    [SerializeField] private Color wantedColor;
     // Start is called before the first frame update
     void Start()
     {
-        readFiles= FileReader.GetComponent<ReadFiles>();
+        readFiles = FileReader.GetComponent<ReadFiles>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
         selectedFilePath = readFiles.selectedFilePath;
+
+        this.nameOfFile = readFiles.nameOfFile;
+        this.pathToFile = readFiles.pathToFile;
+        this.EXEfile = readFiles.EXEfile;
+        this.path = readFiles.path;
     }
     public void Compile()
     {
-        //this gets the name of the file plus the ... thingie (.exe; .cs; .js)
-        string name = selectedFilePath.Substring(selectedFilePath.Length - 7);
-        //this will get only the name of the file
-        string nameOfFile = name.Substring(0, name.IndexOf('.'));
-
-
-        //this code here gets the directory that the selected file(selectedFilePath)
-        string pathToFile = selectedFilePath.Substring(0, selectedFilePath.LastIndexOf('\\'));
-
-        string EXEfile = @$"C:\Program Files\Mono\bin\{nameOfFile}.exe";
-        string path = @$"{pathToFile}";
-
-        // THIS IS STARNG MONO COMPILER
-        Process mono = new Process();
-        mono.StartInfo.FileName = "cmd.exe";
-        mono.StartInfo.WorkingDirectory = @"C:\Program Files\Mono\bin\";
-        mono.StartInfo.Arguments = $@"/K csc " + selectedFilePath;
-        mono.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-        mono.Start();
-
-        //This method is moving the exefile becouse for some reason its been generated in the mono folder instead of the folder that the cs file is
-        MyMove(EXEfile, path);
+        //This method is moving the .exe file because for some reason its been generated in the mono folder instead of the folder that the cs file is
         //This method is executing the exe file
-        LaunchCommandLineApp(nameOfFile, pathToFile);
+        MyMove(EXEfile, path);
 
+        LaunchCommandLineApp(nameOfFile, pathToFile);
+        EnableAndDisableButton(runButton, 2000);
     }
-    static public bool MyMove(string filePath, string targetDir)
+
+    public void MyMove(string filePath, string targetDir)
     {
         try
         {
             if (!File.Exists($@"{targetDir}\{Path.GetFileName(filePath)}"))
             {
             File.Move(filePath, $@"{targetDir}\{Path.GetFileName(filePath)}");
-
+                print("Your file has been moved");
             }
-            else{
+            else
+            {
                 File.Replace(filePath, @$"{targetDir}\{Path.GetFileName(filePath)}", null);
+                print("Your file has been replaced");
             }
-            return true;
         }
         catch (Exception ex)
         {
             print(ex.Message);
-            return false;
         }
     }
-    static void LaunchCommandLineApp(string fileName, string pathToFile)
+    static public void LaunchCommandLineApp(string fileName, string pathToFile)
     {
         try
         {
@@ -91,7 +87,6 @@ public class MonoCompiler : MonoBehaviour
             process.Start();
             int id = process.Id;
 
-         
             while (!process.StandardOutput.EndOfStream)
             {
                 var line = process.StandardOutput.ReadLine();
@@ -108,6 +103,27 @@ public class MonoCompiler : MonoBehaviour
         {
             print(err.Message);
         }
-
     }
+   async public void EnableAndDisableButton(Button btn, int seconds)
+    {
+        btn.enabled = false;
+        ColorBlock cb = btn.colors;
+        var oldNMcolor = cb.normalColor;
+        var HighLcolor = cb.highlightedColor;
+        var PressedColor = cb.pressedColor;
+
+        cb.normalColor = wantedColor;
+        cb.highlightedColor = wantedColor;
+        cb.pressedColor = wantedColor;
+        btn.colors = cb;
+
+        await Task.Delay(seconds);
+        btn.enabled = true;
+
+        cb.normalColor = oldNMcolor;
+        cb.highlightedColor = HighLcolor;
+        cb.pressedColor = PressedColor;
+        btn.colors = cb;
+    }
+    
 }
