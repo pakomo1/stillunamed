@@ -10,6 +10,11 @@ public class ReadFiles : MonoBehaviour
 
     [SerializeField] public TMP_InputField inputfield;
     public string selectedFilePath;
+    public string nameOfFilePlus;
+    public string nameOfFile;
+    public string pathToFile;
+    public string EXEfile;
+    public string path;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +29,24 @@ public class ReadFiles : MonoBehaviour
          */
         selectedFilePath =@"C:\Users\Maixm\Documents\file.cs";
 
-          string[] files = Directory.GetFiles(@"D:\");
+        //this gets the name of the file plus the ... thingie (.exe; .cs; .js)
+        string name = selectedFilePath.Substring(selectedFilePath.Length - 7);
+        this.nameOfFilePlus = name;
+        //this will get only the name of the file
+        string nameOfFile = name.Substring(0, name.IndexOf('.'));
+        this.nameOfFile = nameOfFile;
+        //this code here gets the directory that the selected file(selectedFilePath)
+        string pathToFile = selectedFilePath.Substring(0, selectedFilePath.LastIndexOf('\\'));
+        this.pathToFile = pathToFile;
+
+        string EXEfile = @$"C:\Program Files\Mono\bin\{nameOfFile}.exe";
+        this.EXEfile = EXEfile;
+
+        string path = @$"{pathToFile}";
+        this.path = path;
+
+
+        string[] files = Directory.GetFiles(@"D:\");
 
         inputfield.text = File.ReadAllText(selectedFilePath);
 
