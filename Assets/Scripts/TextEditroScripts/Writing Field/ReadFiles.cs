@@ -12,7 +12,6 @@ public class ReadFiles : MonoBehaviour
     public string selectedFilePath;
     public string nameOfFilePlus;
     public string nameOfFile;
-    public string pathToFile;
     public string EXEfile;
     public string path;
     // Start is called before the first frame update
@@ -37,8 +36,7 @@ public class ReadFiles : MonoBehaviour
         this.nameOfFile = nameOfFile;
         //this code here gets the directory that the selected file(selectedFilePath)
         string pathToFile = selectedFilePath.Substring(0, selectedFilePath.LastIndexOf('\\'));
-        this.pathToFile = pathToFile;
-
+        
         string EXEfile = @$"C:\Program Files\Mono\bin\{nameOfFile}.exe";
         this.EXEfile = EXEfile;
 

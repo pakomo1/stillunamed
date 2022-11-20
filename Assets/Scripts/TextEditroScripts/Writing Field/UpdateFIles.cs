@@ -4,16 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Threading;
 using System.Diagnostics;
+using System;
 
 public class UpdateFIles : MonoBehaviour
 {
     private ReadFiles readFiles;
-    private MonoCompiler compiler;
-
-    [SerializeField] private GameObject canvas;
     [SerializeField] private GameObject TextFieldManager;
-    [SerializeField] public Button runButton;
 
+    private MonoCompiler compiler;
+    [SerializeField] private GameObject canvas;
+   
+    [SerializeField] public Button compileButton;
     private string EXEfile;
     private string path;
 
@@ -21,6 +22,7 @@ public class UpdateFIles : MonoBehaviour
     private string selectedFilePath;
     private TMP_InputField inputField;
 
+    public string currentSaveDate;
     // Start is called before the first frame update
     void Start()
     {
@@ -41,13 +43,15 @@ public class UpdateFIles : MonoBehaviour
           if(CheckIfDifferent(inputField.text, File.ReadAllText(selectedFilePath)))
            {
                  File.WriteAllText(selectedFilePath, inputField.text);
-                // THIS IS STARNG MONO COMPILER
+                // THIS IS STARTING MONO COMPILER. It also executes a csc command that creates the exe file
                 CreateExeFile(selectedFilePath);
-               
+
+                compiler.MyMove(EXEfile, path);
 
                 //compiler.MyMove(EXEfile, path);
-                compiler.EnableAndDisableButton(runButton, 1000);
+                compiler.EnableAndDisableButton(compileButton, 1000);
                 print("The file has been saved");
+                currentSaveDate = DateTime.Now.ToString();
             }
         }
     }

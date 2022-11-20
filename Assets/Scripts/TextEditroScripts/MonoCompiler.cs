@@ -10,22 +10,26 @@ public class MonoCompiler : MonoBehaviour
 {
 
     private ReadFiles readFiles;
-    [SerializeField] private GameObject FileReader;
+    private UpdateFIles updateFiles;
+    [SerializeField] private GameObject TextFieldManager;
+
+
     [SerializeField] public Button runButton;
     private string selectedFilePath;
 
     private string nameOfFile;
-    private string pathToFile;
     private string EXEfile;
     private string path;
+    private string pathToFile;
 
+    private string currentSaveDate;
 
     [SerializeField] private Color wantedColor;
     // Start is called before the first frame update
     void Start()
     {
-        readFiles = FileReader.GetComponent<ReadFiles>();
-
+        readFiles = TextFieldManager.GetComponent<ReadFiles>();
+        updateFiles = TextFieldManager.GetComponent<UpdateFIles>();
     }
 
     // Update is called once per frame
@@ -33,18 +37,27 @@ public class MonoCompiler : MonoBehaviour
     {
         selectedFilePath = readFiles.selectedFilePath;
 
-        this.nameOfFile = readFiles.nameOfFile;
-        this.pathToFile = readFiles.pathToFile;
-        this.EXEfile = readFiles.EXEfile;
-        this.path = readFiles.path;
+        nameOfFile = readFiles.nameOfFile;
+        EXEfile = readFiles.EXEfile;
+        path = readFiles.path;
+        pathToFile = readFiles.selectedFilePath;
+
+        currentSaveDate = updateFiles.currentSaveDate;
     }
     public void Compile()
     {
+        string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
+        string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
+        if(currentSaveDate != DateThatExeFileCreated)
+        {
+            //print("The time of the current save and the save of the file that is in the folder are different");
+            MyMove(EXEfile, path);
+        }
+        
+
         //This method is moving the .exe file because for some reason its been generated in the mono folder instead of the folder that the cs file is
         //This method is executing the exe file
-        MyMove(EXEfile, path);
-
-        LaunchCommandLineApp(nameOfFile, pathToFile);
+        LaunchCommandLineApp(nameOfFile, path );
         EnableAndDisableButton(runButton, 2000);
     }
 
