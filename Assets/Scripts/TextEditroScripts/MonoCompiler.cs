@@ -31,7 +31,7 @@ public class MonoCompiler : MonoBehaviour
         readFiles = TextFieldManager.GetComponent<ReadFiles>();
         updateFiles = TextFieldManager.GetComponent<UpdateFIles>();
     }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -46,21 +46,11 @@ public class MonoCompiler : MonoBehaviour
     }
     public void Compile()
     {
-        string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
-        string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
-        if(currentSaveDate != DateThatExeFileCreated)
-        {
-            //print("The time of the current save and the save of the file that is in the folder are different");
-            MyMove(EXEfile, path);
-        }
-        
-
         //This method is moving the .exe file because for some reason its been generated in the mono folder instead of the folder that the cs file is
         //This method is executing the exe file
         LaunchCommandLineApp(nameOfFile, path );
         EnableAndDisableButton(runButton, 2000);
     }
-
     public void MyMove(string filePath, string targetDir)
     {
         try

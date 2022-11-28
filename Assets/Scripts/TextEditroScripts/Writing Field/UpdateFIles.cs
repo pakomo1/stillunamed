@@ -17,6 +17,7 @@ public class UpdateFIles : MonoBehaviour
     [SerializeField] public Button compileButton;
     private string EXEfile;
     private string path;
+    private string nameOfFile;
 
     //these two come form the ReadFiles class
     private string selectedFilePath;
@@ -33,6 +34,7 @@ public class UpdateFIles : MonoBehaviour
         this.inputField = readFiles.inputfield;
         this.EXEfile = readFiles.EXEfile;   
         this.path = readFiles.path; 
+        this.nameOfFile = readFiles.nameOfFile;
     }
 
     // Update is called once per frame
@@ -45,8 +47,15 @@ public class UpdateFIles : MonoBehaviour
                  File.WriteAllText(selectedFilePath, inputField.text);
                 // THIS IS STARTING MONO COMPILER. It also executes a csc command that creates the exe file
                 CreateExeFile(selectedFilePath);
+                 compiler.MyMove(EXEfile, path);
 
-                compiler.MyMove(EXEfile, path);
+                string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
+                string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
+
+                 if(currentSaveDate != DateThatExeFileCreated)
+                {
+                    compiler.MyMove(EXEfile, path);
+                }
 
                 //compiler.MyMove(EXEfile, path);
                 compiler.EnableAndDisableButton(compileButton, 1000);
