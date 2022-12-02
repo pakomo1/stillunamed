@@ -44,7 +44,7 @@ public class ReadFiles : MonoBehaviour
         this.path = path;
 
 
-       // string[] files = Directory.GetFiles(@"D:\");
+        string[] files = Directory.GetFiles(@"D:\");
 
         inputfield.text = File.ReadAllText(selectedFilePath);
 
