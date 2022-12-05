@@ -48,7 +48,7 @@ public class MonoCompiler : MonoBehaviour
     {
         string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
         string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
-        if(currentSaveDate != DateThatExeFileCreated && currentSaveDate != "")
+        if(currentSaveDate != DateThatExeFileCreated)
         {
             //print("The time of the current save and the save of the file that is in the folder are different");
             MyMove(EXEfile, path);
