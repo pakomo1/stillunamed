@@ -15,27 +15,9 @@ public class betterTextExp : MonoBehaviour
     }
 
     // Update is called once per frame
-
-    IEnumerator FieldFix(int saveCaretPosition)
-    {
-        yield return null;
-        InputField.MoveTextEnd(false);
-
-        InputField.caretPosition = saveCaretPosition;
-        InputField.text = InputField.text.Insert(InputField.caretPosition, "\n");
-        InputField.caretPosition = saveCaretPosition + 1;
-    }
     void Update()
     {
-        int saveCaretPosition = InputField.caretPosition;
-        if (EventSystem.current.currentSelectedGameObject == InputField.gameObject)
-        {
-            if ( Input.GetKeyUp(KeyCode.Return))
-            {
-                InputField.ActivateInputField();
-                StartCoroutine(FieldFix(saveCaretPosition));
-            }
-        }
+      
     }
 }
 
