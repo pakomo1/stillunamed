@@ -23,25 +23,33 @@ public class TheManager : MonoBehaviour
             GameObject parent = fileManager;
             int countOfParentObjs = parent.transform.childCount;
             files = Directory.GetFiles(path);
+            float xPosition = (float)-0.00038004;
+            int yPosition = 388;
+            int zPosition = -1;
 
-           foreach(string file in files)
+            foreach (string file in files)
             { 
                 if (parent.transform.Find(Path.GetFileName(file)) ==null)
                 {
                     GameObject go = new GameObject(Path.GetFileName(file));
+                    
                     go.transform.SetParent(this.transform);
 
                     TextMeshPro textEl = go.AddComponent<TextMeshPro>();
-
                     textEl.text = Path.GetFileName(file);
+                    textEl.fontSize = 40;
+
+                    textEl.rectTransform.sizeDelta = new Vector2((float)51.591, 5); 
                     print(file);
 
                     //X -71
-                    //Y 388
+                    //Y 388 -35
                     //Z -1
-                    Vector3 vector3 = new Vector3(-71, 388, -1);
-                    go.transform.position = vector3;
-                    print(go.transform.position);
+                    go.SetActive(false);
+
+                    go.transform.localPosition = new Vector3(xPosition, yPosition, zPosition);
+                    go.SetActive(true);
+                    yPosition -= 35;
                 }
                 else
                 {
