@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEditor;
+using TMPro;
 
 public class OpenFolder : MonoBehaviour
 {
     private TheManager theManager;
+    [SerializeField] private TextMeshProUGUI _textMeshPro;
     [SerializeField] private GameObject fileManager;    
     public string path;
    // [SerializeField]private RawImage image;
@@ -21,6 +22,8 @@ public class OpenFolder : MonoBehaviour
         ClearAllFields();
         path = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         theManager.UpdatePath(path);
+
+        _textMeshPro.text = path;
     }
     private void ClearAllFields()
     {
@@ -39,5 +42,6 @@ public class OpenFolder : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
     }
 }

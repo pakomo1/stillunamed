@@ -40,7 +40,6 @@ public class TheManager : MonoBehaviour
                     textEl.fontSize = 40;
 
                     textEl.rectTransform.sizeDelta = new Vector2((float)51.591, 5); 
-                    print(file);
 
                     //X -71
                     //Y 388 -35
