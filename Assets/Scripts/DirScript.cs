@@ -1,13 +1,14 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
-using System.Threading.Tasks;
+using System.Collections;
 
 public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private OpenFolder openFolder;
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private GameObject holeCurrentDir;
+    [SerializeField] private GameObject image;
 
     private TextMeshProUGUI holeCurrentDirText;
     // Start is called before the first frame update
@@ -28,22 +29,30 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         {
             isTooLong = true;
 
-            string newText = path.Substring(24);
+            string newText = path.Substring(0,20);
             text.text = newText + "...";
         }
 
     }
   
+
+    IEnumerator Act()
+    {
+        yield return new WaitForSeconds(2.0f);
+        image.SetActive(true);
+        holeCurrentDir.SetActive(true);
+    }
     public void  OnPointerEnter(PointerEventData eventData)
     {
-        if(path != "" && isTooLong)
+        if(path != "" && isTooLong) 
         {
-            holeCurrentDir.SetActive(true);   
+            StartCoroutine(Act());
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        image.SetActive(false);
         holeCurrentDir.SetActive(false);
     }
 }
