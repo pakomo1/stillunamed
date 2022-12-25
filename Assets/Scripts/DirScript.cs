@@ -44,7 +44,7 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     }
     public void  OnPointerEnter(PointerEventData eventData)
     {
-        if(path != "" && isTooLong) 
+        if(path != "" && isTooLong && !image.activeSelf) 
         {
             StartCoroutine(Act());
         }
