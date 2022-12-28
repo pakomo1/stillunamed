@@ -54,7 +54,7 @@ public class OpenServer : MonoBehaviour
 
         if (authorizationUi.activeSelf || gitHubUi.activeSelf)
         {
-            player.transform.GetChild(0).GetComponent<PlayerMovement>().movementDirection = Vector2.zero;
+           player.transform.GetChild(0).GetComponent<PlayerMovement>().movementDirection = Vector2.zero;
         }
 
         //If interaction is available highlight the object
