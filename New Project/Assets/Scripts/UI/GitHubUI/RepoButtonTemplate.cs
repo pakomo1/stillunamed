@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,12 +9,13 @@ using UnityEngine.UI;
 public class RepoButtonTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject buttonTemplate;
+    [SerializeField] private RepositoryContentNavigation repoContentNavigation;
 
-    public async void CreateButton(string text, string description, string profilePicUrl, bool visibility)
+    public async void CreateButton(string repoName, string description, string profilePicUrl, bool visibility, string repoOwner)
     {
         var button = Instantiate(buttonTemplate, transform);
         button.SetActive(true);
-        button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = text;
+        button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoName;
         button.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = description;
         Sprite image = await GetImage(profilePicUrl);
         button.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = image;
@@ -25,6 +27,7 @@ public class RepoButtonTemplate : MonoBehaviour
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
         }
+        button.GetComponent<Button>().onClick.AddListener(() => repoContentNavigation.ShowRepositoryContent(repoOwner, repoName, ""));
     }
 
     private async Task<Sprite> GetImage(string url)

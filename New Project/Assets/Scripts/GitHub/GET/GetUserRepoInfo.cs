@@ -18,7 +18,7 @@ public class GetUserRepoInfo : MonoBehaviour
         var repoInfo = JsonConvert.DeserializeObject<List<RepoInfo>>(json);
         for (int i = 0; i < repoInfo.Count; i++)
         {
-            buttonTemplate.CreateButton(repoInfo[i].Name, repoInfo[i].Description, repoInfo[i].Owner.avatar_url, repoInfo[i].Private);
+            buttonTemplate.CreateButton(repoInfo[i].Name, repoInfo[i].Description, repoInfo[i].Owner.avatar_url, repoInfo[i].Private, repoInfo[i].Owner.login);
         }
     }
     public class RepoInfo 
@@ -31,5 +31,6 @@ public class GetUserRepoInfo : MonoBehaviour
     public class OwnerInfo 
     {
         public string avatar_url;
+        public string login;
     }
 }

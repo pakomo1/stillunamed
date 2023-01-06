@@ -11,21 +11,15 @@ using System;
 public class FilteringController : MonoBehaviour
 {
     [SerializeField] private ValidAccessToken validAccessToken;
-    [SerializeField] private GameObject contentHolder;
-    [SerializeField] private List<GameObject> elements;
+    [SerializeField] private GameObject contentHolder;  
     [SerializeField] private GameObject searchBar;
     [SerializeField] private TextMeshProUGUI availabilityButton;
-    private int totalElements;
     private int state = 0;
+    private List<GameObject> elements;
 
     public void GetContent()
     {
-        totalElements = contentHolder.transform.childCount;
-        elements = new List<GameObject>();
-        for (int i = 0; i < totalElements; i++)
-        {
-            elements.Add(contentHolder.transform.GetChild(i).gameObject);
-        }
+        elements = GetGameObjectContents.GetContent(contentHolder);
     }
 
     public void Search()
