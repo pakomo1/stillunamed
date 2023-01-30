@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Computer
+  - GitHubUISideBarGrid
   layers:
   - Default
   - TransparentFX
@@ -17,9 +18,9 @@ TagManager:
   - Furniture
   - 
   - 
-  - 
-  - 
-  - 
+  - OtherUI
+  - GitHubSidePanel
+  - GitHubMainPanel
   - 
   - 
   - 
@@ -56,4 +57,7 @@ TagManager:
     locked: 0
   - name: NPC
     uniqueID: 900112979
+    locked: 0
+  - name: New Layer 6
+    uniqueID: 4026292353
     locked: 0
