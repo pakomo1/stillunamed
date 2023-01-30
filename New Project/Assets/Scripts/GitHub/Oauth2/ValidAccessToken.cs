@@ -26,7 +26,7 @@ public class ValidAccessToken : MonoBehaviour
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            print(www.responseCode);
+            print("Access Token validation response code " + www.responseCode);
             if (www.responseCode == 200)
             {
                 openServer.authorized = true;

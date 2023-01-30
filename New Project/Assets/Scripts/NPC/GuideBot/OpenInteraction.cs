@@ -45,8 +45,15 @@ public class OpenInteraction : MonoBehaviour
         }
         else
         {
-            cameraTarget.target = cameraTarget.playerTransform;
-            cameraTarget.threshold = 0.2f;
+            try
+            {
+                cameraTarget.target = cameraTarget.playerTransform;
+                cameraTarget.threshold = 0.2f;
+            }
+            catch
+            {
+                
+            }
         }
         //If interaction is available highlight the object
         /*if (triggerActive)
