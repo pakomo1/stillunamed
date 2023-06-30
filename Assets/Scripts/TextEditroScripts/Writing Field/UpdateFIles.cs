@@ -46,7 +46,11 @@ public class UpdateFIles : MonoBehaviour
                 // THIS IS STARTING MONO COMPILER. It also executes a csc command that creates the exe file
                 CreateExeFile(selectedFilePath);
 
-                compiler.MyMove(EXEfile, path);
+                if (File.Exists(EXEfile))
+                {
+                    compiler.MyMove(EXEfile, path);
+                }
+               
 
                 //compiler.MyMove(EXEfile, path);
                 compiler.EnableAndDisableButton(compileButton, 1000);
@@ -67,11 +71,45 @@ public class UpdateFIles : MonoBehaviour
     }
     public void CreateExeFile(string pathToFile)
     {
+        string outputFilePath = "C:\\Users\\Maixm\\Documents\\output.txt";
         Process mono = new Process();
         mono.StartInfo.FileName = "cmd.exe";
         mono.StartInfo.WorkingDirectory = @"C:\Program Files\Mono\bin\";
-        mono.StartInfo.Arguments = $@"/K csc " + pathToFile;
+        mono.StartInfo.Arguments = $@"/C csc " + pathToFile + " > " + outputFilePath;
         mono.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-        mono.Start();
+        mono.StartInfo.UseShellExecute = true; 
+        mono.StartInfo.RedirectStandardOutput = true;
+        mono.StartInfo.RedirectStandardError = true;
+        mono.StartInfo.UseShellExecute = false;
+
+        Thread processThread = new Thread(() =>
+        {
+            mono.OutputDataReceived += (sender, args) =>
+            {
+                if (!string.IsNullOrEmpty(args.Data))
+                {
+                    File.WriteAllText(outputFilePath, args.Data);
+                }
+            };
+
+            mono.ErrorDataReceived += (sender, args) =>
+            {
+                if (!string.IsNullOrEmpty(args.Data))
+                {
+                    File.WriteAllText(outputFilePath, args.Data);
+                }
+            };
+
+            mono.Start();
+            mono.BeginOutputReadLine();
+            mono.BeginErrorReadLine();
+            if (!mono.WaitForExit(10000))
+            {
+                // If the process hasn't exited within 10 seconds, kill it
+                mono.Kill();
+            }
+        });
+        processThread.IsBackground = true;
+        processThread.Start();
     }
 }

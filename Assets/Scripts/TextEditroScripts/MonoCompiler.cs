@@ -48,13 +48,12 @@ public class MonoCompiler : MonoBehaviour
     {
         string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
         string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
-        if(currentSaveDate != DateThatExeFileCreated && currentSaveDate != "")
+        /*if(File.Exists(EXEfile))
         {
             //print("The time of the current save and the save of the file that is in the folder are different");
             MyMove(EXEfile, path);
-        }
+        }*/
         
-
         //This method is moving the .exe file because for some reason its been generated in the mono folder instead of the folder that the cs file is
         //This method is executing the exe file
         LaunchCommandLineApp(nameOfFile, path );
@@ -105,8 +104,8 @@ public class MonoCompiler : MonoBehaviour
                 var line = process.StandardOutput.ReadLine();
                 print("Your output is: " + line);
             }
-            //The code below kills the process created so it does not take memory 
-            Process[] processes = Process.GetProcessesByName("hello");
+            //The code below kills the process created so it does not take memory(as a parameter we should pass the name of the exe file)
+            Process[] processes = Process.GetProcessesByName("file");
             foreach (Process proc in processes)
             {
                 proc.Kill();

@@ -26,7 +26,7 @@ public class ReadFiles : MonoBehaviour
          * you can select files only ONLY form the directory you are in and that is the path that you select in the OpenFolder.cs file
          * 
          */
-        selectedFilePath =@"C:\Users\Maixm\Documents\file.cs";
+        selectedFilePath ="C:\\Users\\Maixm\\Documents\\file.cs";
 
         //this gets the name of the file plus the ... thingie (.exe; .cs; .js)
         string name = selectedFilePath.Substring(selectedFilePath.Length - 7);
@@ -44,7 +44,7 @@ public class ReadFiles : MonoBehaviour
         this.path = path;
 
 
-        string[] files = Directory.GetFiles(@"D:\");
+      //  string[] files = Directory.GetFiles(@"D:\");
 
         inputfield.text = File.ReadAllText(selectedFilePath);
 
