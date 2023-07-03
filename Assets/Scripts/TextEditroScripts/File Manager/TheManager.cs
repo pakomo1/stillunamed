@@ -72,6 +72,10 @@ public class TheManager : MonoBehaviour
                     go.transform.parent = parent.transform;
                     go.transform.localPosition = new Vector3(0,0,1f);
                     go.tag = "file";
+                    
+                    go.AddComponent<Button>();
+                    Button btn = go.GetComponent<Button>();
+                    btn.onClick.AddListener(delegate { OnClickFile.OnPointerClick(go); });
 
                     TextMeshProUGUI textEl = go.AddComponent<TextMeshProUGUI>();
                     textEl.fontSize = 4;
