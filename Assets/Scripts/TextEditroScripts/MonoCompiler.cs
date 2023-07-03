@@ -48,12 +48,12 @@ public class MonoCompiler : MonoBehaviour
     {
         string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
         string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
-        /*if(File.Exists(EXEfile))
+       
+        if (File.Exists(EXEfile))
         {
-            //print("The time of the current save and the save of the file that is in the folder are different");
             MyMove(EXEfile, path);
-        }*/
-        
+        }
+
         //This method is moving the .exe file because for some reason its been generated in the mono folder instead of the folder that the cs file is
         //This method is executing the exe file
         LaunchCommandLineApp(nameOfFile, path );
