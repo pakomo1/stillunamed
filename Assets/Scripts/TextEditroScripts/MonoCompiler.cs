@@ -39,7 +39,7 @@ public class MonoCompiler : MonoBehaviour
 
         nameOfFile = readFiles.nameOfFile;
         EXEfile = readFiles.EXEfile;
-        path = readFiles.path;
+        path = readFiles.currentWorkingDir;
         pathToFile = readFiles.selectedFilePath;
 
         currentSaveDate = updateFiles.currentSaveDate;

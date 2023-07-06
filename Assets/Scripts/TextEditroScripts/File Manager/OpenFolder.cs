@@ -7,23 +7,26 @@ using TMPro;
 public class OpenFolder : MonoBehaviour
 {
     private TheManager theManager;
+    private ReadFiles readFiles;
     [SerializeField] private TextMeshProUGUI _textMeshPro;
     [SerializeField] private GameObject fileManager;    
-    public string path;
+    public string _currentWorkingDir;
    // [SerializeField]private RawImage image;
 
 
     private void Awake()
     {
         theManager = FindObjectOfType<TheManager>();
+        readFiles= FindObjectOfType<ReadFiles>();
     }
     public void OpenExplorer()
     {
         ClearAllFields();
-        path = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
-        theManager.UpdatePath(path);
-
-        _textMeshPro.text = path;
+        _currentWorkingDir = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
+        theManager.UpdatePath(_currentWorkingDir);
+        print(_currentWorkingDir);
+        _textMeshPro.text = _currentWorkingDir;
+        readFiles.currentWorkingDir = _currentWorkingDir;
     }
     private void ClearAllFields()
     {

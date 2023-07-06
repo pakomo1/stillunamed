@@ -4,16 +4,21 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using System.IO;
+using UnityEngine.Rendering;
+using System.Net;
 
 public class ReadFiles : MonoBehaviour
 {
 
     [SerializeField] public TMP_InputField inputfield;
+    private OpenFolder openfolder;
     public string selectedFilePath;
     public string nameOfFilePlus;
     public string nameOfFile;
     public string EXEfile;
-    public string path;
+    public string currentWorkingDir;
+
+    private string help;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +31,9 @@ public class ReadFiles : MonoBehaviour
          * you can select files only ONLY form the directory you are in and that is the path that you select in the OpenFolder.cs file
          * 
          */
-        selectedFilePath ="C:\\Users\\Maixm\\Documents\\file.cs";
+        openfolder = FindObjectOfType<OpenFolder>();
+
+        selectedFilePath = "C:\\Users\\Maixm\\Documents\\file.cs";
 
         //this gets the name of the file plus the ... thingie (.exe; .cs; .js)
         string name = selectedFilePath.Substring(selectedFilePath.Length - 7);
@@ -41,7 +48,6 @@ public class ReadFiles : MonoBehaviour
         this.EXEfile = EXEfile;
 
         string path = @$"{pathToFile}";
-        this.path = path;
 
 
       //  string[] files = Directory.GetFiles(@"D:\");
@@ -53,6 +59,10 @@ public class ReadFiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (selectedFilePath != help)
+        {
+            help = selectedFilePath;
+            inputfield.text = File.ReadAllText(selectedFilePath);
+        }
     }
 }

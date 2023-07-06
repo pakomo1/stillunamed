@@ -7,25 +7,28 @@ using UnityEngine.UI;
 
 public class TheManager : MonoBehaviour
 {
-    private string path;
+    private string currentWorkingDir;
     public string[] files;
     public string[] folders;
     [SerializeField] private GameObject fileManager;
+    [SerializeField] private GameObject TextFieldManager;
+    private ReadFiles readFiles;
     // Start is called before the first frame update
     void Start()
     {
+        readFiles = TextFieldManager.GetComponent<ReadFiles>();
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if(path != null && path != "")
+        if(currentWorkingDir != null && currentWorkingDir != "")
         {
             GameObject parent = fileManager;
             int countOfParentObjs = parent.transform.childCount;
             
-            folders = Directory.GetDirectories(path);
+            folders = Directory.GetDirectories(currentWorkingDir);
             foreach (string folder in folders)
             {
                 if (parent.transform.Find(Path.GetFileName(folder)) == null)
@@ -61,21 +64,22 @@ public class TheManager : MonoBehaviour
                 }
             }
             
-            files = Directory.GetFiles(path);
+            files = Directory.GetFiles(currentWorkingDir);
 
             foreach (string file in files)
             { 
                 if (parent.transform.Find(Path.GetFileName(file)) ==null)
                 {
-                    
                     GameObject go = new GameObject(Path.GetFileName(file));
                     go.transform.parent = parent.transform;
                     go.transform.localPosition = new Vector3(0,0,1f);
                     go.tag = "file";
+                    var data = go.GetComponent<FilesMetaData>();
+                    //data.IsSelected = false;
                     
                     go.AddComponent<Button>();
                     Button btn = go.GetComponent<Button>();
-                    btn.onClick.AddListener(delegate { OnClickFile.OnPointerClick(go); });
+                    btn.onClick.AddListener(delegate { OnClickFile.OnPointerClick(go, readFiles); });
 
                     TextMeshProUGUI textEl = go.AddComponent<TextMeshProUGUI>();
                     textEl.fontSize = 4;
@@ -94,6 +98,6 @@ public class TheManager : MonoBehaviour
 
    public void UpdatePath(string path = "")
     {
-        this.path = path;
+        this.currentWorkingDir = path;
     }
 }

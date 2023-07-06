@@ -258,7 +258,7 @@ MonoBehaviour:
   nameOfFilePlus: 
   nameOfFile: 
   EXEfile: 
-  path: 
+  currentWorkingDir: 
 --- !u!114 &594266043
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +493,7 @@ MonoBehaviour:
   nameOfFilePlus: 
   nameOfFile: 
   EXEfile: 
-  path: 
+  currentWorkingDir: 
 --- !u!1 &920284607
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,7 +964,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   files: []
+  folders: []
   fileManager: {fileID: 1239353864}
+  TextFieldManager: {fileID: 594266040}
 --- !u!114 &1239353871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -979,7 +981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textMeshPro: {fileID: 0}
   fileManager: {fileID: 1239353864}
-  path: 
+  currentWorkingDir: 
 --- !u!114 &1239353872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -998,7 +1000,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 0
+  m_Spacing: 5
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -1982,7 +1984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textMeshPro: {fileID: 1269415917}
   fileManager: {fileID: 1239353864}
-  path: 
+  currentWorkingDir: 
 --- !u!114 &1751307192
 MonoBehaviour:
   m_ObjectHideFlags: 0

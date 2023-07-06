@@ -35,7 +35,7 @@ public class UpdateFIles : MonoBehaviour
         this.selectedFilePath = readFiles.selectedFilePath;
         this.inputField = readFiles.inputfield;
         this.EXEfile = readFiles.EXEfile;   
-        this.path = readFiles.path; 
+        this.path = readFiles.currentWorkingDir; 
     }
 
     // Update is called once per frame
