@@ -6,6 +6,9 @@ using TMPro;
 using System.IO;
 using UnityEngine.Rendering;
 using System.Net;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
+using System;
 
 public class ReadFiles : MonoBehaviour
 {
@@ -18,7 +21,7 @@ public class ReadFiles : MonoBehaviour
     public string EXEfile;
     public string currentWorkingDir;
 
-    private string help;
+    public string previousSelectedFile;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,10 +62,25 @@ public class ReadFiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedFilePath != help)
+        if (selectedFilePath != previousSelectedFile && previousSelectedFile != "")
         {
-            help = selectedFilePath;
-            inputfield.text = File.ReadAllText(selectedFilePath);
+            try
+            {
+                print(previousSelectedFile);
+                var previousSelectedFileOBJ = GameObject.Find(Path.GetFileName(previousSelectedFile));
+
+                TextMeshProUGUI fileTmpPro;
+                previousSelectedFileOBJ.TryGetComponent<TextMeshProUGUI>(out fileTmpPro);
+                fileTmpPro.color = Color.white;
+
+                previousSelectedFile = selectedFilePath;
+                inputfield.text = File.ReadAllText(selectedFilePath);
+            }
+            catch (Exception ex)
+            {
+                print(ex);
+            }
+           
         }
     }
 }

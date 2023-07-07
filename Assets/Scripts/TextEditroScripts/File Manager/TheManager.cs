@@ -13,10 +13,12 @@ public class TheManager : MonoBehaviour
     [SerializeField] private GameObject fileManager;
     [SerializeField] private GameObject TextFieldManager;
     private ReadFiles readFiles;
+    private OpenFolder openfolder;
     // Start is called before the first frame update
     void Start()
     {
         readFiles = TextFieldManager.GetComponent<ReadFiles>();
+        openfolder = TextFieldManager.GetComponent<OpenFolder>();
     }
 
     // Update is called once per frame

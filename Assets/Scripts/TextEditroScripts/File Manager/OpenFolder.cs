@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using TMPro;
+using System.IO;
 
 public class OpenFolder : MonoBehaviour
 {
@@ -24,9 +25,14 @@ public class OpenFolder : MonoBehaviour
         ClearAllFields();
         _currentWorkingDir = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         theManager.UpdatePath(_currentWorkingDir);
-        print(_currentWorkingDir);
         _textMeshPro.text = _currentWorkingDir;
+
+        //set the default valuses for:
         readFiles.currentWorkingDir = _currentWorkingDir;
+        readFiles.selectedFilePath = Directory.GetFiles(_currentWorkingDir)[0];
+        readFiles.previousSelectedFile = readFiles.selectedFilePath;
+
+        print("The first file should be: " +readFiles.previousSelectedFile);
     }
     private void ClearAllFields()
     {

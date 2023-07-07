@@ -16,7 +16,7 @@ public static class OnClickFile
         var tmp = obj.GetComponent<TextMeshProUGUI>();
         tmp.color = Color.red;
         
-        readFiles.selectedFilePath = readFiles.currentWorkingDir+"\\"+fileName;
+        readFiles.selectedFilePath = readFiles.currentWorkingDir+"/"+fileName;
     }
 
 }

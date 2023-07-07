@@ -47,7 +47,10 @@ public class UpdateFIles : MonoBehaviour
             {
                 File.WriteAllText(selectedFilePath, inputField.text);
                 // THIS IS STARTING MONO COMPILER. It also executes a csc command that  creates the exe file
-                CreateExeFile(selectedFilePath);
+                if(Path.GetExtension(selectedFilePath) == ".cs")
+                {
+                    CreateExeFile(selectedFilePath);
+                }
 
                 //compiler.MyMove(EXEfile, path);
                 compiler.EnableAndDisableButton(compileButton, 5000);
