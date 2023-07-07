@@ -62,6 +62,16 @@ public class ReadFiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (selectedFilePath != "")
+        {
+            var selectedFileObj = GameObject.Find(Path.GetFileName(selectedFilePath));
+
+            TextMeshProUGUI selectedfileTmpPro;
+            selectedFileObj.TryGetComponent<TextMeshProUGUI>(out selectedfileTmpPro);
+            selectedfileTmpPro.color = Color.red;
+
+        }
+
         if (selectedFilePath != previousSelectedFile && previousSelectedFile != "")
         {
             try

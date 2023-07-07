@@ -13,8 +13,8 @@ public static class OnClickFile
     {
        
         string fileName = obj.name;
-        var tmp = obj.GetComponent<TextMeshProUGUI>();
-        tmp.color = Color.red;
+       /* var tmp = obj.GetComponent<TextMeshProUGUI>();
+        tmp.color = Color.red;*/
         
         readFiles.selectedFilePath = readFiles.currentWorkingDir+"/"+fileName;
     }
