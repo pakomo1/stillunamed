@@ -33,7 +33,8 @@ body {
   width: 0;
   transform: translate(-20px, -20px);
 }
-    .background {
+
+.background {
   position: absolute;
   top: 0;
   height: 100vh;
@@ -41,11 +42,45 @@ body {
   animation: background-animation 2s ease-in-out 4s 1 normal forwards;
 }
 .background0 {
-  height: 100vh;
   left: 0%;
-  background-color: #A076F9;
+  height: 100vh;
+  background-color: #d5eb47;
 }
-
+.background1 {
+  left: 12.5%;
+  height: 100vh;
+  background-color: #8a7430;
+}
+.background2 {
+  left: 25%;
+  height: 100vh;
+  background-color: #729e46;
+}
+.background3 {
+  left: 37.5%;
+  height: 100vh;
+  background-color: #569a67;
+}
+.background4 {
+  left: 50%;
+  height: 100vh;
+  background-color: #a6e9e9;
+}
+.background5 {
+  left: 62.5%;
+  height: 100vh;
+  background-color: #485a93;
+}
+.background6 {
+  left: 75%;
+  height: 100vh;
+  background-color: #6c498e;
+}
+.background7 {
+  left: 87.5%;
+  height: 100vh;
+  background-color: #9d5d8d;
+}
 .background8 {
   left: 100%;
   height: 100vh;
@@ -1153,265 +1188,337 @@ body {
 }
 @-moz-keyframes text2-animation0 {
   0% {
+    left: -140px;
     opacity: 1;
   }
   50% {
+    left: -100px;
     opacity: 0;
   }
   100% {
+    left: -100px;
     opacity: 0;
   }
 }
 @-webkit-keyframes text2-animation0 {
   0% {
+    left: -140px;
     opacity: 1;
   }
   50% {
+    left: -100px;
     opacity: 0;
   }
   100% {
+    left: -100px;
     opacity: 0;
   }
 }
 @-o-keyframes text2-animation0 {
   0% {
+    left: -140px;
     opacity: 1;
   }
   50% {
+    left: -100px;
     opacity: 0;
   }
   100% {
+    left: -100px;
     opacity: 0;
   }
 }
 @keyframes text2-animation0 {
   0% {
+    left: -140px;
     opacity: 1;
   }
   50% {
+    left: -100px;
     opacity: 0;
   }
   100% {
+    left: -100px;
     opacity: 0;
   }
 }
 @-moz-keyframes text2-animation1 {
   0% {
+    left: -100px;
     opacity: 1;
   }
   50% {
+    left: -60px;
     opacity: 0;
   }
   100% {
+    left: -60px;
     opacity: 0;
   }
 }
 @-webkit-keyframes text2-animation1 {
   0% {
+    left: -100px;
     opacity: 1;
   }
   50% {
+    left: -60px;
     opacity: 0;
   }
   100% {
+    left: -60px;
     opacity: 0;
   }
 }
 @-o-keyframes text2-animation1 {
   0% {
+    left: -100px;
     opacity: 1;
   }
   50% {
+    left: -60px;
     opacity: 0;
   }
   100% {
+    left: -60px;
     opacity: 0;
   }
 }
 @keyframes text2-animation1 {
   0% {
+    left: -100px;
     opacity: 1;
   }
   50% {
+    left: -60px;
     opacity: 0;
   }
   100% {
+    left: -60px;
     opacity: 0;
   }
 }
 @-moz-keyframes text2-animation2 {
   0% {
+    left: -60px;
     opacity: 1;
   }
   50% {
+    left: -20px;
     opacity: 0;
   }
   100% {
+    left: -20px;
     opacity: 0;
   }
 }
 @-webkit-keyframes text2-animation2 {
   0% {
+    left: -60px;
     opacity: 1;
   }
   50% {
+    left: -20px;
     opacity: 0;
   }
   100% {
+    left: -20px;
     opacity: 0;
   }
 }
 @-o-keyframes text2-animation2 {
   0% {
+    left: -60px;
     opacity: 1;
   }
   50% {
+    left: -20px;
     opacity: 0;
   }
   100% {
+    left: -20px;
     opacity: 0;
   }
 }
 @keyframes text2-animation2 {
   0% {
+    left: -60px;
     opacity: 1;
   }
   50% {
+    left: -20px;
     opacity: 0;
   }
   100% {
+    left: -20px;
     opacity: 0;
   }
 }
 @-moz-keyframes text2-animation3 {
   0% {
+    left: -20px;
     opacity: 1;
   }
   50% {
+    left: 20px;
     opacity: 0;
   }
   100% {
+    left: 20px;
     opacity: 0;
   }
 }
 @-webkit-keyframes text2-animation3 {
   0% {
+    left: -20px;
     opacity: 1;
   }
   50% {
+    left: 20px;
     opacity: 0;
   }
   100% {
+    left: 20px;
     opacity: 0;
   }
 }
 @-o-keyframes text2-animation3 {
   0% {
+    left: -20px;
     opacity: 1;
   }
   50% {
+    left: 20px;
     opacity: 0;
   }
   100% {
+    left: 20px;
     opacity: 0;
   }
 }
 @keyframes text2-animation3 {
   0% {
+    left: -20px;
     opacity: 1;
   }
   50% {
+    left: 20px;
     opacity: 0;
   }
   100% {
+    left: 20px;
     opacity: 0;
   }
 }
 @-moz-keyframes text2-animation4 {
   0% {
+    left: 20px;
     opacity: 1;
   }
   50% {
+    left: 60px;
     opacity: 0;
   }
   100% {
+    left: 60px;
     opacity: 0;
   }
 }
 @-webkit-keyframes text2-animation4 {
   0% {
+    left: 20px;
     opacity: 1;
   }
   50% {
+    left: 60px;
     opacity: 0;
   }
   100% {
+    left: 60px;
     opacity: 0;
   }
 }
 @-o-keyframes text2-animation4 {
   0% {
+    left: 20px;
     opacity: 1;
   }
   50% {
+    left: 60px;
     opacity: 0;
   }
   100% {
+    left: 60px;
     opacity: 0;
   }
 }
 @keyframes text2-animation4 {
   0% {
+    left: 20px;
     opacity: 1;
   }
   50% {
+    left: 60px;
     opacity: 0;
   }
   100% {
+    left: 60px;
     opacity: 0;
   }
 }
 @-moz-keyframes text2-animation5 {
   0% {
+    left: 60px;
     opacity: 1;
   }
   50% {
+    left: 100px;
     opacity: 0;
   }
   100% {
+    left: 100px;
     opacity: 0;
   }
 }
 @-webkit-keyframes text2-animation5 {
   0% {
+    left: 60px;
     opacity: 1;
   }
   50% {
+    left: 100px;
     opacity: 0;
   }
   100% {
+    left: 100px;
     opacity: 0;
   }
 }
 @-o-keyframes text2-animation5 {
   0% {
+    left: 60px;
     opacity: 1;
   }
   50% {
+    left: 100px;
     opacity: 0;
   }
   100% {
+    left: 100px;
     opacity: 0;
   }
 }
 @keyframes text2-animation5 {
   0% {
+    left: 60px;
     opacity: 1;
   }
   50% {
+    left: 100px;
     opacity: 0;
   }
   100% {
+    left: 100px;
     opacity: 0;
   }
 }
@@ -9466,13 +9573,13 @@ body {
   0% {
     width: 0;
   }
-  0% {
-    width: 50%;
+  50% {
+    width: 12.5%;
     opacity: 1;
   }
   100% {
     opacity: 0;
-    width: 100%;
+    width: 25%;
   }
 }
 @-webkit-keyframes background-animation {
@@ -9480,12 +9587,12 @@ body {
     width: 0;
   }
   50% {
-    width: 50%;
+    width: 12.5%;
     opacity: 1;
   }
   100% {
     opacity: 0;
-    width: 100%;
+    width: 25%;
   }
 }
 @-o-keyframes background-animation {
@@ -9493,12 +9600,12 @@ body {
     width: 0;
   }
   50% {
-    width: 50%;
+    width: 12.5%;
     opacity: 1;
   }
   100% {
     opacity: 0;
-    width: 100%;
+    width: 25%;
   }
 }
 @keyframes background-animation {
@@ -9506,12 +9613,12 @@ body {
     width: 0;
   }
   50% {
-    width: 50%;
+    width: 12.5%;
     opacity: 1;
   }
   100% {
     opacity: 0;
-    width: 100%;
+    width: 25%;
   }
 }
 
