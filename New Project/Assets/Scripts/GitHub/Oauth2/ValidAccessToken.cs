@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class ValidAccessToken : MonoBehaviour
     [SerializeField] private OpenServer openServer;
     [SerializeField] private GetUserRepoInfo repoInfo;
     private string accessToken;
-    private string url = "https://api.github.com/user/repos";
+    private string userReposURL = "https://api.github.com/user/repos";
 
     private void Awake()
     {
@@ -18,7 +19,7 @@ public class ValidAccessToken : MonoBehaviour
     public async void ValidateToken()
     {   
         accessToken = GetAccessToken();
-        using var www = UnityWebRequest.Get(url);
+        using var www = UnityWebRequest.Get(userReposURL);
         www.SetRequestHeader("Authorization", "Bearer " + accessToken);
         var operation = www.SendWebRequest();
         while (!operation.isDone)
@@ -45,8 +46,14 @@ public class ValidAccessToken : MonoBehaviour
     }
     public string GetAccessToken()
     {
-        string json = SaveSystem.Load("accessToken.txt", "/Saves/");
-        var loadedJson = JsonUtility.FromJson<Oauth2AccessToken.SaveToken>(json);
-        return loadedJson.accessToken;
+        try
+        {
+            string json = SaveSystem.Load("accessToken.txt", "/Saves/");
+            var loadedJson = JsonUtility.FromJson<Oauth2AccessToken.SaveToken>(json);
+            return loadedJson.accessToken;
+        }catch(Exception ex)
+        {
+            return ex.Message;
+        }
     }
 }

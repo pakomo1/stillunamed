@@ -65,7 +65,7 @@ public class Oauth2AccessToken : MonoBehaviour
         var request = new OauthTokenRequest(clientId, clientSecret, code);
         var token = await client.Oauth.CreateAccessToken(request);
         return token.AccessToken;
-    }
+        }
 
     private void AssignToken()
     {

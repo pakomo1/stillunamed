@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 15
+  movementDirection: {x: 0, y: 0}
 --- !u!114 &1762891872572860945
 MonoBehaviour:
   m_ObjectHideFlags: 0

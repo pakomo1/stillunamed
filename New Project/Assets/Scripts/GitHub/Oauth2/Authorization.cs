@@ -26,6 +26,7 @@ public class Authorization : MonoBehaviour
             "http://localhost:3000/callback/");
     }
 
+    
     public void Open()
     {
         authorizationButton.SetActive(false);
