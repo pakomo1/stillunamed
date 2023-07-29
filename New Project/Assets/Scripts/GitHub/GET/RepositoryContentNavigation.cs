@@ -15,24 +15,28 @@ public class RepositoryContentNavigation : MonoBehaviour
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {
-        string url = $"https://api.github.com/repos/{repoOwner}/{repoName}/contents/{path}";
+        //https://api.github.com/repos/{repoOwner}/{repoName}/contents/{path}
+        string url = $"https://api.github.com/repos/{repoOwner}/{repoName}";
+
         var accessToken = validAccessToken.GetAccessToken();
-        using var www = UnityWebRequest.Get(url);
-        www.SetRequestHeader("Authorization", "Bearer " + accessToken);
-        var operation = www.SendWebRequest();
+        using var request = UnityWebRequest.Get(url);
+
+        request.SetRequestHeader("Authorization", "Bearer " + accessToken);
+        var operation = request.SendWebRequest();
         while (!operation.isDone)
         {
             await Task.Yield();
         }
 
-        if (www.result == UnityWebRequest.Result.Success)
+        if (request.result == UnityWebRequest.Result.Success)
         {
-            print("Successfully fetched repository information" + www.responseCode);
-            if (www.responseCode == 200)
+            print("Successfully fetched repository information" + request.responseCode);
+            if (request.responseCode == 200)
             {
-                print(www.downloadHandler.text);
+                print(request.downloadHandler.text);
+                var deserializedData = JsonUtility.FromJson<RepositoryData>(request.downloadHandler.text);
                 ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, uiToSetActive);
-                UpdateSideBarPanel();
+                UpdateSideBarPanel(deserializedData);
             }
             else
             {
@@ -41,15 +45,31 @@ public class RepositoryContentNavigation : MonoBehaviour
         }
         else
         {
-            Debug.Log("Error" + www.error);
+            Debug.Log("Error" + request.error);
         }
     }
 
-    private void UpdateSideBarPanel()
+    private void UpdateSideBarPanel(RepositoryData repoData)
     {
         var description = sideBarPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
         var stars = sideBarPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text;
         var watching = sideBarPanel.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text;
         var forks = sideBarPanel.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text;
+
+        repoData.description = String.IsNullOrEmpty(repoData.description)? "There is no description to this repo" : repoData.description;
+        sideBarPanel.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.description;
+        sideBarPanel.transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.stargazers_count.ToString();
+        sideBarPanel.transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.watchers.ToString();
+        sideBarPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.forks_count.ToString();
+
+    
+    }
+    [Serializable]
+    public class RepositoryData
+    {
+        public string description;
+        public int forks_count;
+        public int watchers;
+        public int stargazers_count;
     }
 }
