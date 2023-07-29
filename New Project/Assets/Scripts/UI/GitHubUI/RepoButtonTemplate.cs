@@ -13,10 +13,18 @@ public class RepoButtonTemplate : MonoBehaviour
 
     public async void CreateButton(string repoName, string description, string profilePicUrl, bool visibility, string repoOwner)
     {
+
         var button = Instantiate(buttonTemplate, transform);
         button.SetActive(true);
-        button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoName;
-        button.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = description;
+
+        TextMeshProUGUI repoNameTextMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        repoNameTextMesh.overflowMode = TextOverflowModes.Ellipsis;
+        repoNameTextMesh.text = repoName;
+
+        TextMeshProUGUI descriptionTextMesh = button.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        descriptionTextMesh.overflowMode = TextOverflowModes.Ellipsis;
+        descriptionTextMesh.text = description;
+
         Sprite image = await GetImage(profilePicUrl);
         button.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = image;
         if (!visibility)
