@@ -10,7 +10,7 @@ public class RepositoryContentNavigation : MonoBehaviour
 {
     [SerializeField] private ValidAccessToken validAccessToken;
     [SerializeField] private GameObject contentHolder;
-    [SerializeField] private GameObject uiToSetActive;
+    [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
@@ -35,8 +35,9 @@ public class RepositoryContentNavigation : MonoBehaviour
             {
                 print(request.downloadHandler.text);
                 var deserializedData = JsonUtility.FromJson<RepositoryData>(request.downloadHandler.text);
-                ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, uiToSetActive);
+                ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
                 UpdateSideBarPanel(deserializedData);
+                UpdateRepositoryContentUI(deserializedData);
             }
             else
             {
@@ -61,12 +62,16 @@ public class RepositoryContentNavigation : MonoBehaviour
         sideBarPanel.transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.stargazers_count.ToString();
         sideBarPanel.transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.watchers.ToString();
         sideBarPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.forks_count.ToString();
+    }
 
-    
+    private void UpdateRepositoryContentUI(RepositoryData repoData)
+    {
+        repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.name;
     }
     [Serializable]
     public class RepositoryData
     {
+        public string name;
         public string description;
         public int forks_count;
         public int watchers;
