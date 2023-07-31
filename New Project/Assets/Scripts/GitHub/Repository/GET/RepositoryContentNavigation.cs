@@ -12,6 +12,7 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject contentHolder;
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
+    [SerializeField] private GetRepositoryContent getRepositoryContent;
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {
@@ -38,6 +39,8 @@ public class RepositoryContentNavigation : MonoBehaviour
                 ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
                 UpdateSideBarPanel(deserializedData);
                 UpdateRepositoryContentUI(deserializedData);
+
+                var repoContent = await getRepositoryContent.GetRepoContents(repoName,repoOwner, path);
             }
             else
             {
@@ -67,12 +70,16 @@ public class RepositoryContentNavigation : MonoBehaviour
     private void UpdateRepositoryContentUI(RepositoryData repoData)
     {
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.name;
+        print(repoData.contents_url);
+        
     }
     [Serializable]
     public class RepositoryData
     {
         public string name;
         public string description;
+        public string contents_url;
+        public string commits_url;
         public int forks_count;
         public int watchers;
         public int stargazers_count;

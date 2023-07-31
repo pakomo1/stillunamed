@@ -20,28 +20,9 @@ public class GetCommits : MonoBehaviour
         
     }
 
-    public async Task<List<Commit>> GetAllComitsForRepo(string repo, string owner)
+    public async Task<Commit> GetAllComitsForRepo(string repo, string owner)
     {
-        string url = $"/repos/{owner}/{repo}/commits";
-        var commits = new List<Commit>();
-
-       UnityWebRequest request = apiRequestHelper.CreateAuthRequest(url);
-        var operation = request.SendWebRequest();
-        while (!operation.isDone)
-        {
-            await Task.Yield();
-        }
-        if(request.result == UnityWebRequest.Result.Success)
-        {
-            string jsonResponse = request.downloadHandler.text;
-            commits = JsonUtility.FromJson<List<Commit>>(jsonResponse);
-        }
-        else
-        {
-            print(request.error);
-        }
-
-        return commits;
+        return new Commit();
     }
 
     [Serializable]
