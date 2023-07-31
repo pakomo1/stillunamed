@@ -12,7 +12,8 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject contentHolder;
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
-    [SerializeField] private GetRepositoryContent getRepositoryContent;
+    [SerializeField] private GetRepositoryFiles getRepositoryFiles;
+    [SerializeField] private RepoContentTemplate repoContentTemplate;
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {
@@ -34,13 +35,13 @@ public class RepositoryContentNavigation : MonoBehaviour
             print("Successfully fetched repository information" + request.responseCode);
             if (request.responseCode == 200)
             {
-                print(request.downloadHandler.text);
+                var repoContent = await getRepositoryFiles.GetRepoFiles(repoName,repoOwner, path);
                 var deserializedData = JsonUtility.FromJson<RepositoryData>(request.downloadHandler.text);
+
                 ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
                 UpdateSideBarPanel(deserializedData);
-                UpdateRepositoryContentUI(deserializedData);
+                UpdateRepositoryContentUI(deserializedData,repoContent);
 
-                var repoContent = await getRepositoryContent.GetRepoContents(repoName,repoOwner, path);
             }
             else
             {
@@ -67,11 +68,10 @@ public class RepositoryContentNavigation : MonoBehaviour
         sideBarPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.forks_count.ToString();
     }
 
-    private void UpdateRepositoryContentUI(RepositoryData repoData)
+    private void UpdateRepositoryContentUI(RepositoryData repoData, List<GetRepositoryFiles.RepoContent> repoContents)
     {
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.name;
-        print(repoData.contents_url);
-        
+        repoContentTemplate.GenerateRepoFiles(repoContents);
     }
     [Serializable]
     public class RepositoryData

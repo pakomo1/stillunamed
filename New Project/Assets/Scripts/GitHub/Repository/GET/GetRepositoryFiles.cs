@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class GetRepositoryContent : MonoBehaviour
+public class GetRepositoryFiles : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private ApiRequestHelper apiRequestHelper;
@@ -15,7 +15,7 @@ public class GetRepositoryContent : MonoBehaviour
         
     }
 
-    public async Task<List<RepoContent>> GetRepoContents(string repo, string owner, string path)
+    public async Task<List<RepoContent>> GetRepoFiles(string repo, string owner, string path)
     {
         string url = $"https://api.github.com/repos/{owner}/{repo}/contents/{path}";
         string data = await apiRequestHelper.GetRequestCreator(url);
