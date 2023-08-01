@@ -13,7 +13,7 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
     [SerializeField] private GetRepositoryFiles getRepositoryFiles;
-    [SerializeField] private RepoContentTemplate repoContentTemplate;
+    [SerializeField] private RepoFilesTemplate repoFilesTemplate;
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {
@@ -71,7 +71,7 @@ public class RepositoryContentNavigation : MonoBehaviour
     private void UpdateRepositoryContentUI(RepositoryData repoData, List<GetRepositoryFiles.RepoContent> repoContents)
     {
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.name;
-        repoContentTemplate.GenerateRepoFiles(repoContents);
+        repoFilesTemplate.GenerateRepoFiles(repoContents);
     }
     [Serializable]
     public class RepositoryData

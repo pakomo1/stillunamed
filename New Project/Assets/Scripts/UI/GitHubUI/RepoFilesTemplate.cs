@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class RepoContentTemplate : MonoBehaviour
+public class RepoFilesTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject fileTemplate;
 
 
     public void GenerateRepoFiles(List<GetRepositoryFiles.RepoContent> repoFiles)
     {
+        ClearFiled();
         foreach (var item in repoFiles)
         {
             var button = Instantiate(fileTemplate, transform);
@@ -19,5 +20,15 @@ public class RepoContentTemplate : MonoBehaviour
             filename.text = item.name;
             button.SetActive(true);
         }
+    }
+    private void ClearFiled()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (i == 0)
+                continue;
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        
     }
 }
