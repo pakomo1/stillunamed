@@ -24,11 +24,12 @@ public class RepoFilesTemplate : MonoBehaviour
             if(item.type == "dir")
             {
                 image.sprite = dir;
+
             }else if(item.type == "file")
             {
                 image.sprite = file;    
             }
-            button.GetComponent<Button>().onClick.AddListener(() => ) 
+            button.GetComponent<Button>().onClick.AddListener(() => { });
             button.SetActive(true);
         }
     }

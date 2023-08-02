@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -20,6 +21,8 @@ public class GetRepositoryFiles : MonoBehaviour
         string url = $"https://api.github.com/repos/{owner}/{repo}/contents/{path}";
         string data = await apiRequestHelper.GetRequestCreator(url);
         List<RepoContent> contentList = JsonConvert.DeserializeObject<List<RepoContent>>(data);
+        contentList = contentList.OrderByDescending(item => item.type == "dir").ToList();
+
         return contentList;
     }
 
