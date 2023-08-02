@@ -19,7 +19,6 @@ public class GetRepositoryFiles : MonoBehaviour
     {
         string url = $"https://api.github.com/repos/{owner}/{repo}/contents/{path}";
         string data = await apiRequestHelper.GetRequestCreator(url);
-
         List<RepoContent> contentList = JsonConvert.DeserializeObject<List<RepoContent>>(data);
         return contentList;
     }
@@ -28,5 +27,7 @@ public class GetRepositoryFiles : MonoBehaviour
     public class RepoContent
     {
         public string name;
+        public string content;
+        public string type;
     }
 }
