@@ -35,7 +35,7 @@ public class RepositoryContentNavigation : MonoBehaviour
             print("Successfully fetched repository information" + request.responseCode);
             if (request.responseCode == 200)
             {
-                var repoContent = await getRepositoryFiles.GetRepoFiles(repoName,repoOwner, path);
+                var repoContent = await getRepositoryFiles.GetRepoFiles(repoName,repoOwner,path);
                 var deserializedData = JsonUtility.FromJson<RepositoryData>(request.downloadHandler.text);
 
                 ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);

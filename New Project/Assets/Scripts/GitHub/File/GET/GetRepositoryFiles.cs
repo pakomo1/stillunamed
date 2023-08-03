@@ -16,12 +16,12 @@ public class GetRepositoryFiles : MonoBehaviour
         
     }
 
-    public async Task<List<RepoContent>> GetRepoFiles(string repo, string owner, string path)
+    public async Task<List<RepoContent>> GetRepoFiles(string repo, string owner,string path)
     {
         string url = $"https://api.github.com/repos/{owner}/{repo}/contents/{path}";
         string data = await apiRequestHelper.GetRequestCreator(url);
+        print(data);
         List<RepoContent> contentList = JsonConvert.DeserializeObject<List<RepoContent>>(data);
-        contentList = contentList.OrderByDescending(item => item.type == "dir").ToList();
 
         return contentList;
     }
@@ -29,8 +29,10 @@ public class GetRepositoryFiles : MonoBehaviour
     [Serializable]
     public class RepoContent
     {
+        public string owner;
+        public string repo;
         public string name;
-        public string content;
+        public string url;
         public string type;
     }
 }
