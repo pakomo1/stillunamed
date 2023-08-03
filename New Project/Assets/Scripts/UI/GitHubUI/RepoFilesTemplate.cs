@@ -24,8 +24,6 @@ public class RepoFilesTemplate : MonoBehaviour
         repoFiles = repoFiles.OrderByDescending(item => item.type == "dir").ToList();
         foreach (var item in repoFiles)
         {
-            print(item.url);
-           
             var button = Instantiate(fileTemplate, transform);
             TextMeshProUGUI filename = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
              button.name = item.name;
