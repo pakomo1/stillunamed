@@ -10,6 +10,7 @@ public class FilesContentNavigation : MonoBehaviour
     [SerializeField] private TextMeshProUGUI contentDisplayField;
     [SerializeField] private ApiRequestHelper apiRequestHelper;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
+    [SerializeField] private TextMeshProUGUI currentFileTextField;
     public async void ShowFileContent(GetRepositoryFiles.RepoContent fileOrDir)
     {
         string fileContentDataRaw = await apiRequestHelper.GetRequestCreator(fileOrDir.url);
@@ -27,6 +28,7 @@ public class FilesContentNavigation : MonoBehaviour
             string result = System.Text.Encoding.UTF8.GetString(byteArray);
 
             contentDisplayField.text = result;
+            currentFileTextField.text = fileOrDir.name;
         }
 
         

@@ -15,7 +15,7 @@ public class RepoFilesTemplate : MonoBehaviour
     [SerializeField] private FilesContentNavigation filesContentNavigation;
     [SerializeField] private ApiRequestHelper apiRequestHelper;
     [SerializeField] private GameObject repositoryContentUI;
-    [SerializeField] private GameObject FileContentPanel;
+    [SerializeField] private GameObject FileContentCode;
 
     public void GenerateRepoFiles(List<GetRepositoryFiles.RepoContent> repoFiles)
     {
@@ -38,7 +38,7 @@ public class RepoFilesTemplate : MonoBehaviour
             {
                 button.GetComponent<Button>().onClick.AddListener(() => 
                 {
-                    ActivateObjectInContent.OnClickSwitchToThisUI(repositoryContentUI, FileContentPanel);
+                    ActivateObjectInContent.OnClickSwitchToThisUI(repositoryContentUI, FileContentCode);
                 });
 
                 image.sprite = file;    
