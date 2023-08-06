@@ -34,5 +34,6 @@ public class GetRepositoryFiles : MonoBehaviour
         public string name;
         public string url;
         public string type;
+        public string path;
     }
 }

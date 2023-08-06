@@ -16,12 +16,13 @@ public class RepoFilesTemplate : MonoBehaviour
     [SerializeField] private ApiRequestHelper apiRequestHelper;
     [SerializeField] private GameObject repositoryContentUI;
     [SerializeField] private GameObject FileContentCode;
+    [SerializeField] private TextMeshProUGUI pathToDirectory;
 
     public void GenerateRepoFiles(List<GetRepositoryFiles.RepoContent> repoFiles)
     {
         ClearFiled();
-
         repoFiles = repoFiles.OrderByDescending(item => item.type == "dir").ToList();
+       
         foreach (var item in repoFiles)
         {
             var button = Instantiate(fileTemplate, transform);
