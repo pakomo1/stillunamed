@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -17,21 +18,24 @@ public class FilesContentNavigation : MonoBehaviour
     {
         print(fileOrDir.path);
         string fileContentDataRaw = await apiRequestHelper.GetRequestCreator(fileOrDir.url);
-        if(fileOrDir.type == "dir")
+
+        
+        if (fileOrDir.type == "dir")
         {
+            dirPathNavigationText.text = $"{dirPathNavigationText.text}/{Path.GetFileName(fileOrDir.path)}";
             List<GetRepositoryFiles.RepoContent> files = JsonConvert.DeserializeObject<List<GetRepositoryFiles.RepoContent>>(fileContentDataRaw);
             repoFilesTemplate.GenerateRepoFiles(files);
-            dirPathNavigationText.text = $"{dirPathNavigationText.text}/{fileOrDir.path}";
 
         }else if(fileOrDir.type == "file")
         {
-           FileContent fileContent = JsonConvert.DeserializeObject<FileContent>(fileContentDataRaw);
+            string fileName = Path.GetFileName(fileOrDir.path);
+            FileContent fileContent = JsonConvert.DeserializeObject<FileContent>(fileContentDataRaw);
             // Convert the Base64 string to a byte array
             byte[] byteArray = Convert.FromBase64String(fileContent.content);
             // Convert the byte array back to a string
             string result = System.Text.Encoding.UTF8.GetString(byteArray);
 
-            filePathNavigationText.text = fileOrDir.path;
+            filePathNavigationText.text = $"{dirPathNavigationText.text}/{fileName}";
             contentDisplayField.text = result;
             currentFileTextField.text = fileOrDir.name;
         }
