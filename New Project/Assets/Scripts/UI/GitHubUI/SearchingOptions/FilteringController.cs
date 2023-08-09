@@ -43,6 +43,37 @@ public class FilteringController : MonoBehaviour
         availabilityButton.text = "ALL";
         state = 2;
     }
+    public void SearchForFile()
+    {
+        string searchText = searchBar.GetComponent<TMP_InputField>().text;
+        elements = getChildren(contentHolder);
+        foreach (GameObject item in elements)
+        {
+            if (item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text.Length >= searchText.Length)
+            {
+                if (item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text.ToLower().Contains(searchText.ToLower()))
+                {
+                    item.SetActive(true);
+                }
+                else
+                {
+                    item.SetActive(false);
+                }
+            }
+        }
+    }
+
+    public List<GameObject> getChildren(GameObject obj)
+    {
+        var children = new List<GameObject>();
+
+        for (int i = 0; i < obj.transform.childCount; i++)
+        {
+            var child = obj.transform.GetChild(i).gameObject;
+            children.Add(child);
+        }
+        return children;
+    }
 
     public void SortAvailability()
     {
