@@ -2,6 +2,8 @@ using System.Net;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using Octokit;
+using System;
 
 public class ValidAccessToken : MonoBehaviour
 {
@@ -16,32 +18,26 @@ public class ValidAccessToken : MonoBehaviour
     }
 
     public async void ValidateToken()
-    {   
-        accessToken = GetAccessToken();
-        using var www = UnityWebRequest.Get(url);
-        www.SetRequestHeader("Authorization", "Bearer " + accessToken);
-        var operation = www.SendWebRequest();
-        while (!operation.isDone)
-            await Task.Yield();
+    {
+        try
+        {
+            accessToken = GetAccessToken();
+            GitHubClientProvider.GetGitHubClient(accessToken);
+            var client = GitHubClientProvider.client;
 
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            print("Access Token validation response code " + www.responseCode);
-            if (www.responseCode == 200)
-            {
-                openServer.authorized = true;
-                repoInfo.json = www.downloadHandler.text;
-                repoInfo.GenerateButtons();
-            }
-            else
-            {
-                openServer.authorized = false;
-            }
+            User user = await client.User.Current();
+            var repositories = await client.Repository.GetAllForCurrent();
+        
+
+            repoInfo.repositories = repositories;
+            openServer.authorized = true;
+            repoInfo.GenerateButtons();
         }
-        else
+        catch (Exception ex)
         {
-            Debug.Log("Error" + www.error);
-        }      
+            openServer.authorized = false;
+            print(ex.Message);
+        }
     }
     public string GetAccessToken()
     {

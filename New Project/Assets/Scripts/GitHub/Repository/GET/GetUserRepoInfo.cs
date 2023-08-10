@@ -11,14 +11,13 @@ using UnityEngine.Networking;
 public class GetUserRepoInfo : MonoBehaviour
 {  
     [SerializeField] private RepoButtonTemplate buttonTemplate;
-    public string json;
+    public IReadOnlyList<Repository> repositories;
 
     public void GenerateButtons()
     {
-        var repoInfo = JsonConvert.DeserializeObject<List<RepoInfo>>(json);
-        for (int i = 0; i < repoInfo.Count; i++)
+        for (int i = 0; i < repositories.Count; i++)
         {
-            buttonTemplate.CreateButton(repoInfo[i].Name, repoInfo[i].Description, repoInfo[i].Owner.avatar_url, repoInfo[i].Private, repoInfo[i].Owner.login);
+            buttonTemplate.CreateButton(repositories[i].Name, repositories[i].Description, repositories[i].Owner.AvatarUrl, repositories[i].Private, repositories[i].Owner.Login);
         }
     }
     public class RepoInfo 

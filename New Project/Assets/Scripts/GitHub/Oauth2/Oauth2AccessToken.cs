@@ -14,7 +14,6 @@ public class Oauth2AccessToken : MonoBehaviour
     private string code;
     private string clientId = "086490aaf0f9ef0b33e4";
     private string clientSecret = "f1fe8180ea2712c9ce2a282a035799e9f2129093";
-    private GitHubClient client = new GitHubClient(new ProductHeaderValue("TestApp"));
     private string result;
     private string[] prefixes = new string[1] { "http://localhost:3000/callback/" };
     private GameObject playerObjectPrefab;
@@ -63,7 +62,8 @@ public class Oauth2AccessToken : MonoBehaviour
     public async UniTask<string> Authorize()
     {
         var request = new OauthTokenRequest(clientId, clientSecret, code);
-        var token = await client.Oauth.CreateAccessToken(request);
+        var token = await GitHubClientProvider.client.Oauth.CreateAccessToken(request);
+        GitHubClientProvider.GetGitHubClient(token.AccessToken);
         return token.AccessToken;
     }
 
