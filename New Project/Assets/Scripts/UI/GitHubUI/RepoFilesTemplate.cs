@@ -6,6 +6,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Octokit;
 
 public class RepoFilesTemplate : MonoBehaviour
 {
@@ -18,24 +19,24 @@ public class RepoFilesTemplate : MonoBehaviour
     [SerializeField] private GameObject FileContentCode;
     [SerializeField] private TextMeshProUGUI pathToDirectory;
 
-    public void GenerateRepoFiles(List<GetRepositoryFiles.RepoContent> repoFiles)
+    public void GenerateRepoFiles(IReadOnlyCollection<RepositoryContent> repoFiles, Repository repository)
     {
         ClearFiled();
-        repoFiles = repoFiles.OrderByDescending(item => item.type == "dir").ToList();
+        repoFiles = repoFiles.OrderByDescending(item => item.Type == "dir").ToList();
        
         foreach (var item in repoFiles)
         {
             var button = Instantiate(fileTemplate, transform);
             TextMeshProUGUI filename = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-             button.name = item.name;
-             filename.text = item.name;
+             button.name = item.Name;
+             filename.text = item.Name;
 
             Image image = button.transform.GetChild(1).GetComponent<Image>();
-            if(item.type == "dir")
+            if(item.Type == "dir")
             {
                 image.sprite = dir;
             }
-            else if(item.type == "file")
+            else if(item.Type == "file")
             {
                 button.GetComponent<Button>().onClick.AddListener(() => 
                 {
@@ -44,7 +45,7 @@ public class RepoFilesTemplate : MonoBehaviour
 
                 image.sprite = file;    
             }
-            button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.ShowFileContent(item); });
+            button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.ShowFileContent(item, repository); });
             button.SetActive(true);
         }
     }

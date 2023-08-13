@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
+using Octokit;
 
 public class FilesContentNavigation : MonoBehaviour
 {
@@ -14,37 +15,34 @@ public class FilesContentNavigation : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentFileTextField;
     [SerializeField] private TextMeshProUGUI dirPathNavigationText;
     [SerializeField] private TextMeshProUGUI filePathNavigationText;
-    public async void ShowFileContent(GetRepositoryFiles.RepoContent fileOrDir)
+    public async void ShowFileContent( RepositoryContent fileOrDir, Repository repository)
     {
-        print(fileOrDir.path);
-        string fileContentDataRaw = await apiRequestHelper.GetRequestCreator(fileOrDir.url);
-
-        
-        if (fileOrDir.type == "dir")
+        var client = GitHubClientProvider.client;
+        try
         {
-            dirPathNavigationText.text = $"{dirPathNavigationText.text}/{Path.GetFileName(fileOrDir.path)}";
-            List<GetRepositoryFiles.RepoContent> files = JsonConvert.DeserializeObject<List<GetRepositoryFiles.RepoContent>>(fileContentDataRaw);
-            repoFilesTemplate.GenerateRepoFiles(files);
+            var content = await client.Repository.Content.GetAllContents(repository.Owner.Login, repository.Name, fileOrDir.Path);
+            if (fileOrDir.Type == "dir")
+            {
 
-        }else if(fileOrDir.type == "file")
+                dirPathNavigationText.text = $"{dirPathNavigationText.text}/{Path.GetFileName(fileOrDir.Path)}";
+                repoFilesTemplate.GenerateRepoFiles(content, repository);
+
+            }
+            else if (fileOrDir.Type == "file")
+            {
+                string fileName = Path.GetFileName(fileOrDir.Path);
+                //  string result = System.Text.Encoding.UTF8.GetString();
+
+                filePathNavigationText.text = $"{dirPathNavigationText.text}/{fileName}";
+                contentDisplayField.text = content[0].Content;
+                currentFileTextField.text = fileOrDir.Name;
+            }
+        }catch(Exception ex)
         {
-            string fileName = Path.GetFileName(fileOrDir.path);
-            FileContent fileContent = JsonConvert.DeserializeObject<FileContent>(fileContentDataRaw);
-            // Convert the Base64 string to a byte array
-            byte[] byteArray = Convert.FromBase64String(fileContent.content);
-            // Convert the byte array back to a string
-            string result = System.Text.Encoding.UTF8.GetString(byteArray);
-
-            filePathNavigationText.text = $"{dirPathNavigationText.text}/{fileName}";
-            contentDisplayField.text = result;
-            currentFileTextField.text = fileOrDir.name;
+            print(ex.Message);
         }
+       
         
-    }
-    [Serializable]
-    public class FileContent
-    {
-        public string content;
     }
 
 }

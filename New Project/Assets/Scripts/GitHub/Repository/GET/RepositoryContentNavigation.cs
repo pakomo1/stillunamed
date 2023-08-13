@@ -30,10 +30,8 @@ public class RepositoryContentNavigation : MonoBehaviour
         {
             print(ex.Message);
         }
-        
 
     }
-
     private void UpdateSideBarPanel(Repository repoData)
     {
         var description = sideBarPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
@@ -52,17 +50,6 @@ public class RepositoryContentNavigation : MonoBehaviour
     {
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.Name;
         print(repoData.Name);
-        repoFilesTemplate.GenerateRepoFiles(repoContents);
-    }
-    [Serializable]
-    public class RepositoryData
-    {
-        public string name;
-        public string description;
-        public string contents_url;
-        public string commits_url;
-        public int forks_count;
-        public int watchers;
-        public int stargazers_count;
+        repoFilesTemplate.GenerateRepoFiles(repoContents,repoData);
     }
 }

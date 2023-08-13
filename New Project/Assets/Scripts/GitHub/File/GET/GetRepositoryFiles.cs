@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
+using Octokit;
 
 public class GetRepositoryFiles : MonoBehaviour
 {
@@ -16,14 +17,10 @@ public class GetRepositoryFiles : MonoBehaviour
         
     }
 
-    public async Task<List<RepoContent>> GetRepoFiles(string repo, string owner,string path)
+    public async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles(string repo, string owner,string path)
     {
-        string url = $"https://api.github.com/repos/{owner}/{repo}/contents/{path}";
-        string data = await apiRequestHelper.GetRequestCreator(url);
-        print(data);
-        List<RepoContent> contentList = JsonConvert.DeserializeObject<List<RepoContent>>(data);
-
-        return contentList;
+        var contents = await GitHubClientProvider.client.Repository.Content.GetAllContents(owner, repo);
+        return contents;
     }
 
     [Serializable]
