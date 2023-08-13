@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using Octokit;
 
 public class RepositoryContentNavigation : MonoBehaviour
 {
@@ -17,60 +18,40 @@ public class RepositoryContentNavigation : MonoBehaviour
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {
-        //https://api.github.com/repos/{repoOwner}/{repoName}/contents/{path}
-        string url = $"https://api.github.com/repos/{repoOwner}/{repoName}";
-
-        var accessToken = validAccessToken.GetAccessToken();
-        using var request = UnityWebRequest.Get(url);
-
-        request.SetRequestHeader("Authorization", "Bearer " + accessToken);
-        var operation = request.SendWebRequest();
-        while (!operation.isDone)
+        try
         {
-            await Task.Yield();
-        }
+            var repository = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
+            var repoContent = await getRepositoryFiles.GetRepoFiles(repoName, repoOwner, path);
 
-        if (request.result == UnityWebRequest.Result.Success)
+            ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
+            UpdateSideBarPanel(repository);
+            UpdateRepositoryContentUI(repository, repoContent);
+        }catch (Exception ex)
         {
-            print("Successfully fetched repository information" + request.responseCode);
-            if (request.responseCode == 200)
-            {
-                var repoContent = await getRepositoryFiles.GetRepoFiles(repoName,repoOwner,path);
-                var deserializedData = JsonUtility.FromJson<RepositoryData>(request.downloadHandler.text);
-
-                ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
-                UpdateSideBarPanel(deserializedData);
-                UpdateRepositoryContentUI(deserializedData,repoContent);
-
-            }
-            else
-            {
-                print("Could not complete task");
-            }
+            print(ex.Message);
         }
-        else
-        {
-            Debug.Log("Error" + request.error);
-        }
+        
+
     }
 
-    private void UpdateSideBarPanel(RepositoryData repoData)
+    private void UpdateSideBarPanel(Repository repoData)
     {
         var description = sideBarPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text;
         var stars = sideBarPanel.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text;
         var watching = sideBarPanel.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text;
         var forks = sideBarPanel.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text;
 
-        repoData.description = String.IsNullOrEmpty(repoData.description)? "There is no description to this repo" : repoData.description;
-        sideBarPanel.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.description;
-        sideBarPanel.transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.stargazers_count.ToString();
-        sideBarPanel.transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.watchers.ToString();
-        sideBarPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.forks_count.ToString();
+        description = String.IsNullOrEmpty(repoData.Description)? "There is no description to this repo" : repoData.Description;
+        sideBarPanel.transform.GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>().text = description;
+        sideBarPanel.transform.GetChild(3).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.StargazersCount.ToString();
+        sideBarPanel.transform.GetChild(2).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.SubscribersCount.ToString();
+        sideBarPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.ForksCount.ToString();
     }
 
-    private void UpdateRepositoryContentUI(RepositoryData repoData, List<GetRepositoryFiles.RepoContent> repoContents)
+    private void UpdateRepositoryContentUI(Repository repoData, IReadOnlyCollection<RepositoryContent> repoContents)
     {
-        repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.name;
+        repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.Name;
+        print(repoData.Name);
         repoFilesTemplate.GenerateRepoFiles(repoContents);
     }
     [Serializable]
