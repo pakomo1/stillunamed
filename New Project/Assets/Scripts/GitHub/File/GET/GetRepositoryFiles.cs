@@ -17,7 +17,7 @@ public class GetRepositoryFiles : MonoBehaviour
         
     }
 
-    public async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles(string repo, string owner,string path)
+    public static async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles( string owner, string repo, string path)
     {
         var contents = await GitHubClientProvider.client.Repository.Content.GetAllContents(owner, repo);
         return contents;

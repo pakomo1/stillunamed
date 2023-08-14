@@ -13,15 +13,21 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject contentHolder;
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
-    [SerializeField] private GetRepositoryFiles getRepositoryFiles;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
+
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {
         try
         {
             var repository = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
-            var repoContent = await getRepositoryFiles.GetRepoFiles(repoName, repoOwner, path);
+            var repoContent = await GetRepositoryFiles.GetRepoFiles(repoOwner,repoName, path);
+            var repoBranches = await GetRepoBranches.GetBranches(repoOwner, repoName);
+
+            foreach (var branch in repoBranches)
+            {
+                print(branch.Name);
+            }
 
             ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
             UpdateSideBarPanel(repository);
