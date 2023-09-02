@@ -5,6 +5,7 @@ using UnityEngine;
 public class OpenLobbyExplorer : MonoBehaviour
 {
     private bool triggerActive;
+    [SerializeField] private GameObject lobbyExplorer;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -14,7 +15,7 @@ public class OpenLobbyExplorer : MonoBehaviour
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
-    {
+    {   
         if(collision.tag == "Player")
         {
             triggerActive = false;  
@@ -26,7 +27,7 @@ public class OpenLobbyExplorer : MonoBehaviour
     {
         if(triggerActive && Input.GetKeyDown(KeyCode.E))
         {
-            print("We now open the lobby explorer");
+            lobbyExplorer.SetActive(true); 
         }
     }
 }
