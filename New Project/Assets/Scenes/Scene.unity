@@ -896,10 +896,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -10
       objectReference: {fileID: 0}
+    - target: {fileID: 4926400913384261769, guid: 6c1ac98a22a6e81448cc92f508001606, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5819190402813180580, guid: 6c1ac98a22a6e81448cc92f508001606, type: 3}
       propertyPath: m_Follow
       value: 
       objectReference: {fileID: 138304774}
+    - target: {fileID: 5819190402813180580, guid: 6c1ac98a22a6e81448cc92f508001606, type: 3}
+      propertyPath: m_Lens.Dutch
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5824808494365137365, guid: 6c1ac98a22a6e81448cc92f508001606, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -6590,6 +6598,7 @@ GameObject:
   - component: {fileID: 1089021210}
   - component: {fileID: 1089021212}
   - component: {fileID: 1089021211}
+  - component: {fileID: 1089021213}
   m_Layer: 0
   m_Name: menu
   m_TagString: Untagged
@@ -6657,6 +6666,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1089021209}
   m_CullTransparentMesh: 1
+--- !u!114 &1089021213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1089021209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f961d6ab028794397187f0850bb2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  createGame: {fileID: 1569051779}
+  joinGame: {fileID: 1125163969}
 --- !u!1 &1092727989
 GameObject:
   m_ObjectHideFlags: 0
@@ -11113,6 +11136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyExplorer: {fileID: 1089021209}
+  networkManager: {fileID: 990278316}
 --- !u!61 &1712035085
 BoxCollider2D:
   m_ObjectHideFlags: 0

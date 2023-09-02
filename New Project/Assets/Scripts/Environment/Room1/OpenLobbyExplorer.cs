@@ -6,7 +6,7 @@ public class OpenLobbyExplorer : MonoBehaviour
 {
     private bool triggerActive;
     [SerializeField] private GameObject lobbyExplorer;
-
+    [SerializeField] private GameObject networkManager;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == "Player")
@@ -27,7 +27,8 @@ public class OpenLobbyExplorer : MonoBehaviour
     {
         if(triggerActive && Input.GetKeyDown(KeyCode.E))
         {
-            lobbyExplorer.SetActive(true); 
+            lobbyExplorer.SetActive(true);
+            networkManager.SetActive(true);   
         }
     }
 }
