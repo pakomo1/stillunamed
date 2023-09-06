@@ -16,6 +16,5 @@ public class OpenEscapeMenu : MonoBehaviour
         {
             ui.SetActive(!ui.activeSelf);
         }
-        
     }
 }
