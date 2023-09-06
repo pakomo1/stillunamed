@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -19,15 +20,19 @@ public class ConnectingUI : MonoBehaviour
 
     private void LobbyUI_OnFaildToJoinGame(object sender, System.EventArgs e)
     {
-        //Must find a property that will display the error
-        message.text = "There was an error";
+        print("Client faild to join game");
+        message.text = NetworkManager.Singleton.DisconnectReason;
+        if(message.text == "")
+        {
+            message.text = "Failed to connect";
+        }
         closeButton.gameObject.SetActive(true);
         Show();
     }
 
     private void LobbyUI_OnTryToJoinGame(object sender, System.EventArgs e)
     {
-        message.text = "Connecting";
+        message.text = "Connecting...";
         closeButton.gameObject.SetActive(false);
         Show();
     }

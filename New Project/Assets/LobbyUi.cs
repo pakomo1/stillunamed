@@ -19,15 +19,6 @@ public class LobbyUi : MonoBehaviour
     private void Start()
     {
         connectingUI.SetActive(true);
-    }
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    void Update()
-    {
         createGame.onClick.AddListener(() =>
         {
             StartHost();
@@ -39,20 +30,36 @@ public class LobbyUi : MonoBehaviour
         });
     }
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    void Update()
+    {
+      
+    }
+
     private void StartHost()
     {
         NetworkManager.Singleton.StartHost();
     }
     private void StartClient()
     {
-        NetworkManager.Singleton.StartClient();
-
-        NetworkManager.Singleton.OnClientDisconnectCallback += NetwrokManager_OnClientDisconnectCallback; 
         OnTryToJoinGame?.Invoke(this, EventArgs.Empty);
+        NetworkManager.Singleton.ConnectionApprovalCallback = NetwrokManager_ConnectionApprovalCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += NetwrokManager_OnClientDisconnectCallback;
+        
+        NetworkManager.Singleton.StartClient();
     }
 
     private void NetwrokManager_OnClientDisconnectCallback(ulong clientId)
     {
         OnFaildToJoinGame?.Invoke(this, EventArgs.Empty);
     }
+    private void NetwrokManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
+    {
+        response.Approved = true;
+    }
+
 }

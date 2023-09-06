@@ -53,7 +53,7 @@ public class CreateRepository : MonoBehaviour
             auto_init = readmeInitialized
         };
         string jsonText = JsonConvert.SerializeObject(requestparam, Formatting.Indented);
-        using (var www = UnityWebRequest.Post(url, jsonText))
+        using (var www = UnityWebRequest.PostWwwForm(url, jsonText))
         {
             www.SetRequestHeader("Authorization", "Bearer " + accessToken);
             www.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(jsonText));
