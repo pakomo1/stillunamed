@@ -17,7 +17,7 @@ public class Loader : MonoBehaviour
     public static void Load(Scene targetscene)
     {
         Loader.targetScene = targetscene;
-        //SceneManager.LoadScene();
+        SceneManager.LoadScene(Loader.targetScene.ToString());
     }
     public static void LoadNetwrok(Scene targetScene)
     {
