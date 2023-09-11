@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
-
+using Cinemachine;
 public class PlayerMovement : NetworkBehaviour
 {
 
     [SerializeField] private float moveSpeed;
-
+    [SerializeField] private CinemachineVirtualCamera cinamchineVirtualCamera;
+    [SerializeField] private AudioListener audioListener;
     //References
     private Rigidbody2D rb;
     private AnimationController animCtrl;
@@ -27,6 +28,19 @@ public class PlayerMovement : NetworkBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animCtrl = GetComponent<AnimationController>();
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            audioListener.enabled = true;
+            cinamchineVirtualCamera.Priority = 1;
+        }
+        else
+        {
+            cinamchineVirtualCamera.Priority = 0;
+        }
     }
 
     private void FixedUpdate()
