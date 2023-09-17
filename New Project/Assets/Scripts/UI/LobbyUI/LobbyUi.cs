@@ -12,6 +12,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private Button joinGame;
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameLobby gameLobby;
+    [SerializeField] private Button createLobbyBtn;
 
     public event EventHandler OnTryToJoinGame; 
     public event EventHandler OnFaildToJoinGame;
@@ -19,17 +20,17 @@ public class LobbyUi : MonoBehaviour
     public static LobbyUi Instance { get; private set; }
     private void Start()
     {
-       /* connectingUI.SetActive(true);
-        createGame.onClick.AddListener(() =>
-        {
-            StartHost();
-            Loader.LoadNetwrok(Loader.Scene.GameScene);
-        });
-        joinGame.onClick.AddListener(() =>
-        {
-            StartClient();
-        });*/
-
+        /* connectingUI.SetActive(true);
+         createGame.onClick.AddListener(() =>
+         {
+             StartHost();
+             Loader.LoadNetwrok(Loader.Scene.GameScene);
+         });
+         joinGame.onClick.AddListener(() =>
+         {
+             StartClient();
+         });*/
+        createLobbyBtn.onClick.AddListener(() => {});
         gameLobby.ListLobbies();
     }
 
@@ -40,7 +41,10 @@ public class LobbyUi : MonoBehaviour
 
     void Update()
     {
-      
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Hide();
+        }
     }
 
     public static void StartHost()
@@ -64,5 +68,12 @@ public class LobbyUi : MonoBehaviour
     {
         response.Approved = true;
     }
-
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
 }
