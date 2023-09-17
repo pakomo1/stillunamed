@@ -11,5 +11,9 @@ public class RoomCleanUp : MonoBehaviour
         {
             Destroy(NetworkManager.Singleton.gameObject);
         }
+        if (NetworkManager.Singleton != null)
+        {
+            Destroy(GameLobby.Instance.gameObject);
+        }
     }
 }
