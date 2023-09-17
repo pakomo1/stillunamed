@@ -11,6 +11,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private Button createGame;
     [SerializeField] private Button joinGame;
     [SerializeField] private GameObject connectingUI;
+    [SerializeField] private GameLobby gameLobby;
 
     public event EventHandler OnTryToJoinGame; 
     public event EventHandler OnFaildToJoinGame;
@@ -18,7 +19,7 @@ public class LobbyUi : MonoBehaviour
     public static LobbyUi Instance { get; private set; }
     private void Start()
     {
-        connectingUI.SetActive(true);
+       /* connectingUI.SetActive(true);
         createGame.onClick.AddListener(() =>
         {
             StartHost();
@@ -27,7 +28,9 @@ public class LobbyUi : MonoBehaviour
         joinGame.onClick.AddListener(() =>
         {
             StartClient();
-        });
+        });*/
+
+        gameLobby.ListLobbies();
     }
 
     private void Awake()
@@ -40,15 +43,15 @@ public class LobbyUi : MonoBehaviour
       
     }
 
-    private void StartHost()
+    public static void StartHost()
     {
         NetworkManager.Singleton.StartHost();
     }
-    private void StartClient()
+    public static void StartClient()
     {
-        OnTryToJoinGame?.Invoke(this, EventArgs.Empty);
-        NetworkManager.Singleton.ConnectionApprovalCallback = NetwrokManager_ConnectionApprovalCallback;
-        NetworkManager.Singleton.OnClientDisconnectCallback += NetwrokManager_OnClientDisconnectCallback;
+        Instance.OnTryToJoinGame?.Invoke(Instance, EventArgs.Empty);
+        NetworkManager.Singleton.ConnectionApprovalCallback =Instance.NetwrokManager_ConnectionApprovalCallback;
+        NetworkManager.Singleton.OnClientDisconnectCallback += Instance.NetwrokManager_OnClientDisconnectCallback;
         
         NetworkManager.Singleton.StartClient();
     }
