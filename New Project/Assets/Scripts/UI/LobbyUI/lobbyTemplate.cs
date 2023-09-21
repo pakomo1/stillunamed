@@ -6,7 +6,7 @@ using UnityEngine;
 public class lobbyTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject buttonTemplate;
-   public void GenerateLobbies(string lobbyName, int playerCount)
+   public void GenerateLobbie(string lobbyName, int playerCount)
    {
         var button = Instantiate(buttonTemplate, transform);
         button.SetActive(true);

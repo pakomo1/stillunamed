@@ -13,13 +13,19 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private Button createLobbyBtn;
+    [SerializeField] private Button refreshButton;
+
+    [SerializeField] private CreateLobbyUI createLobbyUI;
 
     public event EventHandler OnTryToJoinGame; 
     public event EventHandler OnFaildToJoinGame;
 
+    private bool refreshComboPressed;
+
     public static LobbyUi Instance { get; private set; }
     private void Start()
     {
+        gameLobby.ListLobbies();
         /* connectingUI.SetActive(true);
          createGame.onClick.AddListener(() =>
          {
@@ -30,8 +36,14 @@ public class LobbyUi : MonoBehaviour
          {
              StartClient();
          });*/
-        createLobbyBtn.onClick.AddListener(() => {});
-        gameLobby.ListLobbies();
+        createLobbyBtn.onClick.AddListener(() => 
+        {
+           createLobbyUI.Show();
+        });
+        refreshButton.onClick.AddListener(() =>
+        {
+            gameLobby.ListLobbies();
+        });
     }
 
     private void Awake()
@@ -45,7 +57,10 @@ public class LobbyUi : MonoBehaviour
         {
             Hide();
         }
+
+        
     }
+
 
     public static void StartHost()
     {

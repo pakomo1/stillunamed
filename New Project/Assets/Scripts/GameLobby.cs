@@ -9,17 +9,38 @@ using UnityEngine;
 public class GameLobby : MonoBehaviour
 {
     private Lobby joinedLobby;
+    private float heartBeatTimer;
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameObject nolobbiesText;
     public static GameLobby Instance { get; private set; }
     private void Awake()
     {
         Instance = this;
+        InitializeUnityAuthentication();
         DontDestroyOnLoad(gameObject);
     }
     private void Start()
     {
-        InitializeUnityAuthentication();
+       
+    }
+
+    private void Update()
+    {
+        //HandleHeartBeatTimer();
+    }
+    private async void HandleHeartBeatTimer()
+    {
+       if(joinedLobby != null)
+        {
+            heartBeatTimer -= Time.deltaTime;
+            if(heartBeatTimer < 0f)
+            {
+                float heartBeatTimerMax = 15;
+                heartBeatTimer = heartBeatTimerMax;
+
+                await LobbyService.Instance.SendHeartbeatPingAsync(joinedLobby.Id);
+            }
+        }
     }
 
     private async void InitializeUnityAuthentication()
@@ -27,11 +48,15 @@ public class GameLobby : MonoBehaviour
         if(UnityServices.State != ServicesInitializationState.Initialized)
         {
             InitializationOptions options = new InitializationOptions();
-
             //the profile name should be the person's github username
             options.SetProfile(Random.Range(0,1000).ToString());
-
+            
             await UnityServices.InitializeAsync(options);
+            AuthenticationService.Instance.SignedIn += () =>
+            {
+                print("Singed in" + AuthenticationService.Instance.PlayerId);
+            };
+
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
         
@@ -40,12 +65,12 @@ public class GameLobby : MonoBehaviour
     {
         try
         {
-            joinedLobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
             {
                 IsPrivate = isPrivate
             });
-            LobbyUi.StartHost();
-            Loader.LoadNetwrok(Loader.Scene.GameScene);
+            joinedLobby = lobby;
+            print("Created lobby with " + joinedLobby.Name);
         }
         catch(LobbyServiceException ex)
         {
@@ -71,12 +96,14 @@ public class GameLobby : MonoBehaviour
         try
         {
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync();
+            print("Number of lobbies found" + queryResponse.Results.Count);
             if(queryResponse.Results.Count > 0)
             {
                 nolobbiesText.SetActive(false);
                 foreach (Lobby lobby in queryResponse.Results)
                 {
-                    lobbyTemplate.GenerateLobbies(lobby.Name, lobby.MaxPlayers);
+                    print(lobby.Name);
+                    lobbyTemplate.GenerateLobbie(lobby.Name, lobby.MaxPlayers);
                 }
             }
             else
