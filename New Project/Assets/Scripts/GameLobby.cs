@@ -67,10 +67,12 @@ public class GameLobby : MonoBehaviour
         {
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
             {
-                IsPrivate = isPrivate
+                IsPrivate = isPrivate,
             });
+
+            
             joinedLobby = lobby;
-            print("Created lobby with " + joinedLobby.Name);
+            print("Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);
         }
         catch(LobbyServiceException ex)
         {
@@ -103,7 +105,9 @@ public class GameLobby : MonoBehaviour
                 foreach (Lobby lobby in queryResponse.Results)
                 {
                     print(lobby.Name);
-                    lobbyTemplate.GenerateLobbie(lobby.Name, lobby.MaxPlayers);
+
+                    string joinedPlyersCountAndMaxPlayers = $"{lobby.Players.Count}/{lobby.MaxPlayers}";
+                    lobbyTemplate.GenerateLobbie(lobby.Name, joinedPlyersCountAndMaxPlayers);
                 }
             }
             else

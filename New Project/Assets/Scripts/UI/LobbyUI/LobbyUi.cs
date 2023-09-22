@@ -15,6 +15,8 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private Button createLobbyBtn;
     [SerializeField] private Button refreshButton;
 
+    [SerializeField] private GameObject content;
+
     [SerializeField] private CreateLobbyUI createLobbyUI;
 
     public event EventHandler OnTryToJoinGame; 
@@ -42,6 +44,10 @@ public class LobbyUi : MonoBehaviour
         });
         refreshButton.onClick.AddListener(() =>
         {
+            for (int i = 0; i < content.transform.childCount; i++)
+            {
+                Destroy(content.transform.GetChild(i).gameObject);
+            }
             gameLobby.ListLobbies();
         });
     }

@@ -19,7 +19,7 @@ public class CreateLobbyUI : MonoBehaviour
     {
         createButton.onClick.AddListener(() =>
         {
-            gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate, int.Parse(maxPlayerCount.text));
+            gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text));
             lobbyName.text = "";
             repoLink.text = "";
             maxPlayerCount.text = "0";
@@ -27,7 +27,6 @@ public class CreateLobbyUI : MonoBehaviour
             Hide();
         });
 
-        gameLobby.ListLobbies();
         if (Input.GetKey(KeyCode.Escape))
         {
             Hide();
