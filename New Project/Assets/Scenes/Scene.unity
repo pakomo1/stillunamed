@@ -8097,6 +8097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonTemplate: {fileID: 1222958441}
+  gameLobby: {fileID: 1976711603}
 --- !u!114 &984939473
 MonoBehaviour:
   m_ObjectHideFlags: 0

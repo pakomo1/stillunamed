@@ -106,8 +106,7 @@ public class GameLobby : MonoBehaviour
                 {
                     print(lobby.Name);
 
-                    string joinedPlyersCountAndMaxPlayers = $"{lobby.Players.Count}/{lobby.MaxPlayers}";
-                    lobbyTemplate.GenerateLobbie(lobby.Name, joinedPlyersCountAndMaxPlayers);
+                    lobbyTemplate.GenerateLobbie(lobby);
                 }
             }
             else
@@ -118,6 +117,23 @@ public class GameLobby : MonoBehaviour
         }catch (LobbyServiceException ex)
         {
             print(ex.Message);
+        }
+    }
+    public async void JoinLobbyByID(string id)
+    {
+        try
+        {
+            await Lobbies.Instance.JoinLobbyByIdAsync(id);
+        }catch (LobbyServiceException ex) 
+        {
+            print(ex.Message);
+        }
+    }
+    public void PrintPlayersInLobby(Lobby lobby)
+    {
+        foreach (Player player in lobby.Players)
+        {
+            print(player.Id);
         }
     }
 
