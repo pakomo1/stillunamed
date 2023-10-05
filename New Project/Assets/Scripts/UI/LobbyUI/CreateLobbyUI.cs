@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Octokit;
+using Unity.Services.Lobbies.Models;
 
 public class CreateLobbyUI : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class CreateLobbyUI : MonoBehaviour
     [SerializeField] private Toggle isPrivate;
     
     [SerializeField] private GameLobby gameLobby;
-
+    [SerializeField] private GameRelay gameRelay;
     private void Start()
     {
         createButton.onClick.AddListener(() =>
@@ -23,6 +24,8 @@ public class CreateLobbyUI : MonoBehaviour
             lobbyName.text = "";
             repoLink.text = "";
             maxPlayerCount.text = "0";
+
+            Lobby joinedLobby = gameLobby.GetLobby();
 
             Hide();
         });
