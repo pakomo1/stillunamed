@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -10,6 +11,11 @@ public class EscapeMenuFunctionalityConnected : MonoBehaviour
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button disconnectButton;
 
+    public event EventHandler onPlayerDisconect;
+
+
+    public static EscapeMenuFunctionalityConnected Instance { get; private set; }
+
     private void Start()
     {
         resumeButton.onClick.AddListener(OnClickResumeButton);
@@ -17,6 +23,11 @@ public class EscapeMenuFunctionalityConnected : MonoBehaviour
         disconnectButton.onClick.AddListener(OnClickDisconnectButton);
     }
 
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void OnClickResumeButton()
     {
        transform.GetChild(0).gameObject.SetActive(false);
@@ -27,6 +38,7 @@ public class EscapeMenuFunctionalityConnected : MonoBehaviour
     }
     private void OnClickDisconnectButton()
     {
+        onPlayerDisconect.Invoke(this, EventArgs.Empty);
         NetworkManager.Singleton.Shutdown();
         Loader.Load(Loader.Scene.Scene);
 

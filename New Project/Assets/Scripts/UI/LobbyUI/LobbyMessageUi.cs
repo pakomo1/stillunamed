@@ -21,12 +21,7 @@ public class ConnectingUI : MonoBehaviour
         GameLobby.Instance.OnCreateLobbyStarted += GameLobby_OnCreateLobbyStarted;
         GameLobby.Instance.OnCreateLobbyFailed += GameLobby_OnCreateLobbyFailed;
     }
-
-    private void Singleton_OnClientDisconnectCallback(ulong obj)
-    {
-        ShowMessage("You have disconected", true);
-    }
-
+    
     private void GameLobby_OnCreateLobbyFailed(object sender, EventArgs e)
     {
         ShowMessage("Failed to create lobby", true);
