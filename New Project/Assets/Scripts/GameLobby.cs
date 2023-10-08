@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
@@ -8,6 +6,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Services.Relay.Models;
+using System;
 
 public class GameLobby : MonoBehaviour
 {
@@ -18,6 +17,10 @@ public class GameLobby : MonoBehaviour
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameObject nolobbiesText;
     [SerializeField] private GameRelay gameRelay;
+
+    public event EventHandler OnCreateLobbyStarted;
+    public event EventHandler OnCreateLobbyFailed;
+
     public static GameLobby Instance { get; private set; }
     private void Awake()
     {
@@ -61,7 +64,7 @@ public class GameLobby : MonoBehaviour
         {
             InitializationOptions options = new InitializationOptions();
             //the profile name should be the person's github username
-            options.SetProfile(Random.Range(0, 1000).ToString());
+            options.SetProfile(UnityEngine.Random.Range(0, 1000).ToString());
 
             await UnityServices.InitializeAsync(options);
             AuthenticationService.Instance.SignedIn += () =>
@@ -75,6 +78,7 @@ public class GameLobby : MonoBehaviour
     }
     public async void CreateLobby(string lobbyname, string githubRepository, bool isPrivate, int maxPlayers)
     {
+        OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
@@ -102,6 +106,7 @@ public class GameLobby : MonoBehaviour
         catch (LobbyServiceException ex)
         {
             print(ex.Message);
+            OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
 
     }

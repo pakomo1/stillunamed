@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class LobbyUi : MonoBehaviour
 {
+    [SerializeField] private GameObject menu;
+
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private Button createLobbyBtn;
@@ -26,16 +28,7 @@ public class LobbyUi : MonoBehaviour
     private void Start()
     {
         gameLobby.ListLobbies();
-        /* connectingUI.SetActive(true);
-         createGame.onClick.AddListener(() =>
-         {
-             StartHost();
-             Loader.LoadNetwrok(Loader.Scene.GameScene);
-         });
-         joinGame.onClick.AddListener(() =>
-         {
-             StartClient();
-         });*/
+        
         createLobbyBtn.onClick.AddListener(() => 
         {
            createLobbyUI.Show();
@@ -64,6 +57,7 @@ public class LobbyUi : MonoBehaviour
         }
     }
 
+   
 
     public static void StartHost()
     {
@@ -72,7 +66,6 @@ public class LobbyUi : MonoBehaviour
     public static void StartClient()
     {
         Instance.OnTryToJoinGame?.Invoke(Instance, EventArgs.Empty);
-        NetworkManager.Singleton.ConnectionApprovalCallback =Instance.NetwrokManager_ConnectionApprovalCallback;
         NetworkManager.Singleton.OnClientDisconnectCallback += Instance.NetwrokManager_OnClientDisconnectCallback;
         
         NetworkManager.Singleton.StartClient();
@@ -82,16 +75,12 @@ public class LobbyUi : MonoBehaviour
     {
         OnFaildToJoinGame?.Invoke(this, EventArgs.Empty);
     }
-    private void NetwrokManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
-    {
-        response.Approved = true;
-    }
     public void Show()
     {
-        gameObject.SetActive(true);
+        menu.gameObject.SetActive(true);
     }
     public void Hide()
     {
-        gameObject.SetActive(false);
+        menu.gameObject.SetActive(false);
     }
 }

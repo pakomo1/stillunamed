@@ -9017,7 +9017,7 @@ GameObject:
   - component: {fileID: 1084860297}
   - component: {fileID: 1084860298}
   m_Layer: 0
-  m_Name: ConnectingUI
+  m_Name: LobbyMessageUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9052,11 +9052,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1084860296}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e09e92326d5c5b3439524c71d5c90ca2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lobbyMessageUI: {fileID: 0}
   message: {fileID: 1439464451}
   closeButton: {fileID: 322974579}
 --- !u!1 &1089021209
@@ -9146,11 +9147,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1089021209}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17f961d6ab028794397187f0850bb2ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menu: {fileID: 0}
   connectingUI: {fileID: 1084860296}
   gameLobby: {fileID: 1976711603}
   createLobbyBtn: {fileID: 1950998325}
@@ -12691,6 +12693,8 @@ GameObject:
   - component: {fileID: 1496580558}
   - component: {fileID: 1496580557}
   - component: {fileID: 1496580556}
+  - component: {fileID: 1496580559}
+  - component: {fileID: 1496580560}
   m_Layer: 0
   m_Name: LobbyExplorerCanvas
   m_TagString: Untagged
@@ -12783,6 +12787,40 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1496580559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496580554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e09e92326d5c5b3439524c71d5c90ca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lobbyMessageUI: {fileID: 1084860296}
+  message: {fileID: 1439464451}
+  closeButton: {fileID: 322974579}
+--- !u!114 &1496580560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496580554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f961d6ab028794397187f0850bb2ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menu: {fileID: 1089021209}
+  connectingUI: {fileID: 1084860296}
+  gameLobby: {fileID: 1976711603}
+  createLobbyBtn: {fileID: 1950998325}
+  refreshButton: {fileID: 405928301}
+  content: {fileID: 984939469}
+  createLobbyUI: {fileID: 1413862645}
 --- !u!1 &1508722302
 GameObject:
   m_ObjectHideFlags: 0
