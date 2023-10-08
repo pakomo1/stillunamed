@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class LobbyUi : MonoBehaviour
 {
-    [SerializeField] private Button createGame;
-    [SerializeField] private Button joinGame;
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private Button createLobbyBtn;
@@ -61,10 +59,9 @@ public class LobbyUi : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Escape))
         {
+            NetworkManager.Singleton.gameObject.SetActive(false);
             Hide();
         }
-
-        
     }
 
 

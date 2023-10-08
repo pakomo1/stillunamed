@@ -13,7 +13,7 @@ public class GameLobby : MonoBehaviour
 {
     private string relayJoinCode = "relayCode";
 
-    private Lobby joinedLobby;
+    public Lobby joinedLobby;
     private float heartBeatTimer;
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameObject nolobbiesText;
@@ -51,7 +51,7 @@ public class GameLobby : MonoBehaviour
             }
         }
     }
-    private bool isLobbyHost()
+    public bool isLobbyHost()
     {
         return joinedLobby.HostId == AuthenticationService.Instance.PlayerId;
     }
@@ -169,5 +169,15 @@ public class GameLobby : MonoBehaviour
     public Lobby GetLobby()
     {
         return joinedLobby;
+    }
+    public async void ShutDownLobby(string lobbyId)
+    {
+        try
+        {
+             await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
+        }catch (LobbyServiceException ex)
+        {
+            print(ex.Message);
+        }
     }
 }

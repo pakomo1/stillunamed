@@ -9151,8 +9151,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f961d6ab028794397187f0850bb2ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  createGame: {fileID: 0}
-  joinGame: {fileID: 0}
   connectingUI: {fileID: 1084860296}
   gameLobby: {fileID: 1976711603}
   createLobbyBtn: {fileID: 1950998325}
