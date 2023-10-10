@@ -160,7 +160,7 @@ public class GameLobby : MonoBehaviour
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
 
-            gameRelay.JoinRelay(relayCode);
+            JoinAllocation joinAllocation = await gameRelay.JoinRelay(relayCode);
             NetworkManager.Singleton.StartClient();
 
         } catch (LobbyServiceException ex)

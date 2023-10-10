@@ -30,7 +30,7 @@ public class GameRelay : MonoBehaviour
         }
     }
 
-    public async void JoinRelay(string joinCode)
+    public async Task<JoinAllocation> JoinRelay(string joinCode)
     {
         try
         {
@@ -38,10 +38,11 @@ public class GameRelay : MonoBehaviour
 
             RelayServerData serverData = new RelayServerData(joinallocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
+            return joinallocation;
         }
         catch (RelayServiceException ex)
         {
-            print(ex.Message);
+            throw ex;
         }
     }
     public async Task<string> GetRelayJoinCode(Allocation allocation)
