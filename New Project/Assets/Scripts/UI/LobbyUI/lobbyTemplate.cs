@@ -25,7 +25,7 @@ public class lobbyTemplate : MonoBehaviour
 
     }
 
-    private void OnClickLobbyButton(Lobby lobby)
+    private  void OnClickLobbyButton(Lobby lobby)
     {
         gameLobby.JoinLobbyByID(lobby.Id);
         gameLobby.PrintPlayersInLobby(lobby);

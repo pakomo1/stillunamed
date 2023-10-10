@@ -21,6 +21,9 @@ public class GameLobby : MonoBehaviour
     public event EventHandler OnCreateLobbyStarted;
     public event EventHandler OnCreateLobbyFailed;
 
+    public event EventHandler OnLobbyJoinStarted;
+    public event EventHandler OnLobbyJoinFailed;
+
     public static GameLobby Instance { get; private set; }
     private void Awake()
     {
@@ -151,6 +154,7 @@ public class GameLobby : MonoBehaviour
     }
     public async void JoinLobbyByID(string id)
     {
+        OnLobbyJoinStarted?.Invoke(this, EventArgs.Empty);
         try
         {
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
@@ -162,6 +166,8 @@ public class GameLobby : MonoBehaviour
         } catch (LobbyServiceException ex)
         {
             print(ex.Message);
+            OnLobbyJoinFailed?.Invoke(this, EventArgs.Empty);
+
         }
     }
     public void PrintPlayersInLobby(Lobby lobby)

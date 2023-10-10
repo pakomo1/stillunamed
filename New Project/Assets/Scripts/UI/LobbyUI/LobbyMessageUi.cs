@@ -20,8 +20,21 @@ public class ConnectingUI : MonoBehaviour
 
         GameLobby.Instance.OnCreateLobbyStarted += GameLobby_OnCreateLobbyStarted;
         GameLobby.Instance.OnCreateLobbyFailed += GameLobby_OnCreateLobbyFailed;
+
+        GameLobby.Instance.OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;
+        GameLobby.Instance.OnLobbyJoinFailed += GameLobby_OnLobbyJoinFailed;
     }
-    
+
+    private void GameLobby_OnLobbyJoinFailed(object sender, EventArgs e)
+    {
+        ShowMessage("Failed to join lobby", true);
+    }
+
+    private void GameLobby_OnLobbyJoinStarted(object sender, EventArgs e)
+    {
+        ShowMessage("Joining lobby...", false);
+    }
+
     private void GameLobby_OnCreateLobbyFailed(object sender, EventArgs e)
     {
         ShowMessage("Failed to create lobby", true);

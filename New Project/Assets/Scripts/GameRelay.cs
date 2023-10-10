@@ -38,7 +38,6 @@ public class GameRelay : MonoBehaviour
 
             RelayServerData serverData = new RelayServerData(joinallocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
-
         }
         catch (RelayServiceException ex)
         {
