@@ -14,6 +14,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private Button createLobbyBtn;
     [SerializeField] private Button refreshButton;
+    [SerializeField] private Button CloseButton;
 
     [SerializeField] private GameObject content;
 
@@ -41,6 +42,11 @@ public class LobbyUi : MonoBehaviour
             }
             gameLobby.ListLobbies();
         });
+
+        CloseButton.onClick.AddListener(() =>
+        {
+            menu.SetActive(false);
+        });
     }
 
     private void Awake()
@@ -50,7 +56,7 @@ public class LobbyUi : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.Escape) && transform.GetChild(0).gameObject.activeSelf)
         {
             NetworkManager.Singleton.gameObject.SetActive(false);
             Hide();
