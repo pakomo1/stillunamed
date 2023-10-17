@@ -23,7 +23,6 @@ public class LobbyUi : MonoBehaviour
     public event EventHandler OnTryToJoinGame; 
     public event EventHandler OnFaildToJoinGame;
 
-    private bool refreshComboPressed;
 
     public static LobbyUi Instance { get; private set; }
     private void Start()
@@ -46,6 +45,8 @@ public class LobbyUi : MonoBehaviour
         CloseButton.onClick.AddListener(() =>
         {
             menu.SetActive(false);
+            NetworkManager.Singleton.gameObject.SetActive(false);
+
         });
     }
 
@@ -56,11 +57,7 @@ public class LobbyUi : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.Escape) && transform.GetChild(0).gameObject.activeSelf)
-        {
-            NetworkManager.Singleton.gameObject.SetActive(false);
-            Hide();
-        }
+
     }
 
    
