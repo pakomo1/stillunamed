@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using Octokit;
+using UnityEngine.UI;
 
 public class RepositoryContentNavigation : MonoBehaviour
 {
@@ -14,7 +15,16 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
+    [SerializeField] private GameObject createOrUploadUi;
 
+    [SerializeField] private Button addfileButton;
+    private void Update()
+    {
+        addfileButton.onClick.AddListener(() =>
+        {
+            createOrUploadUi.SetActive(!createOrUploadUi.activeSelf);
+        });
+    }
 
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
     {

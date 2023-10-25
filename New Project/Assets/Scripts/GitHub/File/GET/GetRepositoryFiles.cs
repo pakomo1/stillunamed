@@ -22,15 +22,4 @@ public class GetRepositoryFiles : MonoBehaviour
         var contents = await GitHubClientProvider.client.Repository.Content.GetAllContents(owner, repo);
         return contents;
     }
-
-    [Serializable]
-    public class RepoContent
-    {
-        public string owner;
-        public string repo;
-        public string name;
-        public string url;
-        public string type;
-        public string path;
-    }
 }
