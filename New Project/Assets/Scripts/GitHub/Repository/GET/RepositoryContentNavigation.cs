@@ -18,7 +18,7 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject createOrUploadUi;
 
     [SerializeField] private Button addfileButton;
-    private void Update()
+    private void Awake()
     {
         addfileButton.onClick.AddListener(() =>
         {
