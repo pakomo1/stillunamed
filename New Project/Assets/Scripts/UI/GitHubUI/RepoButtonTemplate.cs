@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Octokit;
 
 public class RepoButtonTemplate : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class RepoButtonTemplate : MonoBehaviour
 
     public async void CreateButton(string repoName, string description, string profilePicUrl, bool visibility, string repoOwner)
     {
+        //Repository repo = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
 
         var button = Instantiate(buttonTemplate, transform);
         button.SetActive(true);
@@ -35,7 +37,7 @@ public class RepoButtonTemplate : MonoBehaviour
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
         }
-        button.GetComponent<Button>().onClick.AddListener(() => repoContentNavigation.ShowRepositoryContent(repoOwner, repoName, ""));
+        button.GetComponent<Button>().onClick.AddListener(() => repoContentNavigation.ShowRepositoryContent(repoOwner, repoName, "/"));
     }
 
     private async Task<Sprite> GetImage(string url)

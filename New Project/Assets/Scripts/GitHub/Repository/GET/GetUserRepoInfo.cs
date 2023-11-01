@@ -20,16 +20,4 @@ public class GetUserRepoInfo : MonoBehaviour
             buttonTemplate.CreateButton(repositories[i].Name, repositories[i].Description, repositories[i].Owner.AvatarUrl, repositories[i].Private, repositories[i].Owner.Login);
         }
     }
-    public class RepoInfo 
-    {
-        public string Name;
-        public string Description;
-        public bool Private;
-        public OwnerInfo Owner;
-    }
-    public class OwnerInfo 
-    {
-        public string avatar_url;
-        public string login;
-    }
 }

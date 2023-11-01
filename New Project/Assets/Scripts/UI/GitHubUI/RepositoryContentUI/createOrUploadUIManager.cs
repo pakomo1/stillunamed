@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Octokit;
 
 public class createOrUploadUIManager : MonoBehaviour
 {
@@ -10,7 +11,10 @@ public class createOrUploadUIManager : MonoBehaviour
 
     [SerializeField] private GameObject repositoryContentUI;
     [SerializeField] private GameObject fileContentUI;
-    // Start is called before the first frame update
+
+    [SerializeField] private fileMakeUpManager fileMakeUpManager;
+    [SerializeField] private RepositoryContentNavigation repositoryContentNavigation;
+
     void Start()
     {
         createFileButton.onClick.AddListener(() =>
@@ -18,7 +22,7 @@ public class createOrUploadUIManager : MonoBehaviour
             repositoryContentUI.SetActive(false);
 
             fileContentUI.SetActive(true);
-            fileContentUI.transform.Find("fileMakeUp").gameObject.SetActive(true);
+            fileMakeUpManager.Show(repositoryContentNavigation.currentRepository);
         });
 
         uploadFileButton.onClick.AddListener(() =>

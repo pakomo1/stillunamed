@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Octokit;
 using UnityEngine.UI;
+using System.Net.Http;
 
 public class RepositoryContentNavigation : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject createOrUploadUi;
 
     [SerializeField] private Button addfileButton;
+    public Repository currentRepository;
     private void Awake()
     {
         addfileButton.onClick.AddListener(() =>
@@ -34,6 +36,8 @@ public class RepositoryContentNavigation : MonoBehaviour
             var repoContent = await GetRepositoryFiles.GetRepoFiles(repoOwner,repoName, path);
             var repoBranches = await GetRepoBranches.GetBranches(repoOwner, repoName);
 
+            currentRepository = repository;
+
             foreach (var branch in repoBranches)
             {
                 print(branch.Name);
@@ -42,9 +46,9 @@ public class RepositoryContentNavigation : MonoBehaviour
             ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
             UpdateSideBarPanel(repository);
             UpdateRepositoryContentUI(repository, repoContent);
-        }catch (Exception ex)
+        }catch (HttpRequestException ex)
         {
-            print(ex.Message);
+            print(ex);
         }
 
     }
