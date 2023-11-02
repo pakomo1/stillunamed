@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using Octokit;
+using UnityEngine.UI;
 
 public class GetRepositoryFiles : MonoBehaviour
 {
     // Start is called before the first frame update
     [SerializeField] private ApiRequestHelper apiRequestHelper;
+    [SerializeField] private GameObject repoPanelContent;
     void Start()
     {
-        
+        repoPanelContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }
 
     public static async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles( string owner, string repo, string path)
