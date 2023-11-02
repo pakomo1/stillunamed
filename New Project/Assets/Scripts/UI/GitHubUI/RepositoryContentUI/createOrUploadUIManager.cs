@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Octokit;
+using TMPro;
 
 public class createOrUploadUIManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class createOrUploadUIManager : MonoBehaviour
     [SerializeField] private fileMakeUpManager fileMakeUpManager;
     [SerializeField] private RepositoryContentNavigation repositoryContentNavigation;
 
+    [SerializeField] private TextMeshProUGUI pathToFile;
+
     void Start()
     {
         createFileButton.onClick.AddListener(() =>
@@ -22,7 +25,7 @@ public class createOrUploadUIManager : MonoBehaviour
             repositoryContentUI.SetActive(false);
 
             fileContentUI.SetActive(true);
-            fileMakeUpManager.Show(repositoryContentNavigation.currentRepository);
+            fileMakeUpManager.Show(repositoryContentNavigation.currentRepository, pathToFile.text);
         });
 
         uploadFileButton.onClick.AddListener(() =>

@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Octokit;
+using TMPro;
 
 public class fileMakeUpManager : MonoBehaviour
 {
 
-    [SerializeField] private GameObject fileInputField;
     [SerializeField] private Button commitButton;
-    [SerializeField] private GameObject areYouSureUI;
-    [SerializeField] private GameObject pathToFile;
+    [SerializeField] private commitMessageUIManager enterCommitMessageUI;
+    [SerializeField] private TextMeshProUGUI pathToFile;
+    [SerializeField] private TMP_InputField fileName;
 
     private Repository currentRepository;
 
@@ -19,7 +20,10 @@ public class fileMakeUpManager : MonoBehaviour
     {
         commitButton.onClick.AddListener(() =>
         {
-            areYouSureUI.SetActive(true);
+            if(fileName.text != "")
+            {
+                enterCommitMessageUI.Show(currentRepository, pathToFile.text);
+            }
         });
     }
 
@@ -28,11 +32,13 @@ public class fileMakeUpManager : MonoBehaviour
     {
         
     }
-    public void Show(Repository currentRepo)
+    public void Show(Repository currentRepo, string path)
     {
+        pathToFile.text = path;
         currentRepository = currentRepo;
         gameObject.SetActive(true);
     }
     public void Hide() { this.gameObject.SetActive(false); }
+ 
 
 }

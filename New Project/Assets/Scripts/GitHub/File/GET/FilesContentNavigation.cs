@@ -24,7 +24,7 @@ public class FilesContentNavigation : MonoBehaviour
             if (fileOrDir.Type == "dir")
             {
 
-                dirPathNavigationText.text = $"{dirPathNavigationText.text}/{Path.GetFileName(fileOrDir.Path)}";
+                dirPathNavigationText.text = $"{repository.Name}/{fileOrDir.Path}";
                 repoFilesTemplate.GenerateRepoFiles(content, repository);
 
             }
@@ -33,7 +33,7 @@ public class FilesContentNavigation : MonoBehaviour
                 string fileName = Path.GetFileName(fileOrDir.Path);
                 //  string result = System.Text.Encoding.UTF8.GetString();
 
-                filePathNavigationText.text = $"{dirPathNavigationText.text}/{fileName}";
+                filePathNavigationText.text = $"{repository.Name}/{fileName}";
                 contentDisplayField.text = content[0].Content;
                 currentFileTextField.text = fileOrDir.Name;
             }
