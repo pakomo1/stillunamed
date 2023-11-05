@@ -19,7 +19,7 @@ public class RepoFilesTemplate : MonoBehaviour
     [SerializeField] private GameObject FileContentCode;
     [SerializeField] private TextMeshProUGUI pathToDirectory;
 
-    public void GenerateRepoFiles(IReadOnlyCollection<RepositoryContent> repoFiles, Repository repository)
+    public void GenerateRepoFiles(IReadOnlyCollection<RepositoryContent> repoFiles, Repository repository, string currentbranch)
     {
         ClearFiled();
         repoFiles = repoFiles.OrderByDescending(item => item.Type == "dir").ToList();
@@ -45,7 +45,7 @@ public class RepoFilesTemplate : MonoBehaviour
 
                 image.sprite = file;    
             }
-            button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.ShowFileContent(item, repository); });
+            button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.ShowFileContent(item, repository, currentbranch); });
             button.SetActive(true);
         }
     }

@@ -5,7 +5,6 @@ using TMPro;
 public class FileContentUIManager : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI pathToFile;
-    [SerializeField] private TextMeshProUGUI nameOfRepo;
     void Start()
     {
     }

@@ -11,15 +11,17 @@ using System.Net.Http;
 
 public class RepositoryContentNavigation : MonoBehaviour
 {
-    [SerializeField] private ValidAccessToken validAccessToken;
     [SerializeField] private GameObject contentHolder;
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
-    [SerializeField] private RepoFilesTemplate repoFilesTemplate;
     [SerializeField] private GameObject createOrUploadUi;
 
     [SerializeField] private Button addfileButton;
     public Repository currentRepository;
+
+    [SerializeField] private ValidAccessToken validAccessToken;
+    [SerializeField] private RepoFilesTemplate repoFilesTemplate;
+    [SerializeField] private branchesTemplate branchesTemplate;
     private void Awake()
     {
         addfileButton.onClick.AddListener(() =>
@@ -28,24 +30,21 @@ public class RepositoryContentNavigation : MonoBehaviour
         });
     }
 
-    public async void ShowRepositoryContent(string repoOwner, string repoName, string path)
+    public async void ShowRepositoryContent(string repoOwner, string repoName, string path, string branch = "main")
     {
         try
         {
             var repository = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
-            var repoContent = await GetRepositoryFiles.GetRepoFiles(repoOwner,repoName, path);
+            var repoContent = await GetRepositoryFiles.GetRepoFiles(repoOwner,repoName, path, branch);
             var repoBranches = await GetRepoBranches.GetBranches(repoOwner, repoName);
 
             currentRepository = repository;
 
-            foreach (var branch in repoBranches)
-            {
-                print(branch.Name);
-            }
+            branchesTemplate.GenerateBranchs(repoBranches,currentRepository);
 
             ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
             UpdateSideBarPanel(repository);
-            UpdateRepositoryContentUI(repository, repoContent);
+            UpdateRepositoryContentUI(repository, repoContent, branch);
         }catch (HttpRequestException ex)
         {
             print(ex);
@@ -66,10 +65,10 @@ public class RepositoryContentNavigation : MonoBehaviour
         sideBarPanel.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.ForksCount.ToString();
     }
 
-    private void UpdateRepositoryContentUI(Repository repoData, IReadOnlyCollection<RepositoryContent> repoContents)
+    private void UpdateRepositoryContentUI(Repository repoData, IReadOnlyCollection<RepositoryContent> repoContents, string currentBranch)
     {
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.Name;
         print(repoData.Name);
-        repoFilesTemplate.GenerateRepoFiles(repoContents,repoData);
+        repoFilesTemplate.GenerateRepoFiles(repoContents,repoData, currentBranch);
     }
 }

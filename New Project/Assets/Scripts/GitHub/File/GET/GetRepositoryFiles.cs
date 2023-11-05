@@ -19,11 +19,11 @@ public class GetRepositoryFiles : MonoBehaviour
         repoPanelContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }
 
-    public static async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles( string owner, string repo, string path)
+    public static async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles( string owner, string repo, string path, string branch = "main")
     {
         var repository = await GitHubClientProvider.client.Repository.Get(owner, repo);
 
-        var contents = await GitHubClientProvider.client.Repository.Content.GetAllContents(owner, repo, path);
+        var contents = await GitHubClientProvider.client.Repository.Content.GetAllContentsByRef(owner, repo, path, branch);
         return contents;
     }
 }
