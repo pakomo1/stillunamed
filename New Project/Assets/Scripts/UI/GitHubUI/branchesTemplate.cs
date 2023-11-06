@@ -26,7 +26,7 @@ public class branchesTemplate : MonoBehaviour
         foreach (Branch branch in repositoryBranches)
         {
             var button = Instantiate(branchButtonTemplate, transform);
-            button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = branch.Name; 
+            button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = branch.Name;
 
             button.onClick.AddListener(() =>
             {

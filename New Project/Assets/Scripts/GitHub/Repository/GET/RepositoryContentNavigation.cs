@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 using Octokit;
 using UnityEngine.UI;
 using System.Net.Http;
+using UnityEngine.EventSystems;
 
 public class RepositoryContentNavigation : MonoBehaviour
 {
@@ -15,8 +16,10 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private GameObject repoContentUI;
     [SerializeField] private GameObject sideBarPanel;
     [SerializeField] private GameObject createOrUploadUi;
+    [SerializeField] private GameObject branchContent;
 
     [SerializeField] private Button addfileButton;
+    [SerializeField] private Button branchButtonTemplate;
     public Repository currentRepository;
 
     [SerializeField] private ValidAccessToken validAccessToken;
@@ -67,8 +70,12 @@ public class RepositoryContentNavigation : MonoBehaviour
 
     private void UpdateRepositoryContentUI(Repository repoData, IReadOnlyCollection<RepositoryContent> repoContents, string currentBranch)
     {
+        branchButtonTemplate.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentBranch;
+        
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.Name;
         print(repoData.Name);
         repoFilesTemplate.GenerateRepoFiles(repoContents,repoData, currentBranch);
     }
+    
+   
 }
