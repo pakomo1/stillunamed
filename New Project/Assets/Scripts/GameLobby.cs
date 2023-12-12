@@ -102,6 +102,8 @@ public class GameLobby : MonoBehaviour
             });
 
             NetworkManager.Singleton.StartHost();
+
+            //here we should make a couple of scenece with different sizes
             Loader.LoadNetwrok(Loader.Scene.GameScene);
 
             print("Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);
