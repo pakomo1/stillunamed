@@ -11,6 +11,7 @@ public class CreateLobbyUI : MonoBehaviour
     [SerializeField] private Button createButton;
     [SerializeField] private TMP_InputField lobbyName;
     [SerializeField] private TMP_InputField repoLink;
+    [SerializeField] private MaxPlayersManager maxPlayersManager;
     
 
     [SerializeField] private Toggle isPrivate;
@@ -22,8 +23,8 @@ public class CreateLobbyUI : MonoBehaviour
         createButton.onClick.AddListener(() =>
         {
 
-
-            gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, 0);
+           
+            gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, maxPlayersManager.selectedPlayerCount);
             lobbyName.text = "";
             repoLink.text = "";
             

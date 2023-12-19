@@ -104,7 +104,7 @@ public class GameLobby : MonoBehaviour
             NetworkManager.Singleton.StartHost();
             Loader.LoadNetwrok(Loader.Scene.GameScene);
 
-            print("Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);
+            print($"Created {lobby.Name} lobby which has a number max players of {lobby.MaxPlayers}");
         }
         catch (LobbyServiceException ex)
         {
