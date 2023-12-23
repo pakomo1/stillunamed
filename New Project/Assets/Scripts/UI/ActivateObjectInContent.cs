@@ -18,5 +18,13 @@ public static class ActivateObjectInContent
             }
         }
         uiToSetActive.SetActive(true);
+        elements = GetGameObjectContents.GetContent(uiToSetActive);
+        foreach (var item in elements)
+        {
+            if (!item.activeSelf)
+            {
+                item.SetActive(true);
+            }
+        }
     }
 }
