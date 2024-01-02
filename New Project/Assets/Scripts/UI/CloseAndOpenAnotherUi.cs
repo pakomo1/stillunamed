@@ -13,7 +13,7 @@ public class CloseAndOpenAnotherUi : MonoBehaviour
         uiToClose.SetActive(false);
         uiToOpen.SetActive(true);
     }
-    public void FindTheGameObjectOnTop(GameObject UIs)
+    public GameObject FindTheGameObjectOnTop(GameObject UIs)
     {
         for (int i = 0; i < UIs.transform.childCount; i++)
         {
@@ -23,10 +23,16 @@ public class CloseAndOpenAnotherUi : MonoBehaviour
                 if (childrenOfUI.transform.GetChild(j).tag == "UIContainer" && childrenOfUI.transform.GetChild(j).gameObject.activeSelf)
                 {
                    var objOnTop = IterateAndCheckThroughObj(childrenOfUI.transform.GetChild(j).gameObject);
-                    print(objOnTop.name);
+                   return objOnTop;
                 }
             }
         }
+        return null;
+    }
+
+    public void SetTheObjectOnTopToInactive(GameObject objOnTop)
+    {
+        
     }
 
     private GameObject IterateAndCheckThroughObj(GameObject uiContainer)

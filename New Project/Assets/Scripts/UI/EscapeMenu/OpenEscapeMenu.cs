@@ -6,6 +6,7 @@ public class OpenEscapeMenu : MonoBehaviour
 {
     [SerializeField] private GameObject ui;
     [SerializeField] private GameObject UisGameObjectHolder;
+    [SerializeField] private CloseAndOpenAnotherUi closeAndOpenAnotherUi;
     private bool active;
     // Update is called once per frame
 
@@ -13,9 +14,14 @@ public class OpenEscapeMenu : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && !isAnyUiOpen())
+        var objOnTop = closeAndOpenAnotherUi.FindTheGameObjectOnTop(UisGameObjectHolder);
+        if (Input.GetKeyDown(KeyCode.Escape) && objOnTop == null)
         {
             ui.SetActive(!ui.activeSelf);
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && objOnTop != null)
+        {
+           GameObject.Find(objOnTop.GetComponentInParent<Transform>().name).SetActive(false);
         }
     }
 

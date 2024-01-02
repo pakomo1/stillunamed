@@ -42,12 +42,12 @@ public class LobbyUi : MonoBehaviour
             gameLobby.ListLobbies();
         });
 
-        CloseButton.onClick.AddListener(() =>
+        /*CloseButton.onClick.AddListener(() =>
         {
             menu.SetActive(false);
             NetworkManager.Singleton.gameObject.SetActive(false);
 
-        });
+        });*/
     }
 
     private void Awake()
