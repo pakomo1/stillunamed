@@ -46,9 +46,8 @@ public class commitMessageUIManager : MonoBehaviour
     }
 
     public void Hide()
-    { 
+    {
         gameObject.SetActive(false);
-        commitMessage.text = "";
     }
     private async void CommitFileToRepo(Repository repository, CreateFileRequest fileRequest)
     {

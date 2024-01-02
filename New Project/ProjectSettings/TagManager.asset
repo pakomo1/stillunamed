@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Computer
   - GitHubUISideBarGrid
+  - UIContainer
   layers:
   - Default
   - TransparentFX
