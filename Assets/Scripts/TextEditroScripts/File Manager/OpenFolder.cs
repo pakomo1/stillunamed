@@ -7,9 +7,10 @@ using System.IO;
 
 public class OpenFolder : MonoBehaviour
 {
+    [SerializeField] private TextEditor textEditor;
     private TheManager theManager;
     private ReadFiles readFiles;
-    [SerializeField] private TextMeshProUGUI _textMeshPro;
+    [SerializeField] private TextMeshProUGUI inputField;
     [SerializeField] private GameObject fileManager;    
     public string _currentWorkingDir;
    // [SerializeField]private RawImage image;
@@ -25,12 +26,12 @@ public class OpenFolder : MonoBehaviour
         ClearAllFields();
         _currentWorkingDir = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         theManager.UpdatePath(_currentWorkingDir);
-        _textMeshPro.text = _currentWorkingDir;
+        inputField.text = _currentWorkingDir;
 
         //set the default valuses for:
-        readFiles.currentWorkingDir = _currentWorkingDir;
-        readFiles.selectedFilePath = Directory.GetFiles(_currentWorkingDir)[0];
-        readFiles.previousSelectedFile = readFiles.selectedFilePath;
+        textEditor.StartingDirecotry = _currentWorkingDir;
+        textEditor.PathToTheSelectedFile= Directory.GetFiles(_currentWorkingDir)[0];
+        readFiles.previousSelectedFile = textEditor.PathToTheSelectedFile;
 
         print("The first file should be: " +readFiles.previousSelectedFile);
     }
