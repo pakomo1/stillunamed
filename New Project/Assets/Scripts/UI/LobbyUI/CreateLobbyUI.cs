@@ -25,6 +25,7 @@ public class CreateLobbyUI : MonoBehaviour
             bool isReal = await CheckIfRepoLinkIsReal(repoLink.text);
             if (isReal)
             {
+                GameSceneMetadata.githubRepoLink = repoLink.text;
                 gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text));
                 lobbyName.text = "";
                 repoLink.text = "";

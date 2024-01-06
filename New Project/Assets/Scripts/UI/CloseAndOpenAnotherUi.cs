@@ -30,10 +30,7 @@ public class CloseAndOpenAnotherUi : MonoBehaviour
         return null;
     }
 
-    public void SetTheObjectOnTopToInactive(GameObject objOnTop)
-    {
-        
-    }
+
 
     private GameObject IterateAndCheckThroughObj(GameObject uiContainer)
     {
