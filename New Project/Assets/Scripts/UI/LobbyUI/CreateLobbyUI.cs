@@ -47,7 +47,7 @@ public class CreateLobbyUI : MonoBehaviour
             Hide();
         }
     }
-    private async Task<bool> CheckIfRepoLinkIsReal(string url)
+    public async Task<bool> CheckIfRepoLinkIsReal(string url)
     {
         try
         {
@@ -63,7 +63,7 @@ public class CreateLobbyUI : MonoBehaviour
             return false;
         }
     }
-    private static(string owner, string repoName) GetOwnerAndRepo(string repoUrl)
+    public static(string owner, string repoName) GetOwnerAndRepo(string repoUrl)
     {
         Uri repoUri = new Uri(repoUrl);
         

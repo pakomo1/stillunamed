@@ -30,8 +30,8 @@ public class ValidAccessToken : MonoBehaviour
             var repositories = await client.Repository.GetAllForCurrent();
         
 
-            repoInfo.repositories = repositories;
             openServer.authorized = true;
+            repoInfo.repositories = repositories;
             repoInfo.GenerateButtons();
         }
         catch (Exception ex)
