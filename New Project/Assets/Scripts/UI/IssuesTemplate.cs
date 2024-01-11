@@ -8,6 +8,8 @@ using TMPro;
 public class IssuesTemplate : MonoBehaviour
 {
     [SerializeField] private Button issueButtonTemplate;
+    [SerializeField] private Sprite openIssueImage;
+    [SerializeField] private Sprite closeIssueImage;
     public void GenerateIssues(IReadOnlyList<Issue> issues)
     {
         foreach (var issue in issues)
@@ -16,10 +18,19 @@ public class IssuesTemplate : MonoBehaviour
             
             issueButton.transform.Find("Title").GetComponent<TextMeshProUGUI>().text = issue.Title;
 
-            var state = issueButton.transform.Find("State").GetComponent<Image>();
-            //set the right image for issue state
-            issueButton.transform.Find("NumberOfComents").GetComponent<TextMeshProUGUI>().text = issue.Comments.ToString();
+            //state
 
+
+            if (issue.State == ItemState.Open)
+            {
+                issueButton.transform.Find("State").GetComponent<Image>().sprite = openIssueImage;
+            }
+            else if (issue.State == ItemState.Closed)
+            {
+                issueButton.transform.Find("State").GetComponent<Image>().sprite = closeIssueImage;
+            }
+
+            issueButton.transform.Find("NumberOfComents").GetComponent<TextMeshProUGUI>().text = issue.Comments.ToString();
             issueButton.gameObject.SetActive(true);
         }
     }

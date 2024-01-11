@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Octokit;
 
 public class IssueUIManager : MonoBehaviour
 {
@@ -22,7 +23,13 @@ public class IssueUIManager : MonoBehaviour
         (string ownerName,string repoName) = CreateLobbyUI.GetOwnerAndRepo(GameSceneMetadata.githubRepoLink);
         gameObject.SetActive(true);
 
-        var issues = await GetIssuesForRepository.GetIssuesForRepo(ownerName, repoName);
+        RepositoryIssueRequest issueRequest = new RepositoryIssueRequest()
+        {
+            Filter = IssueFilter.All,
+            State = ItemStateFilter.All,
+        };
+        
+        var issues = await GetIssuesForRepository.GetIssuesForRepo(ownerName, repoName,issueRequest);
         issueTemplate.GenerateIssues(issues);
     }
     public void Hide()
