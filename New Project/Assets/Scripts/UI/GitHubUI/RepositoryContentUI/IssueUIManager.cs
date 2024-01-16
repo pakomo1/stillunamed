@@ -23,11 +23,7 @@ public class IssueUIManager : MonoBehaviour
         (string ownerName,string repoName) = CreateLobbyUI.GetOwnerAndRepo(GameSceneMetadata.githubRepoLink);
         gameObject.SetActive(true);
 
-        RepositoryIssueRequest issueRequest = new RepositoryIssueRequest()
-        {
-            Filter = IssueFilter.All,
-            State = ItemStateFilter.All,
-        };
+        RepositoryIssueRequest issueRequest = new RepositoryIssueRequest(){};
         
         var issues = await GetIssuesForRepository.GetIssuesForRepo(ownerName, repoName,issueRequest);
         issueTemplate.GenerateIssues(issues);
