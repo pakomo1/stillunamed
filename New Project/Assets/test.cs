@@ -1,3 +1,4 @@
+using Octokit;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +18,12 @@ public class test : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
+            RepositoryIssueRequest issueRequest = new RepositoryIssueRequest()
+            {
+                Filter = IssueFilter.All
+            };
             mainMenu.SetActive(true);
-            issueManager.Show();
+            issueManager.Show(issueRequest);
         }
     }
 }

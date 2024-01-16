@@ -12,6 +12,7 @@ public class IssuesTemplate : MonoBehaviour
     [SerializeField] private Sprite closeIssueImage;
     public void GenerateIssues(IReadOnlyList<Issue> issues)
     {
+        ClearIssues();
         foreach (var issue in issues)
         {
             Button issueButton = Instantiate(issueButtonTemplate,transform);
@@ -32,6 +33,14 @@ public class IssuesTemplate : MonoBehaviour
 
             issueButton.transform.Find("NumberOfComents").GetComponent<TextMeshProUGUI>().text = issue.Comments.ToString();
             issueButton.gameObject.SetActive(true);
+        }
+    }
+    //Clears the issues 
+    public void ClearIssues()
+    {
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 }
