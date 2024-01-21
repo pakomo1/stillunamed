@@ -9,14 +9,13 @@ public static class OnClickFile
 {
    
     
-    public static void OnPointerClick(GameObject obj, ReadFiles readFiles)
+    public static void OnPointerClick(GameObject obj, TextEditor textEditorInstance)
     {
-       
         string fileName = obj.name;
        /* var tmp = obj.GetComponent<TextMeshProUGUI>();
         tmp.color = Color.red;*/
         
-        readFiles.selectedFilePath = readFiles.currentWorkingDir+"/"+fileName;
+        textEditorInstance.PathToTheSelectedFile = textEditorInstance.WorkingDirectory+"/"+fileName;
     }
 
 }

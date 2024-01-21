@@ -10,6 +10,7 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [SerializeField] private GameObject holeCurrentDir;
     [SerializeField] private GameObject image;
 
+    [SerializeField] private TextEditor textEditor;
     private TextMeshProUGUI holeCurrentDirText;
     // Start is called before the first frame update
     private string path;
@@ -22,7 +23,7 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     // Update is called once per frame
     void Update()
     {
-        path = openFolder._currentWorkingDir;
+        path = textEditor.WorkingDirectory; 
         holeCurrentDirText.text = path;
         
         if (path.Length > 24)

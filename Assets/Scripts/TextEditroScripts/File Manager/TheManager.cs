@@ -12,12 +12,11 @@ public class TheManager : MonoBehaviour
     public string[] folders;
     [SerializeField] private GameObject fileManager;
     [SerializeField] private GameObject TextFieldManager;
-    private ReadFiles readFiles;
+    [SerializeField] private TextEditor textEditor;
     private OpenFolder openfolder;
     // Start is called before the first frame update
     void Start()
     {
-        readFiles = TextFieldManager.GetComponent<ReadFiles>();
         openfolder = TextFieldManager.GetComponent<OpenFolder>();
     }
 
@@ -81,7 +80,7 @@ public class TheManager : MonoBehaviour
                     
                     go.AddComponent<Button>();
                     Button btn = go.GetComponent<Button>();
-                    btn.onClick.AddListener(delegate { OnClickFile.OnPointerClick(go, readFiles); });
+                    btn.onClick.AddListener(delegate { OnClickFile.OnPointerClick(go, textEditor); });
 
                     TextMeshProUGUI textEl = go.AddComponent<TextMeshProUGUI>();
                     textEl.fontSize = 4;
@@ -98,8 +97,4 @@ public class TheManager : MonoBehaviour
     }
 
 
-   public void UpdatePath(string path = "")
-    {
-        this.currentWorkingDir = path;
-    }
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 public class UpdateFIles : MonoBehaviour
 {
+    [SerializeField] private TextEditor textEditor; 
     private ReadFiles readFiles;
     [SerializeField] private GameObject TextFieldManager;
 
@@ -19,11 +20,9 @@ public class UpdateFIles : MonoBehaviour
    
     [SerializeField] public Button compileButton;
     private string EXEfile;
-    private string path;
 
-    //these two come form the ReadFiles class
+   [SerializeField] private TMP_InputField inputField;
     private string selectedFilePath;
-    private TMP_InputField inputField;
 
     public string currentSaveDate;
     // Start is called before the first frame update
@@ -32,10 +31,11 @@ public class UpdateFIles : MonoBehaviour
         readFiles = TextFieldManager.GetComponent<ReadFiles>();
         compiler = canvas.GetComponent<MonoCompiler>();
 
-        this.selectedFilePath = readFiles.selectedFilePath;
-        this.inputField = readFiles.inputfield;
-        this.EXEfile = readFiles.EXEfile;   
-        this.path = readFiles.currentWorkingDir; 
+        selectedFilePath = textEditor.PathToTheSelectedFile;
+        inputField.text = textEditor.DisplayText;
+        EXEfile = textEditor.PathToSelectedExeFile;
+
+        inputField.onValueChanged.AddListener((value) => { textEditor.DisplayText = value;});
     }
 
     // Update is called once per frame

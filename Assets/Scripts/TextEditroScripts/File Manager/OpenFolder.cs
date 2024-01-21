@@ -7,12 +7,14 @@ using System.IO;
 
 public class OpenFolder : MonoBehaviour
 {
-    [SerializeField] private TextEditor textEditor;
+    //Should get this reference upon a player joining the lobby
+    [SerializeField]private TextEditor textEditor;
+
     private TheManager theManager;
     private ReadFiles readFiles;
     [SerializeField] private TextMeshProUGUI inputField;
     [SerializeField] private GameObject fileManager;    
-    public string _currentWorkingDir;
+    private string _currentWorkingDir;
    // [SerializeField]private RawImage image;
 
 
@@ -24,16 +26,12 @@ public class OpenFolder : MonoBehaviour
     public void OpenExplorer()
     {
         ClearAllFields();
-        _currentWorkingDir = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
-        theManager.UpdatePath(_currentWorkingDir);
-        inputField.text = _currentWorkingDir;
+        textEditor.WorkingDirectory = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
+        
 
         //set the default valuses for:
         textEditor.StartingDirecotry = _currentWorkingDir;
-        textEditor.PathToTheSelectedFile= Directory.GetFiles(_currentWorkingDir)[0];
-        readFiles.previousSelectedFile = textEditor.PathToTheSelectedFile;
-
-        print("The first file should be: " +readFiles.previousSelectedFile);
+        textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.WorkingDirectory)[0];
     }
     private void ClearAllFields()
     {

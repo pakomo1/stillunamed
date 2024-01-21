@@ -8,8 +8,7 @@ using System.Collections;
 
 public class MonoCompiler : MonoBehaviour
 {
-
-    private ReadFiles readFiles;
+    [SerializeField] private TextEditor textEditor;
     private UpdateFIles updateFiles;
     [SerializeField] private GameObject TextFieldManager;
 
@@ -19,7 +18,7 @@ public class MonoCompiler : MonoBehaviour
 
     private string nameOfFile;
     private string EXEfile;
-    private string path;
+    private string currentWorkingDir;
     private string pathToFile;
 
     private string currentSaveDate;
@@ -28,35 +27,31 @@ public class MonoCompiler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        readFiles = TextFieldManager.GetComponent<ReadFiles>();
         updateFiles = TextFieldManager.GetComponent<UpdateFIles>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        selectedFilePath = readFiles.selectedFilePath;
-
-        nameOfFile = readFiles.nameOfFile;
-        EXEfile = readFiles.EXEfile;
-        path = readFiles.currentWorkingDir;
-        pathToFile = readFiles.selectedFilePath;
+        selectedFilePath = textEditor.PathToTheSelectedFile;
+        EXEfile = textEditor.PathToSelectedExeFile;
+        currentWorkingDir = textEditor.WorkingDirectory;
 
         currentSaveDate = updateFiles.currentSaveDate;
     }
     public void Compile()
     {
-        string pathOfExeFile = $"{path}\\{nameOfFile}.exe";
+        string pathOfExeFile = $"{currentWorkingDir}\\{nameOfFile}.exe";
         string DateThatExeFileCreated = File.GetCreationTime(pathOfExeFile).ToString();
        
         if (File.Exists(EXEfile))
         {
-            MyMove(EXEfile, path);
+            MyMove(EXEfile, currentWorkingDir);
         }
 
         //This method is moving the .exe file because for some reason its been generated in the mono folder instead of the folder that the cs file is
         //This method is executing the exe file
-        LaunchCommandLineApp(nameOfFile, path );
+        LaunchCommandLineApp(nameOfFile, currentWorkingDir);
         EnableAndDisableButton(runButton, 2000);
     }
 

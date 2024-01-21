@@ -13,16 +13,17 @@ using System;
 public class ReadFiles : MonoBehaviour
 {
 
-    [SerializeField] public TMP_InputField inputfield;
+    [SerializeField] private TMP_InputField inputfield;
+    [SerializeField] private TextEditor textEditor;
     private OpenFolder openfolder;
-    public string selectedFilePath;
+    private string selectedFilePath;
     public string nameOfFilePlus;
     public string nameOfFile;
     public string EXEfile;
     public string currentWorkingDir;
 
     public string previousSelectedFile;
-    // Start is called before the first frame update
+    
     void Start()
     {
         //i should take the file form the file manager since there you select which file you want to read
@@ -35,27 +36,27 @@ public class ReadFiles : MonoBehaviour
          * 
          */
         openfolder = FindObjectOfType<OpenFolder>();
+        
+        
+        textEditor.PathToTheSelectedFile = "C:\\Users\\Maixm\\Documents\\file.cs";
+        selectedFilePath = textEditor.PathToTheSelectedFile;
 
-        selectedFilePath = "C:\\Users\\Maixm\\Documents\\file.cs";
-
-        //this gets the name of the file plus the ... thingie (.exe; .cs; .js)
+        // gets the name of the file plus the ... thingie (.exe; .cs; .js)
         string name = selectedFilePath.Substring(selectedFilePath.Length - 7);
         this.nameOfFilePlus = name;
-        //this will get only the name of the file
+        // get only the name of the file
         string nameOfFile = name.Substring(0, name.IndexOf('.'));
         this.nameOfFile = nameOfFile;
-        //this code here gets the directory that the selected file(selectedFilePath)
+        // gets the directory that the selected file(selectedFilePath)
         string pathToFile = selectedFilePath.Substring(0, selectedFilePath.LastIndexOf('\\'));
         
         string EXEfile = @$"C:\Program Files\Mono\bin\{nameOfFile}.exe";
-        this.EXEfile = EXEfile;
-
-        string path = @$"{pathToFile}";
+        textEditor.PathToSelectedExeFile = EXEfile;
 
 
       //  string[] files = Directory.GetFiles(@"D:\");
 
-        inputfield.text = File.ReadAllText(selectedFilePath);
+        textEditor.DisplayText = File.ReadAllText(selectedFilePath);
 
     }
 
@@ -84,7 +85,7 @@ public class ReadFiles : MonoBehaviour
                 fileTmpPro.color = Color.white;
 
                 previousSelectedFile = selectedFilePath;
-                inputfield.text = File.ReadAllText(selectedFilePath);
+                textEditor.DisplayText= File.ReadAllText(selectedFilePath);
             }
             catch (Exception ex)
             {
