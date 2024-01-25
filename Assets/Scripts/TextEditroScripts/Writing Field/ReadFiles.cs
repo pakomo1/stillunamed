@@ -38,6 +38,7 @@ public class ReadFiles : MonoBehaviour
         openfolder = FindObjectOfType<OpenFolder>();
         
         
+        textEditor.PathToTheSelectedFile = "C:\\Users\\Maixm\\Documents\\file.cs";
         selectedFilePath = textEditor.PathToTheSelectedFile;
 
         // gets the name of the file plus the ... thingie (.exe; .cs; .js)
@@ -62,7 +63,7 @@ public class ReadFiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedFilePath != "" && selectedFilePath != null)
+        if (selectedFilePath != "")
         {
             var selectedFileObj = GameObject.Find(Path.GetFileName(selectedFilePath));
 

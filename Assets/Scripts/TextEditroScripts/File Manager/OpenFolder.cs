@@ -29,12 +29,9 @@ public class OpenFolder : MonoBehaviour
         textEditor.WorkingDirectory = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         
 
+        //set the default valuses for:
         textEditor.StartingDirecotry = _currentWorkingDir;
         textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.WorkingDirectory)[0];
-    }
-    public void CloneRepository()
-    {
-
     }
     private void ClearAllFields()
     {
