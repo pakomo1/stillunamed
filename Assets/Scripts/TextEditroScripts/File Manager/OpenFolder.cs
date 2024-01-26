@@ -33,10 +33,6 @@ public class OpenFolder : MonoBehaviour
 
         textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
     }
-    public void CloneRepository()
-    {
-
-    }
     private void ClearAllFields()
     {
         //clears the file manager field

@@ -35,7 +35,7 @@ public class UpdateFIles : MonoBehaviour
         inputField.text = textEditor.DisplayText;
         EXEfile = textEditor.PathToSelectedExeFile;
 
-       
+        inputField.onValueChanged.AddListener((value) => { textEditor.DisplayText = value;});
     }
 
     // Update is called once per frame
