@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
+using TMPro;
 
 public class TextEditor : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class TextEditor : MonoBehaviour
     private string pathToTheSelectedFile;
     private string pathToSelectedExeFile;
     private string wokringDirectory;
+
+    [SerializeField]private TMP_InputField inputField;
 
     // the directroy we in which we are currently in
     public string WorkingDirectory
@@ -53,8 +56,8 @@ public class TextEditor : MonoBehaviour
         StartingDirecotry = startingDirecotry;
         DisplayText = displayText;
     }
-    public TextEditor()
+    private void Update()
     {
-        DisplayText = "";
+        inputField.text = DisplayText;
     }
 }

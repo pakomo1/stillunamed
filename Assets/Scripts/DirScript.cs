@@ -26,7 +26,7 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         path = textEditor.WorkingDirectory; 
         holeCurrentDirText.text = path;
         
-        if (path.Length > 24)
+        if (path.Length > 24 && path != null)
         {
             isTooLong = true;
 

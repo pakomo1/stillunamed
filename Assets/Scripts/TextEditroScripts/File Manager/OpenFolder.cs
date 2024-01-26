@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEditor;
 using TMPro;
 using System.IO;
+using UnityEngine.UI;
 
 public class OpenFolder : MonoBehaviour
 {
     //Should get this reference upon a player joining the lobby
     [SerializeField]private TextEditor textEditor;
 
-    private TheManager theManager;
-    private ReadFiles readFiles;
-    [SerializeField] private TextMeshProUGUI inputField;
+    [SerializeField] private Button openFolderButton;
     [SerializeField] private GameObject fileManager;    
     private string _currentWorkingDir;
    // [SerializeField]private RawImage image;
@@ -20,17 +19,19 @@ public class OpenFolder : MonoBehaviour
 
     private void Awake()
     {
-        theManager = FindObjectOfType<TheManager>();
-        readFiles= FindObjectOfType<ReadFiles>();
+      openFolderButton.onClick.AddListener(OpenExplorer);
     }
     public void OpenExplorer()
     {
         ClearAllFields();
-        textEditor.WorkingDirectory = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
+        textEditor.StartingDirecotry = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         
 
-        textEditor.StartingDirecotry = _currentWorkingDir;
-        textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.WorkingDirectory)[0];
+        textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.StartingDirecotry)[0];
+
+        textEditor.WorkingDirectory = textEditor.StartingDirecotry;
+
+        textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
     }
     public void CloneRepository()
     {
