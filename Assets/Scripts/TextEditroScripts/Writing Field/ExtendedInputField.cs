@@ -1,15 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.InputSystem.iOS;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 
 public class ExtendedInputField : MonoBehaviour
 {
    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private TextEditor textEditor;
 
     private void Awake()
     {
-        //inputField.onValueChanged.AddListener(OnValueChanged);
-       // LangaueClient.StartServer("\"C:\\Users\\Maixm\\Downloads\\omnisharp-win-x64\\OmniSharp.exe\"");
+        inputField.onValueChanged.AddListener(OnValueChanged);
+        LangaueClient.StartServer("C:\\Users\\Maixm\\Downloads\\omnisharp-win-x64\\OmniSharp.exe");
 
     }
 
@@ -18,27 +21,13 @@ public class ExtendedInputField : MonoBehaviour
         int cursorPosition = inputField.caretPosition;
         int lineNumber = CountLines(inputField.text, cursorPosition);
         int columnNumber = CountColumns(inputField.text, cursorPosition);
-        Debug.Log("Line: " + lineNumber + ", Column: " + columnNumber);
 
-        //Send completion requests to the server   
-       
-        string method = "textDocument/completion";
-        object parameters = new
+
+       var completionItems =  await LangaueClient.RequestCompletionAsync(textEditor.PathToTheSelectedFile,lineNumber, columnNumber);
+        foreach (CompletionItem item in completionItems)
         {
-            textDocument = new
-            {
-                uri = "C:\\Users\\Maixm\\Desktop\\testFile.cs"
-            },
-            position = new
-            {
-                line = lineNumber,
-                character = columnNumber
-            }
-        };
-
-        await LangaueClient.SendRequest(method,parameters);
-        var response = await LangaueClient.ReadResponse();
-        print("Server response: " + response);
+            print($"Completion item: {item}");
+        }
     }
 
     private int CountLines(string text, int upto)

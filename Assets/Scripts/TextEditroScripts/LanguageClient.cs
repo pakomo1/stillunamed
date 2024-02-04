@@ -1,4 +1,10 @@
 using Newtonsoft.Json;
+using OmniSharp.Extensions.LanguageServer.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+using OmniSharp.Extensions.LanguageServer.Protocol.Document;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +21,9 @@ public class LangaueClient : MonoBehaviour
     private static StreamReader _outputStream;
 
     private static SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+    private static ILanguageClient _client;
+    private static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,57 +38,77 @@ public class LangaueClient : MonoBehaviour
 
     public static async void StartServer(string serverPath)
     {
-        _process = new Process
+        ProcessStartInfo info = new ProcessStartInfo();
+        var programPath = serverPath;
+        info.FileName = programPath;
+        info.WorkingDirectory = Path.GetDirectoryName(programPath);
+        info.RedirectStandardInput = true;
+        info.RedirectStandardOutput = true;
+        info.UseShellExecute = false;
+
+        Process process = new Process
         {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = serverPath,
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true
-            }
+            StartInfo = info
         };
 
-        _process.Start();
-
-        _inputStream = _process.StandardInput;
-        _outputStream = _process.StandardOutput;
-    }
-    public static async Task SendRequest(string method, object parameters)
-    {
-        var request = new
-        {
-            jsonrpc = "2.0",
-            id = 1,
-            method = method,
-            param = parameters
-        };
-
-        var json = JsonConvert.SerializeObject(request);
-
-
-        await _lock.WaitAsync();
+        process.Start();
         try
         {
-            await _inputStream.WriteLineAsync(json);
-            await _inputStream.FlushAsync();
-        }
-        finally
+            _client = LanguageClient.Create(
+           options =>
+           {
+               options.WithInput(process.StandardOutput.BaseStream)
+                .WithOutput(process.StandardInput.BaseStream)
+                .WithCapability(
+                 new CompletionCapability
+                 {
+                     CompletionItem = new CompletionItemCapabilityOptions
+                     {
+                         DeprecatedSupport = true,
+                         DocumentationFormat = new Container<MarkupKind>(MarkupKind.Markdown, MarkupKind.PlainText),
+                         PreselectSupport = true,
+                         SnippetSupport = true,
+                         TagSupport = new CompletionItemTagSupportCapabilityOptions
+                         {
+                             ValueSet = new[] { CompletionItemTag.Deprecated }
+                         },
+                         CommitCharactersSupport = true
+                     }
+                 }
+             );
+           });
+
+
+            await _client.Initialize(cancellationTokenSource.Token);
+        } catch (Exception ex)
         {
-            _lock.Release();
+            print(ex);
         }
        
     }
-    public static async Task<string> ReadResponse()
+
+    //request completion
+    public static async Task<IEnumerable<CompletionItem>> RequestCompletionAsync(string pathToFile, int line, int character)
     {
-        await _lock.WaitAsync();
         try
         {
-         return await _outputStream.ReadLineAsync();
+            var actualCompletions = await _client.TextDocument.RequestCompletion(
+                new CompletionParams
+                {
+                    TextDocument = pathToFile,
+                    Position = (line, character),
+                }, cancellationTokenSource.Token
+            );
+
+            Thread.Sleep(1000);
+
+            var items = actualCompletions.Items;
+
+            return items;
         }
-        finally
+        catch (Exception ex)
         {
-            _lock.Release();
+            throw new Exception("Error requesting completion", ex);
         }
     }
 }
