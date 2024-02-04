@@ -8,11 +8,12 @@ using UnityEngine.UI;
 
 public class OpenFolder : MonoBehaviour
 {
-    //Should get this reference upon a player joining the lobby
     [SerializeField]private TextEditor textEditor;
+    [SerializeField]private TheManager theManager;
 
     [SerializeField] private Button openFolderButton;
-    [SerializeField] private GameObject fileManager;    
+    [SerializeField] private GameObject fileManager;
+    [SerializeField] private Transform rootPanel;
     private string _currentWorkingDir;
    // [SerializeField]private RawImage image;
 
@@ -28,10 +29,10 @@ public class OpenFolder : MonoBehaviour
         
 
         textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.StartingDirecotry)[0];
-
         textEditor.WorkingDirectory = textEditor.StartingDirecotry;
+       // textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
 
-        textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
+        theManager.GenerateForDirectoy(rootPanel,textEditor.StartingDirecotry);
     }
     private void ClearAllFields()
     {

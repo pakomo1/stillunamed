@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: ed0d02622adaf054bbf5765637024b10
-=======
-guid: bb6f86ef1c6ff7948b3e849c119c8296
->>>>>>> de8c91a40f3c6766ca33780c503a1e86ccbe0b78
 labels:
 - NuGetForUnity
 PluginImporter:
@@ -20,7 +16,18 @@ PluginImporter:
   - first:
       Any: 
     second:
-      enabled: 1
+      enabled: 0
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
+      enabled: 0
       settings: {}
   userData: 
   assetBundleName: 

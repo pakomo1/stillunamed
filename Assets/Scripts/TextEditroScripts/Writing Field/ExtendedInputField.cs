@@ -8,8 +8,8 @@ public class ExtendedInputField : MonoBehaviour
 
     private void Awake()
     {
-        inputField.onValueChanged.AddListener(OnValueChanged);
-        LangaueClient.StartServer("\"C:\\Users\\Maixm\\Downloads\\omnisharp-win-x64\\OmniSharp.exe\"");
+        //inputField.onValueChanged.AddListener(OnValueChanged);
+       // LangaueClient.StartServer("\"C:\\Users\\Maixm\\Downloads\\omnisharp-win-x64\\OmniSharp.exe\"");
 
     }
 
