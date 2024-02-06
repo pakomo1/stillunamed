@@ -16,7 +16,6 @@ public class GetRepositoryFiles : MonoBehaviour
     [SerializeField] private GameObject repoPanelContent;
     void Start()
     {
-        
         repoPanelContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
     }
 

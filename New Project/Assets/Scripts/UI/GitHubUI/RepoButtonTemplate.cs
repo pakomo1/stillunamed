@@ -10,8 +10,11 @@ using Octokit;
 public class RepoButtonTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject buttonTemplate;
-    [SerializeField] private RepositoryContentNavigation repoContentNavigation;
+    [SerializeField] private RepoContentNavigation repositoryContentNavigationManager;
 
+    private void Start()
+    {
+    }
     public async void CreateButton(string repoName, string description, string profilePicUrl, bool visibility, string repoOwner)
     {
         //Repository repo = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
@@ -37,7 +40,7 @@ public class RepoButtonTemplate : MonoBehaviour
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
         }
-        button.GetComponent<Button>().onClick.AddListener(() => repoContentNavigation. ShowRepositoryContent(repoOwner, repoName, "/"));
+        button.GetComponent<Button>().onClick.AddListener(() => repositoryContentNavigationManager.ShowRepositoryContent(repoOwner, repoName, "/"));
         
     }
 

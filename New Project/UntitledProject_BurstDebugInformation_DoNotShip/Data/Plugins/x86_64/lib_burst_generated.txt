@@ -17,6 +17,7 @@ Library: D:\Projects\stillunamed\New Project\Temp\BurstOutput\Data\Plugins\x86_6
 --assembly-defines=Unity.Multiplayer.Tools.NetworkSolutionInterface;
 --assembly-defines=Unity.Networking.Transport;
 --assembly-defines=Unity.Services.Core.Networking;
+--assembly-defines=Nobi.UiRoundedCorners;
 --assembly-defines=Unity.VisualScripting.Flow;
 --assembly-defines=Unity.Netcode.Components;
 --assembly-defines=Unity.Multiplayer.Tools.NetStatsMonitor.Configuration;
@@ -215,6 +216,7 @@ Library: D:\Projects\stillunamed\New Project\Temp\BurstOutput\Data\Plugins\x86_6
 --assembly-defines=Unity.Multiplayer.Tools.NetworkSolutionInterface;
 --assembly-defines=Unity.Networking.Transport;
 --assembly-defines=Unity.Services.Core.Networking;
+--assembly-defines=Nobi.UiRoundedCorners;
 --assembly-defines=Unity.VisualScripting.Flow;
 --assembly-defines=Unity.Netcode.Components;
 --assembly-defines=Unity.Multiplayer.Tools.NetStatsMonitor.Configuration;
