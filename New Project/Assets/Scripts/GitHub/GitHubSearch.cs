@@ -6,13 +6,9 @@ using UnityEngine;
 
 public class GitHubSearch : MonoBehaviour
 {
-    public static async Task SearchRepositories(SearchRepositoriesRequest request)
+    public static async Task<IReadOnlyList<Repository>> SearchRepositories(SearchRepositoriesRequest request)
     {
         var result = await GitHubClientProvider.client.Search.SearchRepo(request);
-
-        foreach (var repo in result.Items)
-        {
-            Debug.Log(repo.FullName);
-        }
+        return result.Items;
     }
 }
