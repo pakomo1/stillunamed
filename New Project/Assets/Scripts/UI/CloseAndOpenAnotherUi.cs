@@ -32,22 +32,29 @@ public class CloseAndOpenAnotherUi : MonoBehaviour
 
 
 
-    private GameObject IterateAndCheckThroughObj(GameObject uiContainer)
+    public GameObject IterateAndCheckThroughObj(GameObject obj)
     {
-           for (int n = 0; n < uiContainer.transform.childCount; n++)
-            {
-                var gameObjectChild = uiContainer.transform.GetChild(n).gameObject;
+        Stack<GameObject> stack = new Stack<GameObject>();
+        GameObject topmostUIContainer = null;
 
-                if (gameObjectChild.tag == "UIContainer" && gameObject.activeSelf)
-                {
-                   uiContainer = IterateAndCheckThroughObj(gameObjectChild);
-                }
-                else
-                {
-                    continue;
-                }
+        stack.Push(obj);
+
+        while (stack.Count > 0)
+        {
+            GameObject current = stack.Pop();
+
+            if (current.tag == "UIContainer" && current.activeSelf)
+            {
+                topmostUIContainer = current;
             }
-            return uiContainer;
+
+            foreach (Transform child in current.transform)
+            {
+                stack.Push(child.gameObject);
+            }
+        }
+
+        return topmostUIContainer;
     }
     private void Start()
     {

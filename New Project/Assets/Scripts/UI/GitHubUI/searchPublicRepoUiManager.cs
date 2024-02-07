@@ -7,6 +7,7 @@ using System;
 public class searchPublicRepoUiManager : MonoBehaviour
 {
     [SerializeField]private TMP_InputField searchInputField;
+    [SerializeField] private RectTransform rectTransform;  
      private SearchRepositoriesRequest request;
 
     void Start()
@@ -36,6 +37,7 @@ public class searchPublicRepoUiManager : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+        rectTransform.anchoredPosition = Vector2.zero;
     }
     public void Hide()
     {
