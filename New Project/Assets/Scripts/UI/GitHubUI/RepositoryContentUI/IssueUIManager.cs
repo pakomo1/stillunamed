@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Octokit;
 using UnityEngine.UI;
+using System.Linq;
 
 public class IssueUIManager : MonoBehaviour
 {
     [SerializeField] private IssuesTemplate issueTemplate;
     [SerializeField] private Button filterButton;
     [SerializeField] private GameObject filterPanel;
+    [SerializeField] private IssuesNetworkManager issuesNetworkManager;
 
     private IssueFilter currentFilter = IssueFilter.All;
     private Dictionary<string, IssueFilter> filters= new Dictionary<string, IssueFilter>()
@@ -42,8 +44,6 @@ public class IssueUIManager : MonoBehaviour
     
     void Update()
     {
-        
-    
 
     }
 
@@ -53,8 +53,10 @@ public class IssueUIManager : MonoBehaviour
         (string ownerName,string repoName) = CreateLobbyUI.GetOwnerAndRepo(GameSceneMetadata.githubRepoLink);
         gameObject.SetActive(true);
 
-        var issues = await GetIssuesForRepository.GetIssuesForRepo(ownerName, repoName,issueRequest);
-        issueTemplate.GenerateIssues(issues);
+        await issuesNetworkManager.GetIssuesForRepoAsync(ownerName, repoName, issueRequest);
+
+        issueTemplate.GenerateIssues(issuesNetworkManager.issues.Value);
+     
     }
     public void Hide()
     {
