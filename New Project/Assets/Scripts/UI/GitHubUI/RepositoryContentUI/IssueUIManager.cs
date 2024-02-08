@@ -55,7 +55,7 @@ public class IssueUIManager : MonoBehaviour
 
         await issuesNetworkManager.GetIssuesForRepoAsync(ownerName, repoName, issueRequest);
 
-        issueTemplate.GenerateIssues(issuesNetworkManager.issues.Value);
+        issueTemplate.GenerateIssues(issuesNetworkManager.issues);
      
     }
     public void Hide()
