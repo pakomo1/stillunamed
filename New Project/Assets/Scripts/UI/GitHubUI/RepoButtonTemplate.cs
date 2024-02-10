@@ -11,11 +11,12 @@ public class RepoButtonTemplate : MonoBehaviour
 {
     [SerializeField] private GameObject buttonTemplate;
     [SerializeField] private RepoContentNavigation repositoryContentNavigationManager;
+    [SerializeField] private RepoButtonTemplateManager repoButtonTemplateManager;
 
     private void Start()
     {
     }
-    public async void CreateButton(string repoName, string description, string profilePicUrl, bool visibility, string repoOwner)
+    public async void CreateButton(Repository currentRepo)
     {
         //Repository repo = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
 
@@ -24,26 +25,31 @@ public class RepoButtonTemplate : MonoBehaviour
 
         TextMeshProUGUI repoNameTextMesh = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         repoNameTextMesh.overflowMode = TextOverflowModes.Ellipsis;
-        repoNameTextMesh.text = repoName;
+        repoNameTextMesh.text = currentRepo.Name;
 
         TextMeshProUGUI descriptionTextMesh = button.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
         descriptionTextMesh.overflowMode = TextOverflowModes.Ellipsis;
-        descriptionTextMesh.text = description;
+        descriptionTextMesh.text = currentRepo.Description;
 
-        Sprite image = await GetImage(profilePicUrl);
+        Sprite image = await GetImage(currentRepo.Owner.AvatarUrl);
         button.transform.GetChild(2).GetChild(0).GetComponent<Image>().sprite = image;
-        if (!visibility)
+        if (currentRepo.Visibility == RepositoryVisibility.Public)
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.green;
         }
-        else if (visibility)
+        else if (currentRepo.Visibility == RepositoryVisibility.Private)
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
         }
-        button.GetComponent<Button>().onClick.AddListener(() => repositoryContentNavigationManager.ShowRepositoryContent(repoOwner, repoName, "/"));
-        
+        button.GetComponent<Button>().onClick.AddListener(() => repositoryContentNavigationManager.ShowRepositoryContent(currentRepo.Owner.Login, currentRepo.Name, "/"));
+        button.GetComponent<RepositoryData>().repository = currentRepo;
     }
 
+
+    public void OnRightClickHandler(Repository repository)
+    {
+        print(repository.Url);
+    }
     private async Task<Sprite> GetImage(string url)
     {
         WWW www = new WWW(url);

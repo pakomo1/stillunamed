@@ -73,7 +73,6 @@ public class CreateLobbyUI : MonoBehaviour
             string repoName = repoUri.Segments[2].TrimEnd('/');
             repoName = repoName.Substring(0,repoName.Length - 4);
 
-            Debug.Log(repoName);
             return(owner, repoName);
         }
         throw new ArgumentException("Invalid GitHub repository URL");

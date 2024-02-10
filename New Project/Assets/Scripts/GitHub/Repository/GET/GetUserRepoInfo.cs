@@ -18,7 +18,7 @@ public class GetUserRepoInfo : MonoBehaviour
     {
         for (int i = 0; i < repositories.Count; i++)
         {
-            buttonTemplate.CreateButton(repositories[i].Name, repositories[i].Description, repositories[i].Owner.AvatarUrl, repositories[i].Private, repositories[i].Owner.Login);
+            buttonTemplate.CreateButton(repositories[i]);
         }
     }
 }

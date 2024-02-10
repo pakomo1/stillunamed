@@ -74,7 +74,6 @@ public class RepoContentNavigation : MonoBehaviour
         branchButtonTemplate.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentBranch;
 
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.Name;
-        print(repoData.Name);
         repoFilesTemplate.GenerateRepoFiles(repoContents, repoData, currentBranch);
     }
 
