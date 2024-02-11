@@ -77,8 +77,12 @@ public class CreateLobbyUI : MonoBehaviour
         }
         throw new ArgumentException("Invalid GitHub repository URL");
     }
-    public void Show()
+    public void Show(Repository repository =null)
     {
+        if(repository != null)
+        {
+           repoLink.text = repository.Url;
+        }
         gameObject.SetActive(true);
     }
     public void Hide()

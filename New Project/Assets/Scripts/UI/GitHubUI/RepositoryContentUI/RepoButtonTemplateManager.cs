@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 
 public class RepoButtonTemplateManager : MonoBehaviour,IPointerClickHandler
 {
-    public UnityEvent<Repository> onLeftClick;
-    public UnityEvent<Repository> onRightClick;
-    public UnityEvent<Repository> onMiddleClick;
+    public UnityEvent<Repository, GameObject> onLeftClick;
+    public UnityEvent<Repository, GameObject> onRightClick;
+    public UnityEvent<Repository, GameObject> onMiddleClick;
     private RepositoryData repositoryData;
 
 
@@ -21,15 +21,15 @@ public class RepoButtonTemplateManager : MonoBehaviour,IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            onLeftClick.Invoke(repositoryData.repository);
+            onLeftClick.Invoke(repositoryData.repository, gameObject);
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            onRightClick.Invoke(repositoryData.repository);
+            onRightClick.Invoke(repositoryData.repository, gameObject);
         }
         else if (eventData.button == PointerEventData.InputButton.Middle)
         {
-            onMiddleClick.Invoke(repositoryData.repository);
+            onMiddleClick.Invoke(repositoryData.repository, gameObject);
         }
     }
 }

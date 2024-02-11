@@ -1,3 +1,4 @@
+using Octokit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,7 +81,7 @@ public class LobbyUi : MonoBehaviour
     }
     public void Show()
     {
-        menu.gameObject.SetActive(true);
+       gameObject.SetActive(true);
     }
     public void Hide()
     {

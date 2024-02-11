@@ -12,6 +12,7 @@ public class RepoButtonTemplate : MonoBehaviour
     [SerializeField] private GameObject buttonTemplate;
     [SerializeField] private RepoContentNavigation repositoryContentNavigationManager;
     [SerializeField] private RepoButtonTemplateManager repoButtonTemplateManager;
+    [SerializeField] private RepositoryOptionsUiManager repositoryOptionsUiManager;
 
     private void Start()
     {
@@ -46,9 +47,22 @@ public class RepoButtonTemplate : MonoBehaviour
     }
 
 
-    public void OnRightClickHandler(Repository repository)
+    public void OnRightClickHandler(Repository repository, GameObject repoButton)
     {
-        print(repository.Url);
+        // Convert the button's world position to screen position
+        Vector2 screenPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, repoButton.transform.position);
+
+        // Convert the screen position to the UI's local position
+        Vector2 localPosition;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(repositoryOptionsUiManager.transform.parent.GetComponent<RectTransform>(), screenPosition, null, out localPosition);
+
+        // Adjust the y position to move the UI below the button
+        localPosition.y -= repositoryOptionsUiManager.GetComponent<RectTransform>().sizeDelta.y;
+
+        // Set the UI's local position
+        repositoryOptionsUiManager.transform.localPosition = localPosition;
+
+        repositoryOptionsUiManager.Show(repository);
     }
     private async Task<Sprite> GetImage(string url)
     {
