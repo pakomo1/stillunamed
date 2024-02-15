@@ -81,7 +81,7 @@ public class CreateLobbyUI : MonoBehaviour
     {
         if(repository != null)
         {
-           repoLink.text = repository.Url;
+           repoLink.text = repository.GitUrl;
         }
         gameObject.SetActive(true);
     }

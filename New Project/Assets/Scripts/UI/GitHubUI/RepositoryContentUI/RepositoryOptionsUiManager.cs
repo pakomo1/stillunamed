@@ -19,6 +19,13 @@ public class RepositoryOptionsUiManager : MonoBehaviour
    {
     
    }
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+           gameObject.SetActive(false);
+        }
+    }
 
     public void createLobbyOnClickHandler()
     {

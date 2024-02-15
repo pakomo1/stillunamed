@@ -10,11 +10,11 @@ public class createOrUploadUIManager : MonoBehaviour
     [SerializeField] private Button createFileButton;
     [SerializeField] private Button uploadFileButton;
 
-    [SerializeField] private GameObject repositoryContentUI;
-    [SerializeField] private GameObject fileContentUI;
+    [SerializeField] private FileContentUIManager fileContentUI;
+    [SerializeField] private SingleActiveChild singleActiveChild;
 
     [SerializeField] private fileMakeUpManager fileMakeUpManager;
-    [SerializeField] private RepositoryContentNavigation repositoryContentNavigation;
+    [SerializeField] private RepoContentNavigation repositoryContentNavigation;
 
     [SerializeField] private TextMeshProUGUI pathToFile;
 
@@ -22,9 +22,8 @@ public class createOrUploadUIManager : MonoBehaviour
     {
         createFileButton.onClick.AddListener(() =>
         {
-            repositoryContentUI.SetActive(false);
-
-            fileContentUI.SetActive(true);
+            
+            singleActiveChild.ActivateChild(2);
             fileMakeUpManager.Show(repositoryContentNavigation.currentRepository, pathToFile.text);
         });
 

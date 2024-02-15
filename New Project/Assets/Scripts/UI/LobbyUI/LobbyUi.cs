@@ -16,6 +16,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private Button createLobbyBtn;
     [SerializeField] private Button refreshButton;
     [SerializeField] private Button CloseButton;
+    [SerializeField] private GameObject networkManager;
 
     [SerializeField] private GameObject content;
 
@@ -81,6 +82,7 @@ public class LobbyUi : MonoBehaviour
     }
     public void Show()
     {
+       networkManager.SetActive(true);
        gameObject.SetActive(true);
     }
     public void Hide()

@@ -25,6 +25,7 @@ public class RepoContentNavigation : MonoBehaviour
     [SerializeField] private ValidAccessToken validAccessToken;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
     [SerializeField] private branchesTemplate branchesTemplate;
+    [SerializeField] private SingleActiveChild singleActiveChild;
     private void Awake()
     {
         addfileButton.onClick.AddListener(() =>
@@ -45,7 +46,9 @@ public class RepoContentNavigation : MonoBehaviour
 
             branchesTemplate.GenerateBranchs(repoBranches, currentRepository);
 
-            ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
+            //ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
+
+            singleActiveChild.ActivateChild(1);
             UpdateSideBarPanel(repository);
             UpdateRepositoryContentUI(repository, repoContent, branch);
         }

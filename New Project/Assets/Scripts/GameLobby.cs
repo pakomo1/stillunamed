@@ -67,7 +67,7 @@ public class GameLobby : MonoBehaviour
         {
             InitializationOptions options = new InitializationOptions();
             //the profile name should be the person's github username
-            options.SetProfile(UnityEngine.Random.Range(0, 1000).ToString());
+            options.SetProfile(GitHubClientProvider.client.User.Current().ToString());
 
             await UnityServices.InitializeAsync(options);
             AuthenticationService.Instance.SignedIn += () =>
@@ -106,7 +106,7 @@ public class GameLobby : MonoBehaviour
             //here we should make a couple of scenece with different sizes
             Loader.LoadNetwrok(Loader.Scene.GameScene);
 
-            print("Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);
+            print($"Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);
         }
         catch (LobbyServiceException ex)
         {
