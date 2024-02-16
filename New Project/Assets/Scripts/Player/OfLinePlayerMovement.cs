@@ -16,10 +16,10 @@ public class OfLinePlayerMovement : MonoBehaviour
     //Animation States
     private const string WALKFRONT = "WalkFront";
     private const string WALKBACK = "WalkBack";
-    private const string WALKSIDE = "WalkSide";
+    private const string WALKRIGHT= "SideWalk";
 
     private int idleAnimStateNum;
-    private string[] idleAnimStates = new string[3] { "IdleFront", "IdleBack", "IdleSide" };
+    private string[] idleAnimStates = new string[1] { "idleFront" };
 
     private void Awake()
     {
@@ -44,7 +44,7 @@ public class OfLinePlayerMovement : MonoBehaviour
         //Change the Animation states depending on the player input
         if (movementDirection.x == 0 && movementDirection.y == 0)
         {
-            animCtrl.ChangeAnimationState(idleAnimStates[idleAnimStateNum]);
+            animCtrl.ChangeAnimationState(idleAnimStates[0]);
         }
         else if (movementDirection.y > 0)
         {
@@ -58,8 +58,8 @@ public class OfLinePlayerMovement : MonoBehaviour
         }
         else if (movementDirection.x != 0)
         {
-            animCtrl.ChangeAnimationState(WALKSIDE);
-            idleAnimStateNum = 2;
+            animCtrl.ChangeAnimationState(WALKRIGHT);
+            idleAnimStateNum = 0;
         }
     }
 
