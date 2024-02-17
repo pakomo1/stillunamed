@@ -46,7 +46,6 @@ public class RepoButtonTemplate : MonoBehaviour
         button.GetComponent<RepositoryData>().repository = currentRepo;
     }
 
-
     public void OnRightClickHandler(Repository repository, GameObject repoButton)
     {
         Vector2 screenPosition = RectTransformUtility.WorldToScreenPoint(Camera.main, repoButton.transform.position);
