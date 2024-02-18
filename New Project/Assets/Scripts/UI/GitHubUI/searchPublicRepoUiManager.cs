@@ -11,6 +11,7 @@ public class searchPublicRepoUiManager : MonoBehaviour
     [SerializeField]private SearchRepoButtonTemplate searchRepoButtonTemplate;
      private SearchRepositoriesRequest request;
 
+    public event EventHandler OnStartGeneratingRepoButtons;
     void Start()
     {
         searchInputField.onValueChanged.AddListener(OnSearchInputFieldChanged);
@@ -19,13 +20,26 @@ public class searchPublicRepoUiManager : MonoBehaviour
 
     public async void OnSearchInputFieldSubmitted(string arg0)
     {
-       var result = await GitHubSearch.SearchRepositories(request);
-       searchRepoButtonTemplate.CreateButton(result);
+       Hide();
+        try
+        {
+            OnStartGeneratingRepoButtons?.Invoke(this, EventArgs.Empty);
+            var result = await GitHubSearch.SearchRepositories(request);
+            searchRepoButtonTemplate.CreateButton(result);
+
+        }catch(Exception ex)
+        {
+            print(ex.Message);
+        }
+       
     }
 
     private void OnSearchInputFieldChanged(string searchInput)
     {
-        request = new SearchRepositoriesRequest(searchInput);
+        request = new SearchRepositoriesRequest(searchInput)
+        {
+           PerPage =11
+        };
     }   
     // Update is called once per frame
     void Update()

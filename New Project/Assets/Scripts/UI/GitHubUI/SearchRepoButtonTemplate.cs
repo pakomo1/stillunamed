@@ -15,6 +15,8 @@ public class SearchRepoButtonTemplate : MonoBehaviour
     [SerializeField]private Button topicButtonTemplate;
     [SerializeField] private GameObject topicsContentHolder;
     [SerializeField] private Image userImage;
+
+    public event EventHandler OnFinishedGeneratingRepoButtons;
     public async void CreateButton(IReadOnlyList<Repository> repositories)
     {
         foreach ( var repo in repositories)
@@ -25,9 +27,7 @@ public class SearchRepoButtonTemplate : MonoBehaviour
             int stars = repo.StargazersCount;
             DateTimeOffset lastUpdate = repo.UpdatedAt;
 
-            var readme = await GitHubClientProvider.client.Repository.Content.GetReadme(repo.Id);
-            string readmeContent = readme.Content;
-            string title = readmeContent.Split('\n')[0].Replace("# ", "");
+            string about = repo.Description;
 
             var topics = await GitHubClientProvider.client.Repository.GetAllTopics(repo.Id);
             CreateTopicButtonTemplate(topics);
@@ -35,19 +35,21 @@ public class SearchRepoButtonTemplate : MonoBehaviour
             var button = Instantiate(buttonTemplate, transform);
             button.gameObject.SetActive(true);
 
-            var footer = button.transform.Find("Footer");   
+            var footer = button.transform.Find("Footer");
+            var repositoryName = button.transform.Find("repositoryName");
 
-            button.transform.Find("repositoryName").GetComponent<TextMeshProUGUI>().text = name;
-            button.transform.Find("descriptionTitle").GetComponent<TextMeshProUGUI>().text = title;
+            repositoryName.GetComponent<TextMeshProUGUI>().text = name;
+            button.transform.Find("descriptionTitle").GetComponent<TextMeshProUGUI>().text = about;
 
             footer.Find("mostusedLanguage").GetComponent<TextMeshProUGUI>().text = mostUsedLanguage;
             footer.Find("stars").GetComponent<TextMeshProUGUI>().text = stars.ToString();
             string formattedDate = lastUpdate.ToString("MMM dd, yyyy");
             footer.Find("lastUpdateDate").GetComponent<TextMeshProUGUI>().text = $"Updated on {formattedDate}";
 
-            button.transform.Find("userProfilePicture").GetComponent<Image>().sprite = await GetImage(avatarUrl);
+            repositoryName.transform.Find("userProfilePicture").GetComponent<Image>().sprite = await GetImage(avatarUrl);
             button.onClick.AddListener(() => OnRepoButtonClick(repo));
         }
+        OnFinishedGeneratingRepoButtons?.Invoke(this, EventArgs.Empty);
     }
 
     private void CreateTopicButtonTemplate(RepositoryTopics topics)
