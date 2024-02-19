@@ -19,6 +19,7 @@ public class SearchRepoButtonTemplate : MonoBehaviour
     public event EventHandler OnFinishedGeneratingRepoButtons;
     public async void CreateButton(IReadOnlyList<Repository> repositories)
     {
+        ClearContent();
         foreach ( var repo in repositories)
         {
             string name = repo.Name;
@@ -66,6 +67,15 @@ public class SearchRepoButtonTemplate : MonoBehaviour
     {
         throw new NotImplementedException();
     }
+    //clear content
+    public void ClearContent()
+    {
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
 
     private Task<Sprite> GetImage(string url)
     {
