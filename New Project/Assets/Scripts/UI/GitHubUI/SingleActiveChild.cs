@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SingleActiveChild : MonoBehaviour
 {
     private GameObject[] children;
+    [SerializeField]private SideBarManagerUI sideBarManagerUI;
+
 
     void Start()
     {
@@ -21,7 +25,23 @@ public class SingleActiveChild : MonoBehaviour
     {
         for (int i = 0; i < children.Length; i++)
         {
-            children[i].SetActive(i == index);
+            children[i].SetActive(checkIndex(i,index));
         }
+    }
+    private bool checkIndex(int index1, int chosenIndex)
+    {
+        if (index1 == chosenIndex)
+        {
+            if(children[index1].name.ToLower() == "repositorycontentui")
+            {
+                sideBarManagerUI.Show();
+            }
+            else
+            {
+                sideBarManagerUI.Hide();
+            }
+            return true;
+        }
+        return false;
     }
 }

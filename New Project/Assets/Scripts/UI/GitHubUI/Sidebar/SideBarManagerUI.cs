@@ -8,24 +8,14 @@ public class SideBarManagerUI : MonoBehaviour
     [SerializeField] private GameObject repositoryContentUI;
     [SerializeField] private Button showSideBarButton;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Show()
     {
-        
+        gameObject.SetActive(true);
+        showSideBarButton.gameObject.SetActive(true);
     }
-
-    // Update is called once per frame
-    void Update()
+    public void Hide()
     {
-        if (repositoryContentUI.activeSelf)
-        {
-            gameObject.SetActive(true);
-            showSideBarButton.gameObject.SetActive(true);
-        }
-        else
-        {
-            gameObject.gameObject.SetActive(false);
-            showSideBarButton.gameObject.SetActive(false);
-        }
+        gameObject.SetActive(false);
+        showSideBarButton.gameObject.SetActive(false);
     }
 }
