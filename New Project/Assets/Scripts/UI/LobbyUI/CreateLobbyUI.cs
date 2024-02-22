@@ -25,15 +25,25 @@ public class CreateLobbyUI : MonoBehaviour
             bool isReal = await CheckIfRepoLinkIsReal(repoLink.text);
             if (isReal)
             {
-                GameSceneMetadata.githubRepoLink = repoLink.text;
-                gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text));
-                lobbyName.text = "";
-                repoLink.text = "";
-                maxPlayerCount.text = "0";
+                bool isOwner = await CheckIfUserIsOwnerOfRepo(repoLink.text);
+                if (isOwner)
+                {
+                    // Show options to use the repository directly or create a fork
+                }
+                else
+                {
+                    GameSceneMetadata.githubRepoLink = repoLink.text;
+                    gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text), true);
+                    lobbyName.text = "";
+                    repoLink.text = "";
+                    maxPlayerCount.text = "0";
 
-                Lobby joinedLobby = gameLobby.GetLobby();
+                    Lobby joinedLobby = gameLobby.GetLobby();
 
-                Hide();
+                    Hide();
+                }
+
+                
             }
             else
             {
@@ -47,11 +57,27 @@ public class CreateLobbyUI : MonoBehaviour
             Hide();
         }
     }
+
+    private async Task<bool> CheckIfUserIsOwnerOfRepo(string url)
+    {
+        try
+        {
+            var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(url);
+            var repository = await GitHubClientProvider.client.Repository.Get(owner, repoName);
+            var currentUser = await GitHubClientProvider.client.User.Current();
+            return repository.Owner.Login == currentUser.Login;
+        }
+        catch (Exception error)
+        {
+            // Handle error
+            return false;
+        }
+    }
     public async Task<bool> CheckIfRepoLinkIsReal(string url)
     {
         try
         {
-            var (owner, repoName)= GetOwnerAndRepo(url);
+            var (owner, repoName)= GitHelperMethods.GetOwnerAndRepo(url);
             var repository = await GitHubClientProvider.client.Repository.Get(owner, repoName);
             print("Repository Exists");
             return true;
@@ -63,20 +89,7 @@ public class CreateLobbyUI : MonoBehaviour
             return false;
         }
     }
-    public static(string owner, string repoName) GetOwnerAndRepo(string repoUrl)
-    {
-        Uri repoUri = new Uri(repoUrl);
-        
-        if(repoUri.Segments.Length >= 3)
-        {
-            string owner = repoUri.Segments[1].TrimEnd('/');
-            string repoName = repoUri.Segments[2].TrimEnd('/');
-            repoName = repoName.Substring(0,repoName.Length - 4);
-
-            return(owner, repoName);
-        }
-        throw new ArgumentException("Invalid GitHub repository URL");
-    }
+  
     public void Show(Repository repository =null)
     {
         if(repository != null)

@@ -79,7 +79,7 @@ public class GameLobby : MonoBehaviour
         }
 
     }
-    public async void CreateLobby(string lobbyname, string githubRepository, bool isPrivate, int maxPlayers)
+    public async void CreateLobby(string lobbyname, string githubRepository, bool isPrivate, int maxPlayers, bool shouldFork = true)
     {
         OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
@@ -100,6 +100,12 @@ public class GameLobby : MonoBehaviour
                    { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
                 }
             });
+
+            var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(githubRepository);
+            if (shouldFork)
+            {
+                var forkedRepo = await Forks.ForkRepository(owner, repoName);
+            }
 
             NetworkManager.Singleton.StartHost();
 
