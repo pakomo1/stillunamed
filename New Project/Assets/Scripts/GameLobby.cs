@@ -102,11 +102,15 @@ public class GameLobby : MonoBehaviour
             });
 
             var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(githubRepository);
+            string currentRepository = githubRepository;
             if (shouldFork)
             {
                 var forkedRepo = await Forks.ForkRepository(owner, repoName);
+                currentRepository = forkedRepo.HtmlUrl;
             }
 
+            //clone the repository here
+            GameSceneMetadata.githubRepoLink = currentRepository;
             NetworkManager.Singleton.StartHost();
 
             //here we should make a couple of scenece with different sizes

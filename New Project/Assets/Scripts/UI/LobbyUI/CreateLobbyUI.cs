@@ -25,25 +25,21 @@ public class CreateLobbyUI : MonoBehaviour
             bool isReal = await CheckIfRepoLinkIsReal(repoLink.text);
             if (isReal)
             {
+                bool createFork = true;
                 bool isOwner = await CheckIfUserIsOwnerOfRepo(repoLink.text);
                 if (isOwner)
                 {
-                    // Show options to use the repository directly or create a fork
+                   createFork = false;
                 }
-                else
-                {
-                    GameSceneMetadata.githubRepoLink = repoLink.text;
-                    gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text), true);
-                    lobbyName.text = "";
-                    repoLink.text = "";
-                    maxPlayerCount.text = "0";
+                gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text), createFork);
+                lobbyName.text = "";
+                repoLink.text = "";
+                maxPlayerCount.text = "0";
 
-                    Lobby joinedLobby = gameLobby.GetLobby();
+                Lobby joinedLobby = gameLobby.GetLobby();
 
-                    Hide();
-                }
+                Hide();
 
-                
             }
             else
             {
