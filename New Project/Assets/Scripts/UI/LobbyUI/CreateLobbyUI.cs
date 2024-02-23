@@ -39,7 +39,6 @@ public class CreateLobbyUI : MonoBehaviour
                 Lobby joinedLobby = gameLobby.GetLobby();
 
                 Hide();
-
             }
             else
             {
@@ -75,7 +74,6 @@ public class CreateLobbyUI : MonoBehaviour
         {
             var (owner, repoName)= GitHelperMethods.GetOwnerAndRepo(url);
             var repository = await GitHubClientProvider.client.Repository.Get(owner, repoName);
-            print("Repository Exists");
             return true;
 
         }catch (Exception ex)
@@ -90,7 +88,7 @@ public class CreateLobbyUI : MonoBehaviour
     {
         if(repository != null)
         {
-           repoLink.text = repository.GitUrl;
+           repoLink.text = repository.HtmlUrl;
         }
         gameObject.SetActive(true);
     }

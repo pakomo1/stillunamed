@@ -7,6 +7,9 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.Services.Relay.Models;
 using System;
+using UnityEditor;
+using System.IO;
+using LibGit2Sharp;
 
 public class GameLobby : MonoBehaviour
 {
@@ -66,8 +69,8 @@ public class GameLobby : MonoBehaviour
         if (UnityServices.State != ServicesInitializationState.Initialized)
         {
             InitializationOptions options = new InitializationOptions();
-            //the profile name should be the person's github username
-            options.SetProfile(GitHubClientProvider.client.User.Current().ToString());
+
+            options.SetProfile(UnityEngine.Random.Range(0, 1000).ToString());
 
             await UnityServices.InitializeAsync(options);
             AuthenticationService.Instance.SignedIn += () =>
@@ -102,14 +105,30 @@ public class GameLobby : MonoBehaviour
             });
 
             var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(githubRepository);
+            
             string currentRepository = githubRepository;
+            // check if the repository should be forked
             if (shouldFork)
             {
+                //forke that shit
                 var forkedRepo = await Forks.ForkRepository(owner, repoName);
+                //set the current repository string to the forked repository link
                 currentRepository = forkedRepo.HtmlUrl;
             }
 
-            //clone the repository here
+
+            string cloneDirectory = EditorUtility.OpenFolderPanel("Overwrite with folders", "", "All folders");
+            //check if the repsitory exits
+            if (Repository.IsValid(cloneDirectory)) 
+            {
+                print("This repo exists");
+            }
+            else
+            {
+                print($"Cloning inside: {cloneDirectory}");
+                // The repository has not been cloned yet.
+                GitOperations.CloneRepository(currentRepository, cloneDirectory);
+            }
             GameSceneMetadata.githubRepoLink = currentRepository;
             NetworkManager.Singleton.StartHost();
 
