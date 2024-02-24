@@ -20,12 +20,21 @@ public class GameLobby : MonoBehaviour
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameObject nolobbiesText;
     [SerializeField] private GameRelay gameRelay;
-
+    //lobby events
     public event EventHandler OnCreateLobbyStarted;
     public event EventHandler OnCreateLobbyFailed;
 
     public event EventHandler OnLobbyJoinStarted;
     public event EventHandler OnLobbyJoinFailed;
+    
+    //git events
+    public event EventHandler OnForkStarted;
+    public event EventHandler<GitOperationsEventArgs> OnForkFailed;
+    public event EventHandler OnForkSuccess;
+
+    public event EventHandler OnCloneStarted;
+    public event EventHandler<GitOperationsEventArgs> OnCloneFailed;
+    public event EventHandler OnCloneSuccess;
 
     public static GameLobby Instance { get; private set; }
     private void Awake()
@@ -110,29 +119,51 @@ public class GameLobby : MonoBehaviour
             // check if the repository should be forked
             if (shouldFork)
             {
-                //forke that shit
-                var forkedRepo = await Forks.ForkRepository(owner, repoName);
-                //set the current repository string to the forked repository link
-                currentRepository = forkedRepo.HtmlUrl;
+
+                OnForkStarted?.Invoke(this, EventArgs.Empty);
+                try
+                {
+                    //forke that shit
+                    var forkedRepo = await Forks.ForkRepository(owner, repoName);
+                    //set the current repository string to the forked repository link
+                    currentRepository = forkedRepo.HtmlUrl;
+
+                    OnForkSuccess?.Invoke(this, EventArgs.Empty);
+                }
+                catch(Exception ex)
+                {
+                    OnForkFailed?.Invoke(this, new GitOperationsEventArgs(ex.Message));
+                }
+              
             }
 
 
             string cloneDirectory = EditorUtility.OpenFolderPanel("Overwrite with folders", "", "All folders");
+            string repoPath = $"{cloneDirectory}/{repoName}";
+            
             //check if the repsitory exits
-            if (Repository.IsValid(cloneDirectory)) 
+            if (Repository.IsValid(repoPath)) 
             {
                 print("This repo exists");
             }
             else
             {
                 print($"Cloning inside: {cloneDirectory}");
-                // The repository has not been cloned yet.
-                GitOperations.CloneRepository(currentRepository, cloneDirectory);
+                OnCloneStarted?.Invoke(this, EventArgs.Empty);
+                try
+                {
+                    // The repository has not been cloned yet.
+                    await GitOperations.CloneRepositoryAsync(currentRepository, repoPath);
+                }catch(Exception er)
+                {
+                    OnCloneFailed.Invoke(this, new GitOperationsEventArgs(er.Message));
+                }
+               
             }
             GameSceneMetadata.githubRepoLink = currentRepository;
             NetworkManager.Singleton.StartHost();
 
-            //here we should make a couple of scenece with different sizes
+            //here you should make a couple of scenece with different room sizes
             Loader.LoadNetwrok(Loader.Scene.GameScene);
 
             print($"Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);

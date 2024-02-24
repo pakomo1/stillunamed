@@ -15,6 +15,7 @@ public class ConnectingUI : MonoBehaviour
     void Start()
     {
         Hide();
+        //lobby event listeners
         LobbyUi.Instance.OnTryToJoinGame += LobbyUI_OnTryToJoinGame;
         LobbyUi.Instance.OnFaildToJoinGame += LobbyUI_OnFaildToJoinGame;
 
@@ -23,6 +24,46 @@ public class ConnectingUI : MonoBehaviour
 
         GameLobby.Instance.OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;
         GameLobby.Instance.OnLobbyJoinFailed += GameLobby_OnLobbyJoinFailed;
+
+        //git event listeners
+        GameLobby.Instance.OnForkStarted += GameLobby_OnForkStarted;
+        GameLobby.Instance.OnForkFailed += GameLobby_OnForkFailed;
+        GameLobby.Instance.OnForkSuccess += GameLobby_OnForkSuccess;
+
+        GameLobby.Instance.OnCloneStarted += GameLobby_OnCloneStarted;
+        GameLobby.Instance.OnCloneFailed += GameLobby_OnCloneFailed;
+        GameLobby.Instance.OnCloneSuccess += GameLobby_OnCloneSuccess;
+
+    }
+
+    private void GameLobby_OnCloneSuccess(object sender, EventArgs e)
+    {
+        ShowMessage("Cloning repository success", true);
+    }
+
+    private void GameLobby_OnCloneFailed(object sender, GitOperationsEventArgs e)
+    {
+        ShowMessage(e.ErrorMessage, true);
+    }
+
+    private void GameLobby_OnCloneStarted(object sender, EventArgs e)
+    {
+        ShowMessage("Cloning repository...", false);
+    }
+
+    private void GameLobby_OnForkSuccess(object sender, EventArgs e)
+    {
+        ShowMessage("Forking repository success", true);
+    }
+
+    private void GameLobby_OnForkFailed(object sender, GitOperationsEventArgs e)
+    {
+        ShowMessage(e.ErrorMessage, true);
+    }
+
+    private void GameLobby_OnForkStarted(object sender, EventArgs e)
+    {
+        ShowMessage("Forking repository...", false);
     }
 
     private void GameLobby_OnLobbyJoinFailed(object sender, EventArgs e)
