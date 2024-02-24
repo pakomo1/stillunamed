@@ -15,11 +15,31 @@ public class CreateLobbyUI : MonoBehaviour
     [SerializeField] private TMP_InputField repoLink;
     [SerializeField] private TMP_InputField maxPlayerCount;
     [SerializeField] private Toggle isPrivate;
-    
+
+    [SerializeField] private GameObject alertForkingUI;
+    [SerializeField] private Button continueButton;
+    [SerializeField] private Button cancelButton;
+
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private GameRelay gameRelay;
+
+
+    private bool shouldContinue;
     private void Start()
     {
+        continueButton.onClick.AddListener(() =>
+        {
+            shouldContinue = true;
+            alertForkingUI.SetActive(false);
+        });
+
+        cancelButton.onClick.AddListener(() =>
+        {
+            shouldContinue = false;
+            alertForkingUI.SetActive(false);
+        });
+
+
         createButton.onClick.AddListener(async () =>
         {
             bool isReal = await CheckIfRepoLinkIsReal(repoLink.text);
@@ -30,6 +50,15 @@ public class CreateLobbyUI : MonoBehaviour
                 if (isOwner)
                 {
                    createFork = false;
+                }
+                else
+                {
+                    alertForkingUI.SetActive(true);
+                    await WaitForUserResponse();
+                    if (!shouldContinue)
+                    {
+                        return;
+                    }
                 }
                 gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text), createFork);
                 lobbyName.text = "";
@@ -95,6 +124,14 @@ public class CreateLobbyUI : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    private async Task WaitForUserResponse()
+    {
+        while (alertForkingUI.activeSelf)
+        {
+            await Task.Delay(100);
+        }
     }
 
 }
