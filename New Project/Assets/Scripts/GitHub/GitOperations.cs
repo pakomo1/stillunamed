@@ -10,22 +10,20 @@ using UnityEngine;
 
 public class GitOperations : MonoBehaviour
 {
-    public static string CloneRepository(string sourceUrl, string destinationPath)
+    public static async Task<string> CloneRepositoryAsync(string sourceUrl, string destinationPath)
     {
         var co = new CloneOptions();
-        var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(sourceUrl);
 
         string token = GetAccessToken();
-        User user = GitHubClientProvider.client.User.Current().Result;
+        User user = await GitHubClientProvider.client.User.Current();
         string username = user.Login;
 
         print(username);
-        co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = username, Password=token };
-        
-        string repoPath = $"{destinationPath}/{repoName}";  
-        Directory.CreateDirectory(repoPath);
-        
-        string clonedRepoPath = LibGit2Sharp.Repository.Clone(sourceUrl, repoPath, co);
+        co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = username, Password = token };
+
+        Directory.CreateDirectory(destinationPath);
+
+        string clonedRepoPath = await Task.Run(() => LibGit2Sharp.Repository.Clone(sourceUrl, destinationPath, co));
         return clonedRepoPath;
     }
     private static string GetAccessToken()
