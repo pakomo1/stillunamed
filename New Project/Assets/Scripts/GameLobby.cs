@@ -10,6 +10,7 @@ using System;
 using UnityEditor;
 using System.IO;
 using LibGit2Sharp;
+using SFB;
 
 public class GameLobby : MonoBehaviour
 {
@@ -138,8 +139,8 @@ public class GameLobby : MonoBehaviour
             }
 
 
-            string cloneDirectory = EditorUtility.OpenFolderPanel("Overwrite with folders", "", "All folders");
-            string repoPath = $"{cloneDirectory}/{repoName}";
+            string[] cloneDirectory = StandaloneFileBrowser.OpenFolderPanel("Selct a folder","", false);
+            string repoPath = $"{cloneDirectory[0]}/{repoName}";
             
             //check if the repsitory exits
             if (Repository.IsValid(repoPath)) 
@@ -148,7 +149,7 @@ public class GameLobby : MonoBehaviour
             }
             else
             {
-                print($"Cloning inside: {cloneDirectory}");
+                print($"Cloning inside: {cloneDirectory[0]}");
                 OnCloneStarted?.Invoke(this, EventArgs.Empty);
                 try
                 {
