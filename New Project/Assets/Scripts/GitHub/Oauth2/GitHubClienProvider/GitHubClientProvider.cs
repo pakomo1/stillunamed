@@ -6,7 +6,7 @@ using UnityEngine;
 public static class GitHubClientProvider
 {
 
-    public static GitHubClient client = new GitHubClient(new ProductHeaderValue("StillunamedApp"));
+    public static GitHubClient client = new GitHubClient(new ProductHeaderValue("GitRoomApp"));
     public static GitHubClient GetGitHubClient(string accessToken)
     {
         client.Credentials = new Credentials(accessToken);

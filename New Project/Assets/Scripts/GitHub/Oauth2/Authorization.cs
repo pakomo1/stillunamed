@@ -10,7 +10,7 @@ public class Authorization : MonoBehaviour
     [SerializeField] private Oauth2AccessToken Oauth2AC;
     [SerializeField] private GameObject loadingMessage;
     [SerializeField] private GameObject authorizationButton;
-    string clientId = "086490aaf0f9ef0b33e4";
+    string clientId = "e4edd56045a448fbdc0f";
     string systemRedirectUri;
 
     void Start()

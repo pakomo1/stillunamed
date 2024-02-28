@@ -11,8 +11,8 @@ public class Oauth2AccessToken : MonoBehaviour
     [SerializeField] private GameObject uiAfterCompletion;
     [SerializeField] private GameObject uiBeforeCompletion;
     private string code;
-    private string clientId = "086490aaf0f9ef0b33e4";
-    private string clientSecret = "f1fe8180ea2712c9ce2a282a035799e9f2129093";
+    private string clientId = "e4edd56045a448fbdc0f";
+    private string clientSecret = "8e706e8c6be08f9ff09ba1493261f0eeb0dd1522";
     private string result;
     private string[] prefixes = new string[1] { "http://localhost:3000/callback/" };
     private GameObject playerObjectPrefab;
@@ -47,11 +47,29 @@ public class Oauth2AccessToken : MonoBehaviour
         output.Close();
         listener.Stop();
 
-        // Get code from URI
-        string[] rawUri = request.RawUrl.Split('=');
-        code = rawUri[1];
-        print(code);
+        // Get the query string from the URL
+        string queryString = request.Url.Query;
 
+        // Remove the leading '?' from the query string
+        if (!string.IsNullOrEmpty(queryString) && queryString.StartsWith("?"))
+        {
+            queryString = queryString.Substring(1);
+        }
+
+        // Split the query string into parameters
+        string[] parameters = queryString.Split('&');
+
+        // Find the 'code' parameter
+        foreach (string parameter in parameters)
+        {
+            string[] parts = parameter.Split('=');
+            if (parts.Length == 2 && parts[0] == "code")
+            {
+                code = parts[1];
+                break;
+            }
+        }
+        print("code: " + code);
         // Get Access Token with code
         result = await Authorize();
         print(result);
