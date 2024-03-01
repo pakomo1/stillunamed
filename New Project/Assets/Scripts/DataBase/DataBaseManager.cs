@@ -16,10 +16,18 @@ public class DataBaseManager : MonoBehaviour
     }
 
     //save user
-    public void SaveUser(UserModel userToSave)
+    public void SaveUser(string username)
     {
-        string json = JsonUtility.ToJson(userToSave);
-        dbRef.Child("users").Child(userToSave.Username).SetRawJsonValueAsync(json);
+        UserModel userToSave = new UserModel(username);
+
+        string json = Newtonsoft.Json.JsonConvert.SerializeObject(userToSave);
+        dbRef.Child("users").Child(userToSave.Username).SetRawJsonValueAsync(json).ContinueWith(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                print(task.Exception);
+            }
+        });
     }
 
     public Task<UserModel> GetUser(string username)
@@ -47,6 +55,25 @@ public class DataBaseManager : MonoBehaviour
                 {
                     throw new Exception("User does not exist.");
                 }
+            }
+        });
+    }
+
+    public Task<bool> CheckIfUserExists(string username)
+    {
+        // Get the user data from /users/$username
+        return dbRef.Child("users").Child(username).GetValueAsync().ContinueWith(task => {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError("Failed to check if user exists: " + task.Exception);
+                throw task.Exception;
+            }
+            else
+            {
+                DataSnapshot snapshot = task.Result;
+
+                // Check if the user exists
+                return snapshot.Exists;
             }
         });
     }

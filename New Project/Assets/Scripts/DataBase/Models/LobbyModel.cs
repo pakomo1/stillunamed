@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LobbyModel : MonoBehaviour
+[Serializable]
+public class LobbyModel
 {
     public int Id { get; set; }
     public string OwnerUsername { get; set; }
