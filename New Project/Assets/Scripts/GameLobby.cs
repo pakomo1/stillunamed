@@ -11,6 +11,7 @@ using UnityEditor;
 using System.IO;
 using LibGit2Sharp;
 using SFB;
+using System.Threading.Tasks;
 
 public class GameLobby : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GameLobby : MonoBehaviour
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameObject nolobbiesText;
     [SerializeField] private GameRelay gameRelay;
+    [SerializeField] private DataBaseManager dbManager;
     //lobby events
     public event EventHandler OnCreateLobbyStarted;
     public event EventHandler OnCreateLobbyFailed;
@@ -189,7 +191,15 @@ public class GameLobby : MonoBehaviour
         }
     }
 
-    public async void ListLobbies()
+    public void ListLobbies(List<Lobby> lobbies)
+    {
+        foreach (Lobby lobby in lobbies )
+        {
+            print(lobby.Name);
+            lobbyTemplate.GenerateLobbie(lobby);
+        }
+    }
+    public async void GetAllPublicLobbies()
     {
         try
         {
@@ -197,23 +207,14 @@ public class GameLobby : MonoBehaviour
             print("Number of lobbies found" + queryResponse.Results.Count);
             if (queryResponse.Results.Count > 0)
             {
-                nolobbiesText.SetActive(false);
-                foreach (Lobby lobby in queryResponse.Results)
-                {
-                    print(lobby.Name);
-
-                    lobbyTemplate.GenerateLobbie(lobby);
-                }
+                ListLobbies(queryResponse.Results);
             }
-            else
-            {
-                nolobbiesText.SetActive(true);
-            }
-
-        } catch (LobbyServiceException ex)
-        {
-            print(ex.Message);
         }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+
     }
     public async void JoinLobbyByID(string id)
     {
@@ -223,6 +224,9 @@ public class GameLobby : MonoBehaviour
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
 
+            string username= GitHubClientProvider.client.User.Current().Result.Login;
+
+            await dbManager.UpdateRecentLobbies(username,joinedLobby.Id);
             JoinAllocation joinAllocation = await gameRelay.JoinRelay(relayCode);
             NetworkManager.Singleton.StartClient();
 
@@ -233,6 +237,20 @@ public class GameLobby : MonoBehaviour
 
         }
     }
+    public async Task<Lobby> GetLobbyById(string id)
+    {
+        try
+        {
+            Lobby lobby = await Lobbies.Instance.GetLobbyAsync(id);
+            return lobby;
+        }
+        catch (LobbyServiceException ex)
+        {
+            Debug.LogError("Failed to retrieve lobby: " + ex.Message);
+            return null;
+        }
+    }
+
     public void PrintPlayersInLobby(Lobby lobby)
     {
         foreach (Player player in lobby.Players)

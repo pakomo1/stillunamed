@@ -5,6 +5,9 @@ using Firebase;
 using Firebase.Database;
 using System.Threading.Tasks;
 using System;
+using Unity.Services.Lobbies.Models;
+using System.Linq;
+using Unity.VisualScripting;
 
 public class DataBaseManager : MonoBehaviour
 {
@@ -19,6 +22,7 @@ public class DataBaseManager : MonoBehaviour
     public void SaveUser(string username)
     {
         UserModel userToSave = new UserModel(username);
+        userToSave.recentLobbies = new List<int>();
 
         string json = Newtonsoft.Json.JsonConvert.SerializeObject(userToSave);
         dbRef.Child("users").Child(userToSave.Username).SetRawJsonValueAsync(json).ContinueWith(task =>
@@ -57,6 +61,51 @@ public class DataBaseManager : MonoBehaviour
                 }
             }
         });
+    }
+
+    //gets the lobbies for a user
+    public async Task UpdateRecentLobbies(string username, string lobbyId)
+    {
+        var userRecord = await dbRef.Child("users").Child(username).GetValueAsync();
+        var recentLobbiesJson = userRecord.Child("recentLobbies").GetRawJsonValue();
+
+        List<string> recentLobbies = string.IsNullOrEmpty(recentLobbiesJson)
+            ? new List<string>()
+            : Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(recentLobbiesJson);
+
+        recentLobbies.Add(lobbyId);
+
+        if (recentLobbies.Count > 10)
+        {
+            recentLobbies = recentLobbies.TakeLast(10).ToList();
+        }
+
+        // Update the user's record
+        await dbRef.Child("users").Child(username).Child("recentLobbies").SetRawJsonValueAsync(Newtonsoft.Json.JsonConvert.SerializeObject(recentLobbies));
+    }
+
+    public async Task<List<string>> GetRecentLobbies(string username)
+    {
+        var userRecord = await dbRef.Child("users").Child(username).GetValueAsync();
+        var recentLobbiesJson = userRecord.Child("recentLobbies").GetRawJsonValue();
+
+        List<string> recentLobbies = string.IsNullOrEmpty(recentLobbiesJson)
+            ? new List<string>()
+            : Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(recentLobbiesJson);
+
+        return recentLobbies;
+    }
+
+    //removes the recent lobby
+    public async Task RemoveRecentLobby(string username, string lobbyId)
+    {
+        var userRecord = await dbRef.Child("users").Child(username).GetValueAsync();
+        var recentLobbies = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(userRecord.Child("recentLobbies").GetRawJsonValue());
+
+        recentLobbies.Remove(lobbyId);
+
+        // Update the user's record
+        await dbRef.Child("users").Child(username).Child("recentLobbies").SetRawJsonValueAsync(Newtonsoft.Json.JsonConvert.SerializeObject(recentLobbies));
     }
 
     public Task<bool> CheckIfUserExists(string username)

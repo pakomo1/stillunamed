@@ -7,11 +7,10 @@ using UnityEngine;
 public class UserModel
 {
     public string Username;
-    public Dictionary<string, bool> Lobbies;
+    public List<int> recentLobbies;
 
     public UserModel(string username)
     {
         Username = username;
-        Lobbies = new Dictionary<string, bool>();
     }
 }

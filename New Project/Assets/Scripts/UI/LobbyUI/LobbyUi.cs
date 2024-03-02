@@ -3,24 +3,27 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyUi : MonoBehaviour
 {
-    [SerializeField] private GameObject menu;
-
-    [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameLobby gameLobby;
+    [SerializeField] private CreateLobbyUI createLobbyUI;
+    [SerializeField] private DataBaseManager dbManager;
+
+    [SerializeField] private GameObject menu;
+    [SerializeField] private GameObject connectingUI;
+    [SerializeField] private GameObject networkManager;
+    [SerializeField] private GameObject content;
     [SerializeField] private Button createLobbyBtn;
     [SerializeField] private Button refreshButton;
-    [SerializeField] private Button CloseButton;
-    [SerializeField] private GameObject networkManager;
+    [SerializeField] private Button recentLobbiesButton;
 
-    [SerializeField] private GameObject content;
 
-    [SerializeField] private CreateLobbyUI createLobbyUI;
 
     public event EventHandler OnTryToJoinGame; 
     public event EventHandler OnFaildToJoinGame;
@@ -29,7 +32,7 @@ public class LobbyUi : MonoBehaviour
     public static LobbyUi Instance { get; private set; }
     private void Start()
     {
-        gameLobby.ListLobbies();
+        gameLobby.GetAllPublicLobbies();
         
         createLobbyBtn.onClick.AddListener(() => 
         {
@@ -37,19 +40,11 @@ public class LobbyUi : MonoBehaviour
         });
         refreshButton.onClick.AddListener(() =>
         {
-            for (int i = 0; i < content.transform.childCount; i++)
-            {
-                Destroy(content.transform.GetChild(i).gameObject);
-            }
-            gameLobby.ListLobbies();
+            Clear();
+            gameLobby.GetAllPublicLobbies();
         });
 
-        /*CloseButton.onClick.AddListener(() =>
-        {
-            menu.SetActive(false);
-            NetworkManager.Singleton.gameObject.SetActive(false);
-
-        });*/
+        recentLobbiesButton.onClick.AddListener(onClickRecenLobbyButton);
     }
 
     private void Awake()
@@ -61,8 +56,44 @@ public class LobbyUi : MonoBehaviour
     {
 
     }
+    private void Clear()
+    {
+        for (int i = 0; i < content.transform.childCount; i++)
+        {
+            Destroy(content.transform.GetChild(i).gameObject);
+        }
+    }
 
-   
+    private async void onClickRecenLobbyButton()
+    {
+        Clear();
+        try
+        {
+            string username = GitHubClientProvider.client.User.Current().Result.Login;
+            var recentLobbies = await dbManager.GetRecentLobbies(username);
+            if(recentLobbies.Count == 0)
+            {
+                print("You haven't joined any lobbies recently");
+                return;
+            }
+            List<Lobby> recentLobbiesList = new List<Lobby>();
+            foreach (var lobbyID in recentLobbies)
+            {
+                var lobby = await gameLobby.GetLobbyById(lobbyID);
+                if (lobby == null)
+                {
+                    await dbManager.RemoveRecentLobby(username, lobbyID);
+                    continue;
+                }
+                recentLobbiesList.Add(lobby);
+            }
+            gameLobby.ListLobbies(recentLobbiesList);
+        }catch(Exception ex)
+        {
+            print(ex);
+        }
+       
+    }
 
     public static void StartHost()
     {
