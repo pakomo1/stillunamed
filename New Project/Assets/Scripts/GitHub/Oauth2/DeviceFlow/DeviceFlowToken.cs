@@ -3,14 +3,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Web;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using TMPro;
 using static Oauth2AccessToken;
 
 public class DeviceFlowToken : MonoBehaviour
 {
     [SerializeField] private GameObject uiAfterCompletion;
     [SerializeField] private GameObject uiBeforeCompletion;
+
+    [SerializeField] private GameObject AuthenticateInfoUI;
+    [SerializeField] private TextMeshProUGUI url;
+    [SerializeField] private TextMeshProUGUI usercode;
+
 
     private string deviceCodeEndpoint = "https://github.com/login/device/code";
     private string tokenEndpoint = "https://github.com/login/oauth/access_token";
@@ -33,12 +40,18 @@ public class DeviceFlowToken : MonoBehaviour
     {
         var client = new GitHubClient(new ProductHeaderValue("MyApp"));
         var request = new OauthDeviceFlowRequest(clientId);
+        request.Scopes.Add("repo");
+
         var response = await client.Oauth.InitiateDeviceFlow(request);
 
         if (response != null)
         {
             // Display the user code and verification URL to the user
             Debug.Log("Please go to " + response.VerificationUri + " and enter this code: " + response.UserCode);
+            AuthenticateInfoUI.SetActive(true);
+            url.text = response.VerificationUri;
+            usercode.text = response.UserCode;
+
 
             // Store the device code for later
             deviceCode = response.DeviceCode;
@@ -113,7 +126,7 @@ public class DeviceFlowToken : MonoBehaviour
         SaveSystem.Save(json, "/accessToken.txt", "/Saves/");
 
         //UI panel switch
-        uiBeforeCompletion.SetActive(false);
+        AuthenticateInfoUI.SetActive(false);
         uiAfterCompletion.SetActive(true);
     }
 }

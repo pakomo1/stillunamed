@@ -62,8 +62,8 @@ public class ValidAccessToken : MonoBehaviour
         try
         {
             string json = SaveSystem.Load("accessToken.txt", "/Saves/");
-            var loadedJson = JsonUtility.FromJson<Oauth2AccessToken.SaveToken>(json);
-            return loadedJson.accessToken;
+            var loadedJson = JsonUtility.FromJson<AccessTokenResponse>(json);
+            return loadedJson.access_token;
         }catch(Exception ex)
         {
             return ex.Message;

@@ -1,1 +1,1 @@
-{"access_token":"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","token_type":"","scope":""}
+{"access_token":"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","token_type":"bearer","scope":"repo"}
