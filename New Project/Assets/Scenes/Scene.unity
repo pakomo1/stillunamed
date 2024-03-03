@@ -7456,6 +7456,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 489865243}
   m_CullTransparentMesh: 1
+--- !u!21 &500081400
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI/RoundedCorners/IndependentRoundedCorners
+  m_Shader: {fileID: 4800000, guid: d3beb88e61f88ca4393acdefb005fa70, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _halfSize: {r: 12, g: 13.401, b: 0, a: 0}
+    - _r: {r: 9.77, g: 5.8, b: 1.6, a: 0}
+    - _rect2props: {r: 0.59250164, g: -3.4925003, b: 13.941318, a: 15.91061}
+  m_BuildTextureStacks: []
 --- !u!1 &508850264
 GameObject:
   m_ObjectHideFlags: 0
@@ -13221,6 +13262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Oauth2AC: {fileID: 2018451216}
+  deviceFlowToken: {fileID: 2018451218}
   loadingMessage: {fileID: 1201093466}
   authorizationButton: {fileID: 936929492}
 --- !u!1 &940301692
@@ -13516,7 +13558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2146900562}
+  m_Material: {fileID: 500081400}
   m_Color: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -29480,6 +29522,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2018451217}
   - component: {fileID: 2018451216}
+  - component: {fileID: 2018451218}
   m_Layer: 0
   m_Name: Oauth2AccessToken
   m_TagString: Untagged
@@ -29516,6 +29559,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1027099086}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2018451218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018451215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf729aecb4fb60b41ba7475b921063e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiAfterCompletion: {fileID: 535987737}
+  uiBeforeCompletion: {fileID: 2009004547}
 --- !u!1 &2020059761
 GameObject:
   m_ObjectHideFlags: 0
@@ -30769,47 +30826,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2136470624}
   m_CullTransparentMesh: 1
---- !u!21 &2146900562
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: UI/RoundedCorners/IndependentRoundedCorners
-  m_Shader: {fileID: 4800000, guid: d3beb88e61f88ca4393acdefb005fa70, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UseUIAlphaClip: 0
-    m_Colors:
-    - _halfSize: {r: 12, g: 13.401, b: 0, a: 0}
-    - _r: {r: 9.77, g: 5.8, b: 1.6, a: 0}
-    - _rect2props: {r: 0.59250164, g: -3.4925003, b: 13.941318, a: 15.91061}
-  m_BuildTextureStacks: []
 --- !u!1 &1762891872706934481
 GameObject:
   m_ObjectHideFlags: 0

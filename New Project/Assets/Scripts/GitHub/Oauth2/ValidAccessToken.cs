@@ -27,7 +27,7 @@ public class ValidAccessToken : MonoBehaviour
             accessToken = GetAccessToken();
             GitHubClientProvider.GetGitHubClient(accessToken);
             var client = GitHubClientProvider.client;
-            
+
             User user = await client.User.Current();
             var repositories = await client.Repository.GetAllForCurrent();
 
@@ -36,7 +36,6 @@ public class ValidAccessToken : MonoBehaviour
             if (userExists)
             {
                 print("The user exists");
-
             }
             else
             {
@@ -46,12 +45,16 @@ public class ValidAccessToken : MonoBehaviour
             openServer.authorized = true;
             repoInfo.repositories = repositories;
             repoInfo.GenerateButtons();
-
+        }
+        catch (AuthorizationException)
+        {
+            openServer.authorized = false;
+            print("Invalid access token. Please log in again.");
         }
         catch (Exception ex)
         {
             openServer.authorized = false;
-            print(ex);
+            print("An error occurred: " + ex.Message);
         }
     }
     public string GetAccessToken()

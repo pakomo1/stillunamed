@@ -1,1 +1,1 @@
-{"accessToken":"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"}
+{"access_token":"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","token_type":"","scope":""}
