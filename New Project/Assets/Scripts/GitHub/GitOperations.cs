@@ -18,7 +18,9 @@ public class GitOperations : MonoBehaviour
         User user = await GitHubClientProvider.client.User.Current();
         string username = user.Login;
 
-        print(username);
+        print("Username" + username);
+        print("Token: " +token);
+
         co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = username, Password = token };
 
         Directory.CreateDirectory(destinationPath);
@@ -31,8 +33,8 @@ public class GitOperations : MonoBehaviour
         try
         {
             string json = SaveSystem.Load("accessToken.txt", "/Saves/");
-            var loadedJson = JsonUtility.FromJson<Oauth2AccessToken.SaveToken>(json);
-            return loadedJson.accessToken;
+            var loadedJson = JsonUtility.FromJson<AccessTokenResponse>(json);
+            return loadedJson.access_token;
         }
         catch (Exception ex)
         {

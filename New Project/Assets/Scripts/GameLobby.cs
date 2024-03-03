@@ -12,6 +12,7 @@ using System.IO;
 using LibGit2Sharp;
 using SFB;
 using System.Threading.Tasks;
+using TMPro;
 
 public class GameLobby : MonoBehaviour
 {
@@ -20,9 +21,12 @@ public class GameLobby : MonoBehaviour
     public Lobby joinedLobby;
     private float heartBeatTimer;
     [SerializeField] private lobbyTemplate lobbyTemplate;
-    [SerializeField] private GameObject nolobbiesText;
     [SerializeField] private GameRelay gameRelay;
     [SerializeField] private DataBaseManager dbManager;
+
+    [SerializeField] private TextMeshProUGUI noLobbiesFound;
+    [SerializeField] private TextMeshProUGUI explorerLable;
+
     //lobby events
     public event EventHandler OnCreateLobbyStarted;
     public event EventHandler OnCreateLobbyFailed;
@@ -136,6 +140,7 @@ public class GameLobby : MonoBehaviour
                 catch(Exception ex)
                 {
                     OnForkFailed?.Invoke(this, new GitOperationsEventArgs(ex.Message));
+                    return;
                 }
               
             }
@@ -160,6 +165,7 @@ public class GameLobby : MonoBehaviour
                 }catch(Exception er)
                 {
                     OnCloneFailed.Invoke(this, new GitOperationsEventArgs(er.Message));
+                    return;
                 }
                
             }
@@ -203,11 +209,17 @@ public class GameLobby : MonoBehaviour
     {
         try
         {
+            explorerLable.text = "Lobby Explorer";
             QueryResponse queryResponse = await Lobbies.Instance.QueryLobbiesAsync();
             print("Number of lobbies found" + queryResponse.Results.Count);
             if (queryResponse.Results.Count > 0)
             {
                 ListLobbies(queryResponse.Results);
+            }
+            else
+            {
+                noLobbiesFound.text = "There aren't any active lobbies";
+                noLobbiesFound.gameObject.SetActive(true);
             }
         }
         catch (Exception ex)

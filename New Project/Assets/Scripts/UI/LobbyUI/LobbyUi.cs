@@ -8,13 +8,15 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using TMPro;
 public class LobbyUi : MonoBehaviour
 {
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private CreateLobbyUI createLobbyUI;
     [SerializeField] private DataBaseManager dbManager;
 
+    [SerializeField] private TextMeshProUGUI noLobbiesFound;
+    [SerializeField] private TextMeshProUGUI explorerLable;
     [SerializeField] private GameObject menu;
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameObject networkManager;
@@ -32,6 +34,7 @@ public class LobbyUi : MonoBehaviour
     public static LobbyUi Instance { get; private set; }
     private void Start()
     {
+
         gameLobby.GetAllPublicLobbies();
         
         createLobbyBtn.onClick.AddListener(() => 
@@ -69,11 +72,13 @@ public class LobbyUi : MonoBehaviour
         Clear();
         try
         {
+            explorerLable.text = "Recent Lobbies";
             string username = GitHubClientProvider.client.User.Current().Result.Login;
             var recentLobbies = await dbManager.GetRecentLobbies(username);
             if(recentLobbies.Count == 0)
             {
-                print("You haven't joined any lobbies recently");
+                noLobbiesFound.gameObject.SetActive(true);
+                noLobbiesFound.text = "There are no active lobbies that you have joined recently";
                 return;
             }
             List<Lobby> recentLobbiesList = new List<Lobby>();
@@ -87,7 +92,9 @@ public class LobbyUi : MonoBehaviour
                 }
                 recentLobbiesList.Add(lobby);
             }
+
             gameLobby.ListLobbies(recentLobbiesList);
+            
         }catch(Exception ex)
         {
             print(ex);

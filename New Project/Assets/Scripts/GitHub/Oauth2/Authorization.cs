@@ -8,6 +8,7 @@ using UnityEngine;
 public class Authorization : MonoBehaviour
 {
     [SerializeField] private Oauth2AccessToken Oauth2AC;
+    [SerializeField] private DeviceFlowToken deviceFlowToken;
     [SerializeField] private GameObject loadingMessage;
     [SerializeField] private GameObject authorizationButton;
     string clientId = "e4edd56045a448fbdc0f";
@@ -23,7 +24,7 @@ public class Authorization : MonoBehaviour
             AuthUri = "https://github.com/login/oauth/authorize",
             AccessTokenUri = "https://github.com/login/oauth/access_token"
             },
-            "http://localhost:3000/callback/");
+            "https://eog0ubb2uup5m2r.m.pipedream.net");
     }
 
     
@@ -31,7 +32,6 @@ public class Authorization : MonoBehaviour
     {
         authorizationButton.SetActive(false);
         loadingMessage.SetActive(true);
-        Application.OpenURL(systemRedirectUri);
-        Oauth2AC.AuthorizeBegin();
+        deviceFlowToken.GetDeviceCode();
     }
 }

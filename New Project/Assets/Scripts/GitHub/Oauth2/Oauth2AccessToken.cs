@@ -14,7 +14,7 @@ public class Oauth2AccessToken : MonoBehaviour
     private string clientId = "e4edd56045a448fbdc0f";
     private string clientSecret = "8e706e8c6be08f9ff09ba1493261f0eeb0dd1522";
     private string result;
-    private string[] prefixes = new string[1] { "http://localhost:3000/callback/" };
+    private string[] prefixes = new string[1] { "https://eog0ubb2uup5m2r.m.pipedream.net" };
     private GameObject playerObjectPrefab;
 
     public async void AuthorizeBegin()

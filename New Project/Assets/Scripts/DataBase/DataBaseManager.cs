@@ -13,7 +13,7 @@ public class DataBaseManager : MonoBehaviour
 {
     private DatabaseReference dbRef;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         InitializeDB();
     }
@@ -62,7 +62,24 @@ public class DataBaseManager : MonoBehaviour
             }
         });
     }
+    public Task<bool> CheckIfUserExists(string username)
+    {
+        // Get the user data from /users/$username
+        return dbRef.Child("users").Child(username).GetValueAsync().ContinueWith(task => {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError("Failed to check if user exists: " + task.Exception);
+                throw task.Exception;
+            }
+            else
+            {
+                DataSnapshot snapshot = task.Result;
 
+                // Check if the user exists
+                return snapshot.Exists;
+            }
+        });
+    }
     //gets the lobbies for a user
     public async Task UpdateRecentLobbies(string username, string lobbyId)
     {
@@ -108,24 +125,7 @@ public class DataBaseManager : MonoBehaviour
         await dbRef.Child("users").Child(username).Child("recentLobbies").SetRawJsonValueAsync(Newtonsoft.Json.JsonConvert.SerializeObject(recentLobbies));
     }
 
-    public Task<bool> CheckIfUserExists(string username)
-    {
-        // Get the user data from /users/$username
-        return dbRef.Child("users").Child(username).GetValueAsync().ContinueWith(task => {
-            if (task.IsFaulted || task.IsCanceled)
-            {
-                Debug.LogError("Failed to check if user exists: " + task.Exception);
-                throw task.Exception;
-            }
-            else
-            {
-                DataSnapshot snapshot = task.Result;
-
-                // Check if the user exists
-                return snapshot.Exists;
-            }
-        });
-    }
+   
     private void InitializeDB()
     {
         Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {

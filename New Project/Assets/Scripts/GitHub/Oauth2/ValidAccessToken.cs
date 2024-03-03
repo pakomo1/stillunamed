@@ -15,7 +15,7 @@ public class ValidAccessToken : MonoBehaviour
     private string accessToken;
     private string userReposURL = "https://api.github.com/user/repos";
 
-    private void Awake()
+    private void Start()
     {
         ValidateToken();
     }
@@ -54,7 +54,7 @@ public class ValidAccessToken : MonoBehaviour
         catch (Exception ex)
         {
             openServer.authorized = false;
-            print("An error occurred: " + ex.Message);
+            print("An error occurred: " + ex);
         }
     }
     public string GetAccessToken()
