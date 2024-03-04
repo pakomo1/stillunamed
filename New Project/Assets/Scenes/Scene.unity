@@ -10096,47 +10096,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721465951}
   m_CullTransparentMesh: 1
---- !u!21 &728270850
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: UI/RoundedCorners/IndependentRoundedCorners
-  m_Shader: {fileID: 4800000, guid: d3beb88e61f88ca4393acdefb005fa70, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _ColorMask: 15
-    - _Stencil: 0
-    - _StencilComp: 8
-    - _StencilOp: 0
-    - _StencilReadMask: 255
-    - _StencilWriteMask: 255
-    - _UseUIAlphaClip: 0
-    m_Colors:
-    - _halfSize: {r: 12, g: 13.401, b: 0, a: 0}
-    - _r: {r: 9.77, g: 5.8, b: 1.6, a: 0}
-    - _rect2props: {r: 0.59250164, g: -3.4925003, b: 13.941318, a: 15.91061}
-  m_BuildTextureStacks: []
 --- !u!1 &731413120
 GameObject:
   m_ObjectHideFlags: 0
@@ -10747,7 +10706,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 9.567104, y: 6.323086}
+  m_Offset: {x: 9.567104, y: 4.86}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -13905,7 +13864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 728270850}
+  m_Material: {fileID: 1485959009}
   m_Color: {r: 0.36078432, g: 0.36078432, b: 0.36078432, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -22422,6 +22381,47 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1474103546}
   m_CullTransparentMesh: 1
+--- !u!21 &1485959009
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UI/RoundedCorners/IndependentRoundedCorners
+  m_Shader: {fileID: 4800000, guid: d3beb88e61f88ca4393acdefb005fa70, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _halfSize: {r: 12, g: 13.401, b: 0, a: 0}
+    - _r: {r: 9.77, g: 5.8, b: 1.6, a: 0}
+    - _rect2props: {r: 0.59250164, g: -3.4925003, b: 13.941318, a: 15.91061}
+  m_BuildTextureStacks: []
 --- !u!1 &1486772457
 GameObject:
   m_ObjectHideFlags: 0
@@ -29419,11 +29419,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyTemplate: {fileID: 984939472}
-  nolobbiesText: {fileID: 1581603902}
   gameRelay: {fileID: 1178515138}
   dbManager: {fileID: 2088467499}
-  noLobbiesFound: {fileID: 0}
-  explorerLable: {fileID: 0}
+  noLobbiesFound: {fileID: 1581603904}
+  explorerLable: {fileID: 489865245}
 --- !u!4 &1976711604
 Transform:
   m_ObjectHideFlags: 0
@@ -31514,15 +31513,15 @@ SpriteRenderer:
   m_SortingLayerID: 534852243
   m_SortingLayer: 4
   m_SortingOrder: 5
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1635950480460946645, guid: 0686806d563ee034b92db441bf98a21e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.18, y: 0.31}
+  m_Size: {x: 0.5217391, y: 1.3478261}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1762891872706934483
@@ -31534,8 +31533,8 @@ Transform:
   m_GameObject: {fileID: 1762891872706934481}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.85, y: -3.63, z: 0}
-  m_LocalScale: {x: 5.4120097, y: 5.111416, z: 1}
+  m_LocalPosition: {x: 2.7252, y: -3.76, z: 0}
+  m_LocalScale: {x: 1.021752, y: 1.0149068, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2022989329}
@@ -31587,18 +31586,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.02, y: 0.16}
+  m_Offset: {x: -0.05, y: 0.48}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.6666667, y: 0}
-    oldSize: {x: 0.12, y: 0.31}
-    newSize: {x: 0.18, y: 0.31}
+    oldSize: {x: 0.5217391, y: 1.3478261}
+    newSize: {x: 0.5217391, y: 1.3478261}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.12, y: 0.32}
+  m_Size: {x: 0.39, y: 0.99}
   m_EdgeRadius: 0
 --- !u!95 &1762891872706934508
 Animator:
