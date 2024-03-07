@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -18,8 +19,6 @@ public class GameRelay : MonoBehaviour
         try
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-            string joincode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-
             RelayServerData serverData = new RelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
             return allocation;
@@ -40,7 +39,7 @@ public class GameRelay : MonoBehaviour
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
             return joinallocation;
         }
-        catch (RelayServiceException ex)
+        catch (Exception ex)
         {
             throw ex;
         }

@@ -13,6 +13,7 @@ using LibGit2Sharp;
 using SFB;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Services.Relay;
 
 public class GameLobby : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class GameLobby : MonoBehaviour
     public event EventHandler OnCreateLobbyStarted;
     public event EventHandler OnCreateLobbyFailed;
 
-    public event EventHandler OnLobbyJoinStarted;
+    public event EventHandler<LobbyJoinEventArgs> OnLobbyJoinStarted;
     public event EventHandler OnLobbyJoinFailed;
     
     //git events
@@ -103,23 +104,7 @@ public class GameLobby : MonoBehaviour
         OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
-            {
-                IsPrivate = isPrivate,
-            });
-            joinedLobby = lobby;
             
-            Allocation allocation = await gameRelay.CreateRelay(lobby.MaxPlayers);
-            string joinCode = await gameRelay.GetRelayJoinCode(allocation);
-
-           await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
-            {
-                Data =  new Dictionary<string, DataObject>
-                {
-                   { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
-                }
-            });
-
             var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(githubRepository);
             
             string currentRepository = githubRepository;
@@ -144,8 +129,6 @@ public class GameLobby : MonoBehaviour
                 }
               
             }
-
-
             string[] cloneDirectory = StandaloneFileBrowser.OpenFolderPanel("Selct a folder","", false);
             string repoPath = $"{cloneDirectory[0]}/{repoName}";
             
@@ -169,11 +152,31 @@ public class GameLobby : MonoBehaviour
                 }
                
             }
+            Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
+            {
+                IsPrivate = isPrivate,
+            });
+            joinedLobby = lobby;
+
+            Allocation allocation = await gameRelay.CreateRelay(lobby.MaxPlayers - 1);
+            string joinCode = await gameRelay.GetRelayJoinCode(allocation);
+
+            await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
+            {
+                Data = new Dictionary<string, DataObject>
+                {
+                   { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                }
+            });
+
             GameSceneMetadata.githubRepoLink = currentRepository;
             NetworkManager.Singleton.StartHost();
 
+            OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;
+
             //here you should make a couple of scenece with different room sizes
             Loader.LoadNetwrok(Loader.Scene.GameScene);
+
 
             print($"Created lobby with " + joinedLobby.Name + " " + lobby.IsPrivate);
         }
@@ -184,6 +187,12 @@ public class GameLobby : MonoBehaviour
         }
 
     }
+
+    private void GameLobby_OnLobbyJoinStarted(object sender, LobbyJoinEventArgs args)
+    {
+        print($"The player: {args.Username}");
+    }
+
     public async void QuickJoin()
     {
         try
@@ -230,23 +239,23 @@ public class GameLobby : MonoBehaviour
     }
     public async void JoinLobbyByID(string id)
     {
-        OnLobbyJoinStarted?.Invoke(this, EventArgs.Empty);
+        var username = GitHubClientProvider.client.User.Current().Result.Login;
+        var agrs = new LobbyJoinEventArgs(username);
         try
         {
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
 
-            string username= GitHubClientProvider.client.User.Current().Result.Login;
-
             await dbManager.UpdateRecentLobbies(username,joinedLobby.Id);
-            JoinAllocation joinAllocation = await gameRelay.JoinRelay(relayCode);
+            await gameRelay.JoinRelay(relayCode);
+
+            OnLobbyJoinStarted?.Invoke(this, agrs);
             NetworkManager.Singleton.StartClient();
 
-        } catch (LobbyServiceException ex)
+        } catch (Exception ex)
         {
-            print(ex.Message);
+            Debug.LogError(ex);
             OnLobbyJoinFailed?.Invoke(this, EventArgs.Empty);
-
         }
     }
     public async Task<Lobby> GetLobbyById(string id)
@@ -283,5 +292,14 @@ public class GameLobby : MonoBehaviour
         {
             print(ex.Message);
         }
+    }
+}
+public class LobbyJoinEventArgs : EventArgs
+{
+    public string Username { get; set; }
+
+    public LobbyJoinEventArgs(string username)
+    {
+        Username = username;
     }
 }
