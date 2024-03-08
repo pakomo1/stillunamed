@@ -22,11 +22,6 @@ public class TextEditor : MonoBehaviour
         set { wokringDirectory = value; }
     }
     //the path to the exe file of the selected file
-    public string PathToSelectedExeFile
-    {
-        get { return pathToSelectedExeFile; }
-        set { pathToSelectedExeFile = value; }
-    }
     public string StartingDirecotry
     {
         get { return startingDirecotry; }

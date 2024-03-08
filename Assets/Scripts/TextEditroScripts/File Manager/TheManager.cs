@@ -4,7 +4,6 @@ using UnityEngine;
 using System.IO;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditor.UIElements;
 
 public class TheManager : MonoBehaviour
 {
@@ -71,18 +70,6 @@ public class TheManager : MonoBehaviour
     private void ExpandDirecotryContent(Transform panel)
     {
         panel.gameObject.SetActive(!panel.gameObject.activeSelf);
-    }
-    private void ChangeButtonColorWhenPressed(Button button)
-    {
-        ColorBlock colorPallete = button.colors;
-        Color lighterColor = colorPallete.normalColor;
-
-        lighterColor.r = Mathf.Min(lighterColor.r + 0.2f, 1);
-        lighterColor.g = Mathf.Min(lighterColor.g + 0.2f, 1);
-        lighterColor.b = Mathf.Min(lighterColor.b + 0.2f, 1);
-
-        colorPallete.normalColor = lighterColor;
-        button.colors = colorPallete;
     }
 
 }

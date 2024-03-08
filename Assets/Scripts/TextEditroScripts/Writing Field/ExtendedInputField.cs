@@ -12,7 +12,7 @@ public class ExtendedInputField : MonoBehaviour
     private void Awake()
     {
         inputField.onValueChanged.AddListener(OnValueChanged);
-        LangaueClient.StartServer("C:\\Users\\Maixm\\Downloads\\omnisharp-win-x64\\OmniSharp.exe");
+        //LangaueClient.StartServer("C:\\Users\\Maixm\\Downloads\\omnisharp-win-x64\\OmniSharp.exe");
 
     }
 
@@ -23,11 +23,11 @@ public class ExtendedInputField : MonoBehaviour
         int columnNumber = CountColumns(inputField.text, cursorPosition);
 
 
-       var completionItems =  await LangaueClient.RequestCompletionAsync(textEditor.PathToTheSelectedFile,lineNumber, columnNumber);
+       /*var completionItems =  await LangaueClient.RequestCompletionAsync(textEditor.PathToTheSelectedFile,lineNumber, columnNumber);
         foreach (CompletionItem item in completionItems)
         {
             print($"Completion item: {item}");
-        }
+        }*/
     }
 
     private int CountLines(string text, int upto)

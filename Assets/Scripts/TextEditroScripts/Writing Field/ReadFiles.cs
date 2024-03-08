@@ -4,10 +4,6 @@ using System.Linq;
 using UnityEngine;
 using TMPro;
 using System.IO;
-using UnityEngine.Rendering;
-using System.Net;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using System;
 
 public class ReadFiles : MonoBehaviour
@@ -19,7 +15,6 @@ public class ReadFiles : MonoBehaviour
     private string selectedFilePath;
     public string nameOfFilePlus;
     public string nameOfFile;
-    public string EXEfile;
     public string currentWorkingDir;
 
     public string previousSelectedFile;
@@ -50,10 +45,6 @@ public class ReadFiles : MonoBehaviour
         // gets the directory that the selected file(selectedFilePath)
         string pathToFile = selectedFilePath.Substring(0, selectedFilePath.LastIndexOf('\\'));
         
-        string EXEfile = @$"C:\Program Files\Mono\bin\{nameOfFile}.exe";
-        textEditor.PathToSelectedExeFile = EXEfile;
-
-
       //  string[] files = Directory.GetFiles(@"D:\");
 
         textEditor.DisplayText = File.ReadAllText(selectedFilePath);
@@ -63,7 +54,12 @@ public class ReadFiles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedFilePath != "")
+        
+    }
+}
+
+
+/*if (selectedFilePath != "")
         {
             var selectedFileObj = GameObject.Find(Path.GetFileName(selectedFilePath));
 
@@ -92,6 +88,4 @@ public class ReadFiles : MonoBehaviour
                 print(ex);
             }
            
-        }
-    }
-}
+        }*/

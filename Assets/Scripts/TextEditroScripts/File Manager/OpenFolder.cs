@@ -27,8 +27,10 @@ public class OpenFolder : MonoBehaviour
         ClearAllFields();
         textEditor.StartingDirecotry = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         
-
-        textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.StartingDirecotry)[0];
+        if(Directory.GetFiles(textEditor.StartingDirecotry).Length>0)
+        {
+            textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.StartingDirecotry)[0];
+        }
         textEditor.WorkingDirectory = textEditor.StartingDirecotry;
        // textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
 
