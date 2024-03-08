@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using UnityEngine;
 using TMPro;
+using System.IO;
+using System;
+using System.Threading.Tasks;
 
 public class TextEditor : MonoBehaviour
 {
@@ -51,8 +54,18 @@ public class TextEditor : MonoBehaviour
         StartingDirecotry = startingDirecotry;
         DisplayText = displayText;
     }
+    private void Start()
+    {
+        TheManager.OnFileSelected += OnFileSelectedHandler; 
+    }
     private void Update()
     {
         inputField.text = DisplayText;
+    }
+
+    private async void OnFileSelectedHandler(object sender, EventArgs args)
+    {
+        string selectdFileContent =await File.ReadAllTextAsync(PathToTheSelectedFile);
+        DisplayText = selectdFileContent;
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 using System.IO;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Events;
+using System;
 
 public class TheManager : MonoBehaviour
 {
@@ -16,6 +18,8 @@ public class TheManager : MonoBehaviour
     [SerializeField] private GameObject dirContentHolder;
     [SerializeField] private Transform rootPanel;
     private OpenFolder openfolder;
+
+    public static event EventHandler OnFileSelected;
     // Start is called before the first frame update
     void Start()
     {
@@ -62,7 +66,7 @@ public class TheManager : MonoBehaviour
                 fileEntry.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = Path.GetFileName(item);
 
                 var fileEntryButton = fileEntry.GetComponent<Button>();
-                fileEntryButton.onClick.AddListener(() => textEditor.PathToTheSelectedFile = item);
+                fileEntryButton.onClick.AddListener(() => { textEditor.PathToTheSelectedFile = item; OnFileSelected?.Invoke(this, EventArgs.Empty); });
             }
         }
 
