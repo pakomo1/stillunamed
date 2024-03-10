@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "250662145506",
+    "firebase_url": "https://gitroom-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "gitroom",
+    "storage_bucket": "gitroom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250662145506:android:e5e1a46d445fb9b49f7dbb",
+        "android_client_info": {
+          "package_name": "com.gitroom.firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQiGGeA5b0a_7fgDxWUeMA3mPjpQ1fdi0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
