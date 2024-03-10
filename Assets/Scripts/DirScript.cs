@@ -10,7 +10,7 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     [SerializeField] private GameObject holeCurrentDir;
     [SerializeField] private GameObject image;
 
-    [SerializeField] private TextEditor textEditor;
+    [SerializeField] private TextEditorManager textEditor;
     private TextMeshProUGUI holeCurrentDirText;
     // Start is called before the first frame update
     private string path;

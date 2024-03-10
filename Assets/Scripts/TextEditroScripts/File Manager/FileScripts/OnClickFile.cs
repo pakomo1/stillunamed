@@ -9,7 +9,7 @@ public static class OnClickFile
 {
    
     
-    public static void OnPointerClick(GameObject obj, TextEditor textEditorInstance)
+    public static void OnPointerClick(GameObject obj, TextEditorManager textEditorInstance)
     {
         string fileName = obj.name;
        /* var tmp = obj.GetComponent<TextMeshProUGUI>();

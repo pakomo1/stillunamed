@@ -11,8 +11,7 @@ using System.Threading.Tasks;
 
 public class UpdateFIles : MonoBehaviour
 {
-    [SerializeField] private TextEditor textEditor; 
-    private ReadFiles readFiles;
+    [SerializeField] private TextEditorManager textEditor; 
     [SerializeField] private GameObject TextFieldManager;
 
     [SerializeField] private GameObject canvas;
@@ -24,8 +23,6 @@ public class UpdateFIles : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        readFiles = TextFieldManager.GetComponent<ReadFiles>();
-
         selectedFilePath = textEditor.PathToTheSelectedFile;
         inputField.text = textEditor.DisplayText;
 

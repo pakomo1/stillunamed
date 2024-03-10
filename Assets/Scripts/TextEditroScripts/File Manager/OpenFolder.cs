@@ -8,8 +8,8 @@ using UnityEngine.UI;
 
 public class OpenFolder : MonoBehaviour
 {
-    [SerializeField]private TextEditor textEditor;
-    [SerializeField]private TheManager theManager;
+    [SerializeField]private TextEditorManager textEditor;
+    [SerializeField]private GenerateForDirectory generateForDirectory;
 
     [SerializeField] private Button openFolderButton;
     [SerializeField] private GameObject fileManager;
@@ -32,9 +32,9 @@ public class OpenFolder : MonoBehaviour
             textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.StartingDirecotry)[0];
         }
         textEditor.WorkingDirectory = textEditor.StartingDirecotry;
-       // textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
+        // textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
 
-        theManager.GenerateForDirectoy(rootPanel,textEditor.StartingDirecotry);
+        generateForDirectory.GenerateForDirectoy(rootPanel,textEditor.StartingDirecotry);
     }
     private void ClearAllFields()
     {
