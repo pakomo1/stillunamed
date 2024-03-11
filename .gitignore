@@ -73,20 +73,20 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 *.log
-New Project/Logs/shadercompiler-UnityShaderCompiler.exe1.log
-New Project/Logs/shadercompiler-UnityShaderCompiler.exe0.log
-New Project/Logs/shadercompiler-AssetImportWorker0.log
-New Project/Logs/AssetImportWorker3-prev.log
-New Project/Logs/AssetImportWorker2-prev.log
-New Project/Logs/shadercompiler-UnityShaderCompiler.exe3.log
+Logs/shadercompiler-UnityShaderCompiler.exe1.log
+Logs/shadercompiler-UnityShaderCompiler.exe0.log
+Logs/shadercompiler-AssetImportWorker0.log
+Logs/AssetImportWorker3-prev.log
+Logs/AssetImportWorker2-prev.log
+Logs/shadercompiler-UnityShaderCompiler.exe3.log
 
-New Project/Assets/FirebaseAssets/Firebase
-New Project/Assets/Editor Default Resources
-New Project/Assets/ExternalDependencyManager
-New Project/Assets/Firebase
-New Project/Assets/Plugins/tvOS/Firebase/
-New Project/Assets/Plugins/iOS
-New Project/Assets/StreamingAssets
+Assets/FirebaseAssets/Firebase
+Assets/Editor Default Resources
+Assets/ExternalDependencyManager
+Assets/Firebase
+Assets/Plugins/tvOS/Firebase/
+Assets/Plugins/iOS
+Assets/StreamingAssets
 *.meta
-New Project/ProjectSettings/GvhProjectSettings.xml
-New Project/Assets/Data/google-services.json
+ProjectSettings/GvhProjectSettings.xml
+Assets/Data/google-services.json
