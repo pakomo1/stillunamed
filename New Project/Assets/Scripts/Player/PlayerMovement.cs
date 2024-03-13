@@ -13,6 +13,7 @@ public class PlayerMovement : NetworkBehaviour
     //References
     private Rigidbody2D rb;
     private AnimationController animCtrl;
+    private BoxCollider2D boxCollider;
 
     public Vector2 movementDirection; 
 
@@ -22,12 +23,23 @@ public class PlayerMovement : NetworkBehaviour
     private const string WALKSIDE = "WalkSide";
     
     private int idleAnimStateNum;
-    private string[] idleAnimStates = new string[3] { "IdleFront", "IdleBack", "IdleSide" };
+    private string[] idleAnimStates = new string[3] { "idleFront", "IdleBack", "IdleSide" };
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animCtrl = GetComponent<AnimationController>();
+        boxCollider = GetComponent<BoxCollider2D>();
+
+        // Get the size of the sprite
+        Vector3 spriteSize = GetComponent<SpriteRenderer>().sprite.bounds.size;
+
+        // Adjust the size of the BoxCollider2D to account for the game object's scale
+        boxCollider.size = new Vector2(spriteSize.x / transform.localScale.x, spriteSize.y / transform.localScale.y);
+
+        // Set the position of the BoxCollider2D to be on top of the GameObject
+        boxCollider.offset = new Vector2(0, boxCollider.size.y / 2);
+    
     }
 
     public override void OnNetworkSpawn()

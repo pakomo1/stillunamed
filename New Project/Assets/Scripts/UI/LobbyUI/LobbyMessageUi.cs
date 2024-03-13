@@ -135,7 +135,7 @@ public class ConnectingUI : MonoBehaviour
     }
     private void OnDestroy()
     {
-        LobbyUi.Instance.OnFaildToJoinGame -= LobbyUI_OnFaildToJoinGame;
-        LobbyUi.Instance.OnTryToJoinGame -= LobbyUI_OnTryToJoinGame;
+        //LobbyUi.Instance.OnFaildToJoinGame -= LobbyUI_OnFaildToJoinGame;
+        //LobbyUi.Instance.OnTryToJoinGame -= LobbyUI_OnTryToJoinGame;
     }
 }
