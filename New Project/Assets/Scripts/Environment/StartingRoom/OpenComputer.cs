@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class OpenComputer : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer sprite;
+    [SerializeField] private Sprite PCHighLighted;
+    [SerializeField] private Sprite PC;
     private bool triggerActive;
 
     private void Awake()
@@ -39,11 +40,12 @@ public class OpenComputer : MonoBehaviour
         //If interaction is available highlight the object
         if (triggerActive)
         {
-            sprite.enabled = true;
+            gameObject.GetComponent<SpriteRenderer>().sprite = PCHighLighted;
         }
         else
         {
-            sprite.enabled = false;
+            gameObject.GetComponent<SpriteRenderer>().sprite = PC;
+
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 public class UpdateFIles : MonoBehaviour
 {
-    [SerializeField] private TextEditorManager textEditor; 
+    [SerializeField] private TextEditorData textEditor; 
     [SerializeField] private GameObject TextFieldManager;
 
     [SerializeField] private GameObject canvas;

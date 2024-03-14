@@ -9,7 +9,7 @@ using System;
 
 public class GenerateForDirectory : MonoBehaviour
 {
-    [SerializeField] private TextEditorManager textEditorManager;
+    [SerializeField] private TextEditorData textEditorData;
 
     [SerializeField] private GameObject filePrefab;
     [SerializeField] private GameObject directoryPrefab;
@@ -64,7 +64,7 @@ public class GenerateForDirectory : MonoBehaviour
                 textComponent.margin = new Vector4(depth * 10, textComponent.margin.y, textComponent.margin.z, textComponent.margin.w); // Add left padding
 
                 var fileEntryButton = fileEntry.GetComponent<Button>();
-                fileEntryButton.onClick.AddListener(() => { textEditorManager.PathToTheSelectedFile = item; OnFileSelected?.Invoke(this, EventArgs.Empty); });
+                fileEntryButton.onClick.AddListener(() => { textEditorData.PathToTheSelectedFile = item; OnFileSelected?.Invoke(this, EventArgs.Empty); });
             }
         }
     }

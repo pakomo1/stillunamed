@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class OpenFolder : MonoBehaviour
 {
-    [SerializeField]private TextEditorManager textEditor;
+    [SerializeField]private TextEditorData textEditorData;
     [SerializeField]private GenerateForDirectory generateForDirectory;
 
     [SerializeField] private Button openFolderButton;
@@ -25,16 +25,16 @@ public class OpenFolder : MonoBehaviour
     public void OpenExplorer()
     {
         ClearAllFields();
-        textEditor.StartingDirecotry = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
+        textEditorData.StartingDirecotry = EditorUtility.OpenFolderPanel("Overwrite with folders","","All folders");
         
-        if(Directory.GetFiles(textEditor.StartingDirecotry).Length>0)
+        if(Directory.GetFiles(textEditorData.StartingDirecotry).Length>0)
         {
-            textEditor.PathToTheSelectedFile= Directory.GetFiles(textEditor.StartingDirecotry)[0];
+            textEditorData.PathToTheSelectedFile= Directory.GetFiles(textEditorData.StartingDirecotry)[0];
         }
-        textEditor.WorkingDirectory = textEditor.StartingDirecotry;
+        textEditorData.WorkingDirectory = textEditorData.StartingDirecotry;
         // textEditor.DisplayText = File.ReadAllText(textEditor.PathToTheSelectedFile);
 
-        generateForDirectory.GenerateForDirectoy(rootPanel,textEditor.StartingDirecotry);
+        generateForDirectory.GenerateForDirectoy(rootPanel, textEditorData.StartingDirecotry);
     }
     private void ClearAllFields()
     {
