@@ -1,13 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ComputersManager : MonoBehaviour
 {
 
     [SerializeField] private GameObject computerPrefab;
     [SerializeField] private GameObject room; // GameObject representing the room
-    [SerializeField] private GameObject EditorPrefab; 
+    [SerializeField] private GameObject EditorPrefab;
+
 
 
     private void InitializeComputers(int count)
@@ -25,7 +28,7 @@ public class ComputersManager : MonoBehaviour
 
             // Instantiate the computer at the calculated position as a child of this GameObject
             GameObject computer = Instantiate(computerPrefab, position, Quaternion.identity);
-            computer.transform.SetParent(room.transform);
+            computer.transform.SetParent(transform);
 
             // Instantiate the text editor for this computer and make it a child of the computer
             GameObject Editor = Instantiate(EditorPrefab, computer.transform);
@@ -33,8 +36,32 @@ public class ComputersManager : MonoBehaviour
             Editor.SetActive(false);
         }
     }
+
+    private void OnPlayerConnetedHandler(object sender, PlayerSpawnArgs args)
+    {
+        GameObject computers = GameObject.Find("Computers");
+        if (computers != null)
+        {
+            for (int i = 0; i < computers.transform.childCount; i++)
+            {
+                var computer = computers.transform.GetChild(i);
+                var textEditorData = computer.GetChild(0).GetComponent<TextEditorData>();
+                if (textEditorData.OwnerUsername == null || textEditorData.OwnerUsername == "")
+                {
+                    textEditorData.OwnerUsername = args.Username;
+                    PlayerManager.LocalPlayer.SetTextEditor(textEditorData);
+                    print($"The user: {args.Username} gets the {textEditorData.Id}");
+                    break;
+                }
+            }
+        }
+    }
     private void Start()
     {
         InitializeComputers(5);
+        if(PlayerManager.LocalPlayer == null)
+        {
+            PlayerManager.OnAnyPlayerSpawn += OnPlayerConnetedHandler;
+        }
     }
 }

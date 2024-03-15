@@ -8,11 +8,12 @@ using UnityEngine;
 
 public class IssuesNetworkManager : NetworkBehaviour
 {
-    public NetworkList<SerializedIssues> issues = new NetworkList<SerializedIssues>();
+    public NetworkList<SerializedIssues> issues;
 
 
     private void Awake()
     {
+        issues = new NetworkList<SerializedIssues>();
     }
     public async Task GetIssuesForRepoAsync(string ownerName, string repositoryName,RepositoryIssueRequest issueRequest)
    {

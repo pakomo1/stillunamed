@@ -18,7 +18,7 @@ public class OpenFolder : MonoBehaviour
    // [SerializeField]private RawImage image;
 
 
-    private void Awake()
+  /*  private void Awake()
     {
       openFolderButton.onClick.AddListener(OpenExplorer);
     }
@@ -54,5 +54,5 @@ public class OpenFolder : MonoBehaviour
     void Update()
     {
         
-    }
+    }*/
 }

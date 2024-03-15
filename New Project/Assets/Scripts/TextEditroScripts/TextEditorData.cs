@@ -1,15 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class TextEditorData : MonoBehaviour
+public class TextEditorData : NetworkBehaviour
 {
-    private int id;
-    private string username;
-    private string startingDirecotry;
-    private string displayText;
-    private string pathToTheSelectedFile;
-    private string wokringDirectory;
+    private NetworkVariable<int> id = new NetworkVariable<int>();
+    private NetworkVariable<string> username = new NetworkVariable<string>();
+    private NetworkVariable<string> startingDirecotry = new NetworkVariable<string>();
+    private NetworkVariable<string> displayText = new NetworkVariable<string>();
+    private NetworkVariable<string> pathToTheSelectedFile = new NetworkVariable<string>();
+    private NetworkVariable<string> workingDirecotry = new NetworkVariable<string>();
+
 
     public delegate void DisplayTextChangedHandler(string newText);
     public event DisplayTextChangedHandler OnDisplayTextChanged;
@@ -21,45 +23,61 @@ public class TextEditorData : MonoBehaviour
     //the id of the editor
     public int Id
     {
-        get { return id; }
-        set { id = value; }
+        get { return id.Value; }
+        set
+        {
+            id.Value = value;
+        }
     }
     // the directroy we in which we are currently in
     public string WorkingDirectory
     {
-        get { return wokringDirectory; }
-        set { wokringDirectory = value; }
+        get { return workingDirecotry.Value; }
+        set
+        {
+             workingDirecotry.Value = value;
+        }
     }
     //the path to the exe file of the selected file
     public string StartingDirecotry
     {
-        get { return startingDirecotry; }
-        set { startingDirecotry = value; }
+        get { return startingDirecotry.Value; }
+        set
+        {
+            startingDirecotry.Value = value;
+        }
     }
     //the user that this editor belongs to
-    public string UserName
+    public string OwnerUsername
     {
-        get { return username; }
+        get { return username.Value; }
+        set
+        {
+            username.Value = value;
+        }
     }
     //the text that is supposed to be displayed in the inputField
     public string DisplayText
     {
-        get { return displayText; }
-        set { displayText = value; }
+        get { return displayText.Value; }
+        set        
+        {
+             displayText.Value = value;
+        }
 
     }
     //the path to the selected file
     public string PathToTheSelectedFile
     {
-        get { return pathToTheSelectedFile; }
+        get { return pathToTheSelectedFile.Value; }
         set
         {
-            if (pathToTheSelectedFile != value)
-            {
-                pathToTheSelectedFile = value;
-                // Trigger the event
-                OnSelectedFileChanged?.Invoke(pathToTheSelectedFile);
-            }
+                if (pathToTheSelectedFile.Value != value)
+                {
+                    pathToTheSelectedFile.Value = value;
+                    // Trigger the event
+                    OnSelectedFileChanged?.Invoke(pathToTheSelectedFile.Value);
+                }
         }
     }
 }
