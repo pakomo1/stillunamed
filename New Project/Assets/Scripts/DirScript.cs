@@ -23,7 +23,7 @@ public class DirScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     // Update is called once per frame
     void Update()
     {
-        path = textEditor.WorkingDirectory; 
+        path = textEditor.WorkingDirectory.Value; 
         holeCurrentDirText.text = path;
         
         if (path.Length > 24 && path != null)

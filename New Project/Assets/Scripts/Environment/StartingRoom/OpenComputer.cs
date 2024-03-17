@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class OpenComputer : MonoBehaviour
 {
     [SerializeField] private Sprite PCHighLighted;
     [SerializeField] private Sprite PC;
+    private TextEditorData textEditorData;
+    private PlayerManager playerInTrigger;
     private bool triggerActive;
 
     private void Awake()
@@ -18,6 +21,7 @@ public class OpenComputer : MonoBehaviour
         if (collision.tag == "Player")
         {
             triggerActive = true;
+            //print(textEditorData.OwnerUsername);
         }
     }
 
@@ -28,7 +32,10 @@ public class OpenComputer : MonoBehaviour
             triggerActive = false;
         }
     }
-
+    private void Start()
+    {
+      // textEditorData = gameObject.transform.GetChild(0).GetComponent<TextEditorData>();
+    }
     private void Update()
     {
         //Check if interaction is available

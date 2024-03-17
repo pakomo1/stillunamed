@@ -23,8 +23,8 @@ public class UpdateFIles : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        selectedFilePath = textEditor.PathToTheSelectedFile;
-        inputField.text = textEditor.DisplayText;
+        selectedFilePath = textEditor.PathToTheSelectedFile.Value;
+        inputField.text = textEditor.DisplayText.Value;
 
         inputField.onValueChanged.AddListener((value) => { textEditor.DisplayText = value;});
     }

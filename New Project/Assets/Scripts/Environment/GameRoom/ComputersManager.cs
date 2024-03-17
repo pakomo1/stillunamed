@@ -1,16 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ComputersManager : MonoBehaviour
+public class ComputersManager : NetworkBehaviour
 {
 
     [SerializeField] private GameObject computerPrefab;
     [SerializeField] private GameObject room; // GameObject representing the room
     [SerializeField] private GameObject EditorPrefab;
 
+    public static event EventHandler OnCompuerInitialized;
+
+    public static NetworkVariable<bool>ComputersInitialized = new NetworkVariable<bool>(false,NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
     private void InitializeComputers(int count)
@@ -22,46 +27,23 @@ public class ComputersManager : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            // Calculate the position for each computer
-            float xPos = room.transform.position.x - roomWidth / 2 + space * (i + 1) + computerWidth * i;
-            Vector3 position = new Vector3(xPos, room.transform.position.y, room.transform.position.z);
-
-            // Instantiate the computer at the calculated position as a child of this GameObject
-            GameObject computer = Instantiate(computerPrefab, position, Quaternion.identity);
-            computer.transform.SetParent(transform);
-
-            // Instantiate the text editor for this computer and make it a child of the computer
-            GameObject Editor = Instantiate(EditorPrefab, computer.transform);
-            Editor.GetComponent<TextEditorData>().Id =i;  
-            Editor.SetActive(false);
-        }
-    }
-
-    private void OnPlayerConnetedHandler(object sender, PlayerSpawnArgs args)
-    {
-        GameObject computers = GameObject.Find("Computers");
-        if (computers != null)
-        {
-            for (int i = 0; i < computers.transform.childCount; i++)
+            GameObject computer = Instantiate(computerPrefab);
+            //spawn the computer
+            NetworkObject networkObjectEditor = computer.GetComponent<NetworkObject>();
+            if (networkObjectEditor != null)
             {
-                var computer = computers.transform.GetChild(i);
-                var textEditorData = computer.GetChild(0).GetComponent<TextEditorData>();
-                if (textEditorData.OwnerUsername == null || textEditorData.OwnerUsername == "")
-                {
-                    textEditorData.OwnerUsername = args.Username;
-                    PlayerManager.LocalPlayer.SetTextEditor(textEditorData);
-                    print($"The user: {args.Username} gets the {textEditorData.Id}");
-                    break;
-                }
+                networkObjectEditor.Spawn();
             }
+            computer.transform.SetParent(transform);
         }
+        ComputersInitialized.Value = true;
+        OnCompuerInitialized?.Invoke(this, EventArgs.Empty);
     }
-    private void Start()
+
+    public override void OnNetworkSpawn()
     {
+        base.OnNetworkSpawn();
+        if(IsServer)
         InitializeComputers(5);
-        if(PlayerManager.LocalPlayer == null)
-        {
-            PlayerManager.OnAnyPlayerSpawn += OnPlayerConnetedHandler;
-        }
     }
 }

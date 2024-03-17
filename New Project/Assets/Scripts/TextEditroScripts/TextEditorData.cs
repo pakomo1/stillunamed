@@ -1,22 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class TextEditorData : NetworkBehaviour
 {
     private NetworkVariable<int> id = new NetworkVariable<int>();
-    private NetworkVariable<string> username = new NetworkVariable<string>();
-    private NetworkVariable<string> startingDirecotry = new NetworkVariable<string>();
-    private NetworkVariable<string> displayText = new NetworkVariable<string>();
-    private NetworkVariable<string> pathToTheSelectedFile = new NetworkVariable<string>();
-    private NetworkVariable<string> workingDirecotry = new NetworkVariable<string>();
+    private NetworkVariable<FixedString128Bytes> username = new NetworkVariable<FixedString128Bytes>();
+    private NetworkVariable<FixedString128Bytes> startingDirecotry = new NetworkVariable<FixedString128Bytes>();
+    private NetworkVariable<FixedString4096Bytes> displayText = new NetworkVariable<FixedString4096Bytes>();
+    private NetworkVariable<FixedString128Bytes> pathToTheSelectedFile = new NetworkVariable<FixedString128Bytes>();
+    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>();
 
 
-    public delegate void DisplayTextChangedHandler(string newText);
+    public delegate void DisplayTextChangedHandler(FixedString128Bytes newText);
     public event DisplayTextChangedHandler OnDisplayTextChanged;
 
-    public delegate void SelectedFileChangedHandler(string newText);
+    public delegate void SelectedFileChangedHandler(FixedString128Bytes newText);
     public event SelectedFileChangedHandler OnSelectedFileChanged;
 
         
@@ -30,7 +31,7 @@ public class TextEditorData : NetworkBehaviour
         }
     }
     // the directroy we in which we are currently in
-    public string WorkingDirectory
+    public FixedString128Bytes WorkingDirectory
     {
         get { return workingDirecotry.Value; }
         set
@@ -39,7 +40,7 @@ public class TextEditorData : NetworkBehaviour
         }
     }
     //the path to the exe file of the selected file
-    public string StartingDirecotry
+    public FixedString128Bytes StartingDirecotry
     {
         get { return startingDirecotry.Value; }
         set
@@ -48,7 +49,7 @@ public class TextEditorData : NetworkBehaviour
         }
     }
     //the user that this editor belongs to
-    public string OwnerUsername
+    public FixedString128Bytes OwnerUsername
     {
         get { return username.Value; }
         set
@@ -57,7 +58,7 @@ public class TextEditorData : NetworkBehaviour
         }
     }
     //the text that is supposed to be displayed in the inputField
-    public string DisplayText
+    public FixedString4096Bytes DisplayText
     {
         get { return displayText.Value; }
         set        
@@ -67,7 +68,7 @@ public class TextEditorData : NetworkBehaviour
 
     }
     //the path to the selected file
-    public string PathToTheSelectedFile
+    public FixedString128Bytes PathToTheSelectedFile
     {
         get { return pathToTheSelectedFile.Value; }
         set
@@ -79,5 +80,10 @@ public class TextEditorData : NetworkBehaviour
                     OnSelectedFileChanged?.Invoke(pathToTheSelectedFile.Value);
                 }
         }
+    }
+    //sets the owner of the editor
+    public void SetOwner(string owner)
+    {
+        OwnerUsername = owner;
     }
 }

@@ -7,6 +7,7 @@ using System.IO;
 using System;
 using System.Threading.Tasks;
 using UnityEngine.EventSystems;
+using Unity.Collections;
 
 public class TextEditorManager : MonoBehaviour
 {
@@ -21,12 +22,11 @@ public class TextEditorManager : MonoBehaviour
     }
     private void Update()
     {
-        print(textEditorData.Id);
     }
 
-    private async void OnFileSelectedHandlerAsync(string filePath)
+    private async void OnFileSelectedHandlerAsync(FixedString128Bytes filePath)
     {
-         string fileContent = await File.ReadAllTextAsync(filePath);
+         string fileContent = await File.ReadAllTextAsync(filePath.ToString());
          print(fileContent);
          textEditor.SetText(fileContent);
     }
