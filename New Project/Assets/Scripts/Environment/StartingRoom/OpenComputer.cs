@@ -1,15 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
-public class OpenComputer : MonoBehaviour
+public class OpenComputer : NetworkBehaviour
 {
     [SerializeField] private Sprite PCHighLighted;
     [SerializeField] private Sprite PC;
     private TextEditorData textEditorData;
     private PlayerManager playerInTrigger;
+    private TextEditorManager textEditorManager;
     private bool triggerActive;
+
+    private bool doesExist = false; 
 
     private void Awake()
     {
@@ -34,14 +36,51 @@ public class OpenComputer : MonoBehaviour
     }
     private void Start()
     {
-      // textEditorData = gameObject.transform.GetChild(0).GetComponent<TextEditorData>();
     }
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+        
+        var ui = GameObject.Find("UI");
+        var textEditorCanvas = ui.transform.Find("TextEditorCanvas");   
+        textEditorManager = textEditorCanvas.GetComponent<TextEditorManager>();
+
+        PlayerManager.OnEditorSpawned += PlayerManager_OnEditorSpawned;
+    }
+
+    private void PlayerManager_OnEditorSpawned(object sender, EventArgs e)
+    {
+       if(transform.childCount > 0)
+       {
+           
+       }
+       else
+       {
+            doesExist = false;
+       }
+    }
+
     private void Update()
     {
+        if (!IsClient) { return;}
         //Check if interaction is available
         if (triggerActive && Input.GetKeyDown(KeyCode.E))
         {
-            print(true);
+            doesExist = transform.GetChild(0).TryGetComponent<TextEditorData>(out TextEditorData data);
+            if (doesExist)
+            {
+                if (data.OwnerUsername != PlayerManager.LocalPlayer.GetUsername())
+                {
+                    print("This computer is currently in use by another player.");
+                    return;
+                }
+              textEditorData = data;
+              textEditorManager.LoadEditorData(textEditorData);
+            }
+            else
+            {
+                print("There is no text editor in this pc");
+            }
         }
 
         //If interaction is available highlight the object
@@ -52,7 +91,6 @@ public class OpenComputer : MonoBehaviour
         else
         {
             gameObject.GetComponent<SpriteRenderer>().sprite = PC;
-
         }
     }
 }

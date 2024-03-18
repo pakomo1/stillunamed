@@ -13,9 +13,7 @@ public class PlayerManager : NetworkBehaviour
     public static event EventHandler<PlayerSpawnArgs> OnAnyPlayerSpawn;
     [SerializeField] private TextMeshProUGUI _usernameText;
     [SerializeField] private GameObject EditorPrefab;
-
-
-    
+    public static event EventHandler OnEditorSpawned; 
 
     public static PlayerManager LocalPlayer { get; private set; }
     public string GetUsername()
@@ -29,6 +27,7 @@ public class PlayerManager : NetworkBehaviour
         
         LocalPlayer = this;
         SetUsername(UnityEngine.Random.Range(1, 1000000).ToString());
+        print(_username);
 
         if (IsHost)
         {
@@ -62,7 +61,7 @@ public class PlayerManager : NetworkBehaviour
             
             if (computer.childCount == 0)
             {
-                RequestEditorSpawnServerRpc(i);
+                RequestEditorSpawnServerRpc(i, _username);
                 break;
             }
 
@@ -71,7 +70,7 @@ public class PlayerManager : NetworkBehaviour
 
 
     [ServerRpc]
-    private void RequestEditorSpawnServerRpc(int computerId)
+    private void RequestEditorSpawnServerRpc(int computerId,string username)
     {
         var room = GameObject.Find("Room");
         var computers = room.transform.Find("Computers");
@@ -83,6 +82,7 @@ public class PlayerManager : NetworkBehaviour
         if (networkObjectEditor != null)
         {
             networkObjectEditor.Spawn();
+            networkObjectEditor.ChangeOwnership(OwnerClientId);
         }
         Editor.transform.SetParent(computer.transform);
         var thiseditorData = Editor.GetComponent<TextEditorData>();
@@ -92,9 +92,8 @@ public class PlayerManager : NetworkBehaviour
 
         //assign it to the player
         SetTextEditor(Editor.GetComponent<TextEditorData>());
-        thiseditorData.SetOwner(_username);
-
-        print($"the user: {thiseditorData.OwnerUsername} is now a pround owner of {thiseditorData.Id}");
+        thiseditorData.SetOwner(username);
+        OnEditorSpawned?.Invoke(this, EventArgs.Empty);
     }
     public void SetUsername(string username)
     {
