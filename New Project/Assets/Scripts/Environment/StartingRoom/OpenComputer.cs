@@ -7,10 +7,11 @@ public class OpenComputer : NetworkBehaviour
     [SerializeField] private Sprite PCHighLighted;
     [SerializeField] private Sprite PC;
     private TextEditorData textEditorData;
-    private PlayerManager playerInTrigger;
+    private TextEditorData currentTextEditorData;
+    private PlayerManager currentPlayer;
     private TextEditorManager textEditorManager;
     private bool triggerActive;
-
+    private int playersInTrigger = 0;
     private bool doesExist = false; 
 
     private void Awake()
@@ -22,8 +23,14 @@ public class OpenComputer : NetworkBehaviour
     {
         if (collision.tag == "Player")
         {
-            triggerActive = true;
-            //print(textEditorData.OwnerUsername);
+            playersInTrigger++;
+            // Only update triggerActive and currentTextEditorData if no player is currently interacting with the computer
+            if (currentPlayer == null)
+            {
+                triggerActive = true;
+                currentPlayer = collision.GetComponent<PlayerManager>();
+                currentTextEditorData = transform.GetChild(0).GetComponent<TextEditorData>();
+            }
         }
     }
 
@@ -31,7 +38,12 @@ public class OpenComputer : NetworkBehaviour
     {
         if (collision.tag == "Player")
         {
-            triggerActive = false;
+            playersInTrigger--;
+            if (collision.GetComponent<PlayerManager>() == currentPlayer)
+            {
+                triggerActive = false;
+                currentPlayer = null;
+            }
         }
     }
     private void Start()
@@ -64,18 +76,12 @@ public class OpenComputer : NetworkBehaviour
     {
         if (!IsClient) { return;}
         //Check if interaction is available
-        if (triggerActive && Input.GetKeyDown(KeyCode.E))
+        if (triggerActive && Input.GetKeyDown(KeyCode.E) && currentPlayer == PlayerManager.LocalPlayer)
         {
-            doesExist = transform.GetChild(0).TryGetComponent<TextEditorData>(out TextEditorData data);
-            if (doesExist)
+            //doesExist = transform.GetChild(0).TryGetComponent<TextEditorData>(out TextEditorData data);
+            if (currentTextEditorData != null)
             {
-                if (data.OwnerUsername != PlayerManager.LocalPlayer.GetUsername())
-                {
-                    print("This computer is currently in use by another player.");
-                    return;
-                }
-              textEditorData = data;
-              textEditorManager.LoadEditorData(textEditorData);
+                textEditorManager.LoadEditorData(currentTextEditorData);
             }
             else
             {
