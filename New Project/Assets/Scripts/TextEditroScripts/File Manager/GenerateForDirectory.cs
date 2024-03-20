@@ -38,17 +38,22 @@ public class GenerateForDirectory : MonoBehaviour
                 var directoryEntryButton = directoryEntry.GetComponent<Button>();
 
                 directoryEntry.name = Path.GetFileName(item);
-                var textComponent = directoryEntry.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>();
-                textComponent.text = Path.GetFileName(item);
-                // Add left padding
-                textComponent.margin = new Vector4(depth * 10, textComponent.margin.y, textComponent.margin.z, textComponent.margin.w); // Add left padding
+                var textComponent = directoryEntry.transform.GetChild(0).gameObject;
+                textComponent.GetComponent<TextMeshProUGUI>().text = Path.GetFileName(item);
+
+                // Adjust the position of the GameObject
+                directoryEntry.transform.localPosition = new Vector3(depth * 10, directoryEntry.transform.localPosition.y, directoryEntry.transform.localPosition.z);
+
+                //textComponent.margin = new Vector4(depth * 10, textComponent.margin.y, textComponent.margin.z, textComponent.margin.w); // Add left padding
 
                 directoryEntry.tag = "directory";
 
                 var direcotryContentHolder = Instantiate(dirContentHolder, parentPanel);
                 direcotryContentHolder.name = $"{directoryEntry.name}ContentHolder";
 
-                directoryEntryButton.onClick.AddListener(() => ExpandDirecotryContent(direcotryContentHolder.transform));
+                directoryEntryButton.onClick.AddListener(() => {
+                    ExpandDirecotryContent(direcotryContentHolder.transform, item , textEditorData); 
+                });
                 GenerateForDirectoy(direcotryContentHolder.transform, item ,textEditorData, depth + 1); // Increase depth for nested directories
             }
             else if (File.Exists(item))
@@ -68,9 +73,20 @@ public class GenerateForDirectory : MonoBehaviour
         }
     }
 
-    private void ExpandDirecotryContent(Transform panel)
+    private void ExpandDirecotryContent(Transform panel, string directory, TextEditorData textEditorData)
     {
-        panel.gameObject.SetActive(!panel.gameObject.activeSelf);
+        bool isActive = panel.gameObject.activeSelf;
+
+        if (isActive)
+        {
+            textEditorData.WorkingDirectory = Path.GetDirectoryName(textEditorData.WorkingDirectory.ToString());
+        }
+        else
+        {
+            textEditorData.WorkingDirectory = Path.Combine(textEditorData.WorkingDirectory.ToString(), Path.GetFileName(directory));
+        }
+
+        panel.gameObject.SetActive(!isActive);
     }
 
 }
