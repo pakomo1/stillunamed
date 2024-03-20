@@ -14,6 +14,7 @@ public class TextEditorManager : MonoBehaviour
 {
     private InGameTextEditor.TextEditor textEditor;
     [SerializeField] private GenerateForDirectory directoryManager;
+    [SerializeField] private GameObject fileManagerContent;
     private TextEditorData textEditorData;
     private string previousText;
 
@@ -49,13 +50,12 @@ public class TextEditorManager : MonoBehaviour
     {
         textEditor = transform.GetChild(1).transform.GetChild(0).GetComponent<InGameTextEditor.TextEditor>();
         gameObject.SetActive(true);
+
         textEditorData = data;
         string text = data.DisplayText.ToString();
         textEditor.CaretPosition = new InGameTextEditor.TextPosition(0, 0);
+
         textEditor.SetText(text);
-
-
-        //TODO: Get the clone directory 
-        // directoryManager.GenerateForDirectoy(transform.GetChild(1),textEditorData.WorkingDirectory.Value);
+        directoryManager.GenerateForDirectoy(fileManagerContent.transform,textEditorData.WorkingDirectory.Value, textEditorData);
     }
 }

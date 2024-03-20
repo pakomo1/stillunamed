@@ -4778,7 +4778,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e3f98558ef02724fa5ff011bb126fe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textEditorData: {fileID: 0}
   filePrefab: {fileID: 1725373779793496888, guid: c73ae3e5a849db5439bc86f3be7ee7ab, type: 3}
   directoryPrefab: {fileID: 1725373779793496888, guid: 4519073f33e668e44871f49a75ab8cc3, type: 3}
   dirContentHolder: {fileID: 556734605978885543, guid: 0732d5af3c115334dac1bfa40c98ffc4, type: 3}
@@ -7790,6 +7789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   directoryManager: {fileID: 641290318}
+  fileManagerContent: {fileID: 289010791}
 --- !u!114 &1899971774
 MonoBehaviour:
   m_ObjectHideFlags: 0

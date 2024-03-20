@@ -9,7 +9,6 @@ using System;
 
 public class GenerateForDirectory : MonoBehaviour
 {
-    [SerializeField] private TextEditorData textEditorData;
 
     [SerializeField] private GameObject filePrefab;
     [SerializeField] private GameObject directoryPrefab;
@@ -22,7 +21,7 @@ public class GenerateForDirectory : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void GenerateForDirectoy(Transform parentPanel, string directory, int depth = 0)
+    public void GenerateForDirectoy(Transform parentPanel, string directory,TextEditorData textEditorData, int depth = 0)
     {
         var directoriesInDir = Directory.GetDirectories(directory);
         var filesInDir = Directory.GetFiles(directory);
@@ -50,7 +49,7 @@ public class GenerateForDirectory : MonoBehaviour
                 direcotryContentHolder.name = $"{directoryEntry.name}ContentHolder";
 
                 directoryEntryButton.onClick.AddListener(() => ExpandDirecotryContent(direcotryContentHolder.transform));
-                GenerateForDirectoy(direcotryContentHolder.transform, item, depth + 1); // Increase depth for nested directories
+                GenerateForDirectoy(direcotryContentHolder.transform, item ,textEditorData, depth + 1); // Increase depth for nested directories
             }
             else if (File.Exists(item))
             {
