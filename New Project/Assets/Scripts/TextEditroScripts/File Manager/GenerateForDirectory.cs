@@ -23,6 +23,7 @@ public class GenerateForDirectory : MonoBehaviour
     // Update is called once per frame
     public void GenerateForDirectoy(Transform parentPanel, string directory,TextEditorData textEditorData, int depth = 0)
     {
+        ClearGameObject(parentPanel);
         var directoriesInDir = Directory.GetDirectories(directory);
         var filesInDir = Directory.GetFiles(directory);
 
@@ -73,6 +74,14 @@ public class GenerateForDirectory : MonoBehaviour
         }
     }
 
+    //clears a gameobjce of all its children
+    private void ClearGameObject(Transform gameObject)
+    {
+        foreach (Transform child in gameObject)
+        {
+            Destroy(child.gameObject);
+        }
+    }
     private void ExpandDirecotryContent(Transform panel, string directory, TextEditorData textEditorData)
     {
         bool isActive = panel.gameObject.activeSelf;

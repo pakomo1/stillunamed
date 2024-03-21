@@ -76,12 +76,13 @@ public class OpenComputer : NetworkBehaviour
     {
         if (!IsClient) { return;}
         //Check if interaction is available
-        if (triggerActive && Input.GetKeyDown(KeyCode.E) && currentPlayer == PlayerManager.LocalPlayer)
+        if (triggerActive && Input.GetKeyDown(KeyCode.E) && currentPlayer == PlayerManager.LocalPlayer && !PlayerManager.LocalPlayer.isPlayerInteracting())
         {
             //doesExist = transform.GetChild(0).TryGetComponent<TextEditorData>(out TextEditorData data);
             if (currentTextEditorData != null)
             {
-                textEditorManager.LoadEditorData(currentTextEditorData);
+                PlayerManager.LocalPlayer.StartInteractingWithUI();
+                textEditorManager.LoadEditorData(currentTextEditorData); 
             }
             else
             {

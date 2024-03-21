@@ -25,6 +25,7 @@ public class PlayerMovement : NetworkBehaviour
     private int idleAnimStateNum;
     private string[] idleAnimStates = new string[3] { "idleFront", "IdleBack", "IdleSide" };
 
+    public bool IsInteractingWithUI { get; set; }
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -57,7 +58,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOwner) { return; }
+        if (!IsOwner || IsInteractingWithUI) { return; }
         //Moves the player
         rb.AddForce(movementDirection * moveSpeed);
     }
@@ -95,6 +96,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnMove(InputValue _value)
     {
+        if (IsInteractingWithUI) { return; }
         movementDirection = _value.Get<Vector2>() * moveSpeed;
     }
 }

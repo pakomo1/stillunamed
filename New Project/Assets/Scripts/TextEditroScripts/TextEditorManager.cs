@@ -16,7 +16,7 @@ public class TextEditorManager : MonoBehaviour
     private InGameTextEditor.TextEditor textEditor;
     [SerializeField] private GenerateForDirectory directoryManager;
     [SerializeField] private GameObject fileManagerContent;
-    public static TextEditorData textEditorData;
+    public TextEditorData textEditorData;
     private string previousText;
 
     private void Start()
@@ -27,6 +27,7 @@ public class TextEditorManager : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Escape))
         {
+            PlayerManager.LocalPlayer.StopInteractingWithUI();
             gameObject.SetActive(false);
         }
 
@@ -58,21 +59,5 @@ public class TextEditorManager : MonoBehaviour
 
         textEditor.SetText(text);
         directoryManager.GenerateForDirectoy(fileManagerContent.transform,textEditorData.WorkingDirectory.Value, textEditorData);
-    }
-    public static void CreateFile()
-    {
-        string fileName = "NewFile.txt";
-        string fullPath = Path.Combine(textEditorData.WorkingDirectory.ToString(), fileName);
-        if (!File.Exists(fullPath))
-        {
-            using (File.Create(fullPath))
-            {
-                Debug.Log("File created: " + fullPath);
-            }
-        }
-        else
-        {
-            Debug.Log("File already exists: " + fullPath);
-        }
     }
 }

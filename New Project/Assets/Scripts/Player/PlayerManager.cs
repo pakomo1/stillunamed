@@ -24,7 +24,8 @@ public class PlayerManager : NetworkBehaviour
     {
         base.OnNetworkSpawn();
         if (!IsOwner) { return; }
-        
+
+        StopInteractingWithUI();
         LocalPlayer = this;
         SetUsername(UnityEngine.Random.Range(1, 1000000).ToString());
         print(_username);
@@ -36,7 +37,18 @@ public class PlayerManager : NetworkBehaviour
         {
             StartCoroutine(WaitForComputersInitialization());
         }
-
+    }
+    public void StartInteractingWithUI()
+    {
+        GetComponent<PlayerMovement>().IsInteractingWithUI = true;
+    }
+    public void StopInteractingWithUI()
+    {
+        GetComponent<PlayerMovement>().IsInteractingWithUI = false;
+    }
+    public bool isPlayerInteracting()
+    {
+        return GetComponent<PlayerMovement>().IsInteractingWithUI;
     }
 
     private void ComputersInitialized_OnValueChanged(bool previousValue, bool newValue)
