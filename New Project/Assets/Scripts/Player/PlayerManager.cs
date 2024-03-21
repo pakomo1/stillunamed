@@ -6,12 +6,15 @@ using System;
 using TMPro;
 using UnityEditor;
 using Unity.VisualScripting;
+using System.Threading.Tasks;
+using Octokit;
+using System.Linq;
 public class PlayerManager : NetworkBehaviour
 {
     private string _username;
     private TextEditorData _textEditor;
     public static event EventHandler<PlayerSpawnArgs> OnAnyPlayerSpawn;
-    [SerializeField] private TextMeshProUGUI _usernameText;
+  //  [SerializeField] private TextMeshProUGUI _usernameText;
     [SerializeField] private GameObject EditorPrefab;
     public static event EventHandler OnEditorSpawned; 
 
@@ -20,15 +23,17 @@ public class PlayerManager : NetworkBehaviour
     {
         return _username;
     }
-    public override void OnNetworkSpawn()
+    public async override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
         if (!IsOwner) { return; }
 
+
+        string currentUsername = await GetGitUsernme();
+        SetUsername(currentUsername);
+
         StopInteractingWithUI();
         LocalPlayer = this;
-        SetUsername(UnityEngine.Random.Range(1, 1000000).ToString());
-        print(_username);
 
         if (IsHost)
         {
@@ -37,7 +42,24 @@ public class PlayerManager : NetworkBehaviour
         {
             StartCoroutine(WaitForComputersInitialization());
         }
+
+        var isOwner = await GitOperations.IsUserRepoOwnerAsync(currentUsername, GameSceneMetadata.githubRepoLink);
+        if (isOwner)
+        {
+            GameLobby.OnPlayerTriesToJoin += GameLobby_OnPlayerTriesToJoin;
+        }
     }
+
+    private async void GameLobby_OnPlayerTriesToJoin(object sender, LobbyJoinEventArgs e)
+    {
+        string username = e.Username;
+        bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.githubRepoLink);
+        if (!isCollaborator)
+        {
+            await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.githubRepoLink);
+        }
+    }
+
     public void StartInteractingWithUI()
     {
         GetComponent<PlayerMovement>().IsInteractingWithUI = true;
@@ -60,8 +82,12 @@ public class PlayerManager : NetworkBehaviour
         yield return new WaitUntil(() => ComputersManager.ComputersInitialized.Value);
         GetEditor();
     }
-
-
+    private async Task<string> GetGitUsernme()
+    {
+        var user = await GitHubClientProvider.client.User.Current();
+        return user.Login;
+    }
+   
     private void GetEditor()
     {
         var room = GameObject.Find("Room");
@@ -79,7 +105,6 @@ public class PlayerManager : NetworkBehaviour
 
         }
     }
-
 
     [ServerRpc]
     private void RequestEditorSpawnServerRpc(int computerId,string username)
@@ -120,6 +145,7 @@ public class PlayerManager : NetworkBehaviour
     {
         _textEditor = textEditor;
     }
+   
 }
 public class PlayerSpawnArgs : EventArgs
 {

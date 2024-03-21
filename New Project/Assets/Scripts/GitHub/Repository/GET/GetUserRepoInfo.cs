@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks.CompilerServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Octokit;
@@ -14,11 +15,12 @@ public class GetUserRepoInfo : MonoBehaviour
     [SerializeField] private RepoButtonTemplate buttonTemplate;
     public IReadOnlyList<Repository> repositories;
 
-    public void GenerateButtons()
+    public async Task<bool> GenerateButtonsAsync()
     {
         for (int i = 0; i < repositories.Count; i++)
         {
-            buttonTemplate.CreateButton(repositories[i]);
+            await buttonTemplate.CreateButtonAsync(repositories[i]);
         }
+        return true;
     }
 }

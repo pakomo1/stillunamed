@@ -17,7 +17,7 @@ public class RepoButtonTemplate : MonoBehaviour
     private void Start()
     {
     }
-    public async void CreateButton(Repository currentRepo)
+    public async Task<bool> CreateButtonAsync(Repository currentRepo)
     {
         //Repository repo = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
 
@@ -44,6 +44,7 @@ public class RepoButtonTemplate : MonoBehaviour
         }
         button.GetComponent<Button>().onClick.AddListener(() => repositoryContentNavigationManager.ShowRepositoryContent(currentRepo.Owner.Login, currentRepo.Name, "/"));
         button.GetComponent<RepositoryData>().repository = currentRepo;
+        return true;
     }
 
     public void OnRightClickHandler(Repository repository, GameObject repoButton)

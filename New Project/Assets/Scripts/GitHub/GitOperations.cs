@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -18,7 +19,7 @@ public class GitOperations : MonoBehaviour
         User user = await GitHubClientProvider.client.User.Current();
         string username = user.Login;
 
-        print("Username" + username);
+        print("Username: " + username);
         print("Token: " +token);
 
         co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = username, Password = token };
@@ -40,5 +41,31 @@ public class GitOperations : MonoBehaviour
         {
             return ex.Message;
         }
+    }
+    public static async Task<bool> IsUserRepoOwnerAsync(string username, string repoLink)
+    {
+        var url = new Uri(repoLink);
+        var repoName = url.Segments.Last();
+        var ownerName = url.Segments[url.Segments.Length - 2].Trim('/');
+
+        var repo = await GitHubClientProvider.client.Repository.Get(ownerName, repoName);
+        return repo.Owner.Login == username;
+    }
+    public static async Task<bool> IsUserCollaboratorAsync(string username, string repoLink)
+    {
+        var url = new Uri(repoLink);
+        var repoName = url.Segments.Last();
+        var ownerName = url.Segments[url.Segments.Length - 2].Trim('/');
+
+        var collaborators = await GitHubClientProvider.client.Repository.Collaborator.GetAll(ownerName, repoName);
+        return collaborators.Any(c => c.Login == username);
+    }
+    public static async Task InviteUserToRepoAsync(string username, string repoLink)
+    {
+        var url = new Uri(repoLink);
+        var repoName = url.Segments.Last();
+        var ownerName = url.Segments[url.Segments.Length - 2].Trim('/');
+
+        await GitHubClientProvider.client.Repository.Collaborator.Invite(ownerName, repoName, username);
     }
 }

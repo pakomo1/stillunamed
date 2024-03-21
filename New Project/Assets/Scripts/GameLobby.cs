@@ -14,6 +14,7 @@ using SFB;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Relay;
+using Octokit;
 
 public class GameLobby : MonoBehaviour
 {
@@ -43,6 +44,9 @@ public class GameLobby : MonoBehaviour
     public event EventHandler OnCloneStarted;
     public event EventHandler<GitOperationsEventArgs> OnCloneFailed;
     public event EventHandler OnCloneSuccess;
+
+    //gamescene events
+    public static event EventHandler<LobbyJoinEventArgs> OnPlayerTriesToJoin;
 
     public static GameLobby Instance { get; private set; }
     private void Awake()
@@ -133,7 +137,7 @@ public class GameLobby : MonoBehaviour
             string repoPath = $"{cloneDirectory[0]}/{repoName}";
             
             //check if the repsitory exits
-            if (Repository.IsValid(repoPath)) 
+            if (LibGit2Sharp.Repository.IsValid(repoPath)) 
             {
                 print("This repo exists");
             }
@@ -240,14 +244,16 @@ public class GameLobby : MonoBehaviour
     }
     public async void JoinLobbyByID(string id)
     {
-        var username = GitHubClientProvider.client.User.Current().Result.Login;
-        var agrs = new LobbyJoinEventArgs(username);
+        var user = await GitHubClientProvider.client.User.Current();
+        var agrs = new LobbyJoinEventArgs(user.Login);
         try
         {
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
 
-            await dbManager.UpdateRecentLobbies(username,joinedLobby.Id);
+            OnPlayerTriesToJoin?.Invoke(this, agrs);
+
+            await dbManager.UpdateRecentLobbies(user.Login,joinedLobby.Id);
             await gameRelay.JoinRelay(relayCode);
 
             OnLobbyJoinStarted?.Invoke(this, agrs);

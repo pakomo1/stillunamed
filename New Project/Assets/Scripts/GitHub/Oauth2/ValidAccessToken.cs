@@ -44,7 +44,7 @@ public class ValidAccessToken : MonoBehaviour
             }
             openServer.authorized = true;
             repoInfo.repositories = repositories;
-            repoInfo.GenerateButtons();
+            await repoInfo.GenerateButtonsAsync();
         }
         catch (AuthorizationException)
         {
