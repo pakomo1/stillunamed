@@ -19,19 +19,19 @@ public class DataBaseManager : MonoBehaviour
     }
 
     //save user
-    public void SaveUser(string username)
+    public async void SaveUser(string username)
     {
         UserModel userToSave = new UserModel(username);
         userToSave.recentLobbies = new List<int>();
 
         string json = Newtonsoft.Json.JsonConvert.SerializeObject(userToSave);
-        dbRef.Child("users").Child(userToSave.Username).SetRawJsonValueAsync(json).ContinueWith(task =>
-        {
-            if (task.IsFaulted || task.IsCanceled)
-            {
-                print(task.Exception);
-            }
-        });
+        await dbRef.Child("users").Child(userToSave.Username).SetRawJsonValueAsync(json).ContinueWith(task =>
+              {
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                   print(task.Exception);
+                }
+              });
     }
 
     public Task<UserModel> GetUser(string username)

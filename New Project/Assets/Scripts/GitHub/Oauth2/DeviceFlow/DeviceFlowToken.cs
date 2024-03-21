@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
 using static Oauth2AccessToken;
+using UnityEngine.UI;
 
 public class DeviceFlowToken : MonoBehaviour
 {
@@ -18,21 +19,34 @@ public class DeviceFlowToken : MonoBehaviour
     [SerializeField] private TextMeshProUGUI url;
     [SerializeField] private TextMeshProUGUI usercode;
 
+    [SerializeField] private Button copyUrlButton;
+    [SerializeField] private Button copyUserCodeButton;
+    [SerializeField] private Sprite onCoppied;
 
     private string deviceCodeEndpoint = "https://github.com/login/device/code";
     private string tokenEndpoint = "https://github.com/login/oauth/access_token";
     private string clientId = "e4edd56045a448fbdc0f";
     private string deviceCode;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        copyUrlButton.onClick.AddListener(() => { CopyToClipboard(url.text, copyUrlButton); });
+        copyUserCodeButton.onClick.AddListener(() => { CopyToClipboard(usercode.text, copyUserCodeButton); });
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+
+    public void CopyToClipboard(string text, Button button)
+    {
+        GUIUtility.systemCopyBuffer = text;
+        button.image.sprite = onCoppied;
+        button.interactable = false;
     }
 
     //1.Device Code Request
