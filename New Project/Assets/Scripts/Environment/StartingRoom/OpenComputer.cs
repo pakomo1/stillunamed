@@ -29,7 +29,10 @@ public class OpenComputer : NetworkBehaviour
             {
                 triggerActive = true;
                 currentPlayer = collision.GetComponent<PlayerManager>();
-                currentTextEditorData = transform.GetChild(0).GetComponent<TextEditorData>();
+                if (transform.childCount == 1)
+                {
+                   currentTextEditorData = transform.GetChild(0).GetComponent<TextEditorData>();
+                }
             }
         }
     }
@@ -48,29 +51,15 @@ public class OpenComputer : NetworkBehaviour
     }
     private void Start()
     {
+
     }
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        
-        var ui = GameObject.Find("UI");
-        var textEditorCanvas = ui.transform.Find("TextEditorCanvas");   
-        textEditorManager = textEditorCanvas.GetComponent<TextEditorManager>();
-
-        PlayerManager.OnEditorSpawned += PlayerManager_OnEditorSpawned;
+        textEditorManager = TextEditorManager.Instance;
     }
 
-    private void PlayerManager_OnEditorSpawned(object sender, EventArgs e)
-    {
-       if(transform.childCount > 0)
-       {
-           
-       }
-       else
-       {
-            doesExist = false;
-       }
-    }
+    
 
     private void Update()
     {

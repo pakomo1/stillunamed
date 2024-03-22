@@ -12,6 +12,7 @@ public class ComputersManager : NetworkBehaviour
     [SerializeField] private GameObject computerPrefab;
     [SerializeField] private GameObject room; // GameObject representing the room
     [SerializeField] private GameObject EditorPrefab;
+  //  [SerializeField] private TextEditorManager textEditorManager;
 
     public static event EventHandler OnCompuerInitialized;
 
@@ -43,7 +44,17 @@ public class ComputersManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        if(IsServer)
-        InitializeComputers(5);
+        if (IsServer)
+        {
+            StartCoroutine(InitializeComputersCoroutine(5));
+        }
+    }
+
+    private IEnumerator InitializeComputersCoroutine(int count)
+    {
+        // Wait for the next frame to ensure that TextEditorManager.Instance has been initialized
+        yield return null;
+
+        InitializeComputers(count);
     }
 }

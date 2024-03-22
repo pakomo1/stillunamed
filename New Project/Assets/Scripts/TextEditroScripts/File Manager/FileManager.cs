@@ -14,14 +14,18 @@ public class FileManager : MonoBehaviour
      private static TextEditorManager textEditorManager;
      private GenerateForDirectory generateForDirectory;
      private static string fileName;
-
+     private static string directoryName;
     // Start is called before the first frame update
     void Start()
     {
         generateForDirectory =gameObject.GetComponent<GenerateForDirectory>();
         textEditorManager = gameObject.GetComponentInParent<TextEditorManager>();
         directroyPrefab.OnFileCreationRequested += OnFileCreationRequestedHandler;
+        directroyPrefab.OnDirectoryCreationRequested += OnDirectoryCreationRequestedHandler;
     }
+
+
+
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -29,7 +33,14 @@ public class FileManager : MonoBehaviour
             InputNameBackgorund.SetActive(false);
         }
     }
-
+    private void OnDirectoryCreationRequestedHandler(object sender, EventArgs e)
+    {
+        StartWaitingForInput((input) =>
+        {
+            directoryName = input;
+            CreateDirectory();
+        });
+    }
     private void OnFileCreationRequestedHandler(object sender, EventArgs e)
     {
         StartWaitingForInput(input => {
@@ -63,7 +74,7 @@ public class FileManager : MonoBehaviour
         // Call the callback function
         callback(input);
     }
-
+    //File
     public void CreateFile()
     {
         string fullPath = Path.Combine(textEditorManager.textEditorData.WorkingDirectory.ToString(), fileName);
@@ -100,6 +111,46 @@ public class FileManager : MonoBehaviour
         else
         {
             Debug.Log("File does not exist.");
+        }
+    }
+    //Direcotry
+    public void CreateDirectory()
+    {
+        string fullPath = Path.Combine(textEditorManager.textEditorData.WorkingDirectory.ToString(), directoryName);
+        if (!Directory.Exists(fullPath))
+        {
+            Directory.CreateDirectory(fullPath);
+            Debug.Log("Directory created: " + fullPath);
+        }
+        else
+        {
+            Debug.Log("Directory already exists: " + fullPath);
+        }
+    }
+
+    public void DeleteDirectory(string directoryPath)
+    {
+        if (Directory.Exists(directoryPath))
+        {
+            Directory.Delete(directoryPath, true); // The second parameter is to delete recursively
+            Debug.Log("Directory deleted: " + directoryPath);
+        }
+        else
+        {
+            Debug.Log("Directory does not exist.");
+        }
+    }
+
+    public void RenameDirectory(string currentDirectoryPath, string newDirectoryPath)
+    {
+        if (Directory.Exists(currentDirectoryPath))
+        {
+            Directory.Move(currentDirectoryPath, newDirectoryPath);
+            Debug.Log("Directory renamed from " + currentDirectoryPath + " to " + newDirectoryPath);
+        }
+        else
+        {
+            Debug.Log("Directory does not exist.");
         }
     }
 }

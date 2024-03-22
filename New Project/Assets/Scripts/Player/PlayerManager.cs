@@ -23,15 +23,28 @@ public class PlayerManager : NetworkBehaviour
     {
         return _username;
     }
-    public async override void OnNetworkSpawn()
+    public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
         if (!IsOwner) { return; }
 
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                string currentUsername = await GetGitUsernme();
+                SetUsername(currentUsername);
 
-        string currentUsername = await GetGitUsernme();
-        SetUsername(currentUsername);
-
+                var isOwner = await GitOperations.IsUserRepoOwnerAsync(_username, GameSceneMetadata.githubRepoLink);
+                if (isOwner)
+                {
+                    GameLobby.OnPlayerTriesToJoin += GameLobby_OnPlayerTriesToJoin;
+                }
+            }catch(Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        });
+        _username = "pakomo1";
         StopInteractingWithUI();
         LocalPlayer = this;
 
@@ -41,12 +54,6 @@ public class PlayerManager : NetworkBehaviour
         }else if (IsClient)
         {
             StartCoroutine(WaitForComputersInitialization());
-        }
-
-        var isOwner = await GitOperations.IsUserRepoOwnerAsync(currentUsername, GameSceneMetadata.githubRepoLink);
-        if (isOwner)
-        {
-            GameLobby.OnPlayerTriesToJoin += GameLobby_OnPlayerTriesToJoin;
         }
     }
 
