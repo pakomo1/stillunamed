@@ -42,6 +42,7 @@ public class GitOperations : MonoBehaviour
             return ex.Message;
         }
     }
+    //check if the user is the owner of the repository
     public static async Task<bool> IsUserRepoOwnerAsync(string username, string repoLink)
     {
         var url = new Uri(repoLink);
@@ -51,6 +52,7 @@ public class GitOperations : MonoBehaviour
         var repo = await GitHubClientProvider.client.Repository.Get(ownerName, repoName);
         return repo.Owner.Login == username;
     }
+    // Check if the user is a collaborator of the repository
     public static async Task<bool> IsUserCollaboratorAsync(string username, string repoLink)
     {
         var url = new Uri(repoLink);
@@ -60,6 +62,7 @@ public class GitOperations : MonoBehaviour
         var collaborators = await GitHubClientProvider.client.Repository.Collaborator.GetAll(ownerName, repoName);
         return collaborators.Any(c => c.Login == username);
     }
+    //invites a user to a repository
     public static async Task InviteUserToRepoAsync(string username, string repoLink)
     {
         var url = new Uri(repoLink);
