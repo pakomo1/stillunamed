@@ -65,6 +65,12 @@ namespace InGameTextEditor.Format
             // matches a number
             regexPattern += @"|(?<number>\b[0-9]+(\.[0-9]+)?)";
 
+            // matches a "+" at the start of a line
+            regexPattern += @"|(?<plus>^\+)";
+
+            // matches a "-" at the start of a line
+            regexPattern += @"|(?<minus>^-)";
+
             // create regex
             regex = new Regex(regexPattern);
 
@@ -112,6 +118,12 @@ namespace InGameTextEditor.Format
                                     break;
                                 case "number":
                                     textFormatGroups.Add(new TextFormatGroup(tokenStartIndex, tokenEndIndex, textStyleNumber));
+                                    break;
+                                case "plus":
+                                    textFormatGroups.Add(new TextFormatGroup(tokenStartIndex, tokenEndIndex, textStyleGreen));
+                                    break;
+                                case "minus":
+                                    textFormatGroups.Add(new TextFormatGroup(tokenStartIndex, tokenEndIndex, textStyleRed));
                                     break;
                             }
                         }

@@ -4,6 +4,7 @@ using System.IO;
 using Unity.Collections;
 using Unity.VisualScripting;
 using System;
+using System.Threading.Tasks;
 
 public class TextEditorManager : MonoBehaviour
 {
@@ -32,17 +33,19 @@ public class TextEditorManager : MonoBehaviour
         isTextEditorLoaded = true;
     }
 
-    private void Update()
+    private async void Update()
     {
         if (Input.GetKey(KeyCode.Escape))
         {
             PlayerManager.LocalPlayer.StopInteractingWithUI();
-            textEditorHolder.SetActive(false);
             textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;
-
+        }
+        if(Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.LeftControl))
+        {
+           await SaveChangesAsync();
         }
 
-        // Check if the text has changed
+         // Check if the text has changed
         if (isTextEditorLoaded&&textEditor != null && textEditor.Text != previousText )
         {
             // Update the DisplayText of TextEditorData
@@ -73,6 +76,24 @@ public class TextEditorManager : MonoBehaviour
         textEditor.SetText(text);
         directoryManager.GenerateForDirectoy(fileManagerContent.transform,textEditorData.WorkingDirectory.Value, textEditorData);
         OnTextEditorLoaded?.Invoke(this, EventArgs.Empty);
+
+        if (textEditorData.PathToTheSelectedFile == "")
+        {
+            string[] files = Directory.GetFiles(textEditorData.WorkingDirectory.Value);
+            if (files.Length > 0)
+            {
+                textEditorData.PathToTheSelectedFile = files[0];
+            }
+        }
+    }
+    public async Task SaveChangesAsync()
+    {
+        if (textEditorData != null && textEditor != null)
+        {
+            var filePath = textEditorData.PathToTheSelectedFile.ToString();
+            var text = textEditor.Text;
+            await File.WriteAllTextAsync(filePath, text);
+        }
     }
     public void ShowGitManager()
     {
