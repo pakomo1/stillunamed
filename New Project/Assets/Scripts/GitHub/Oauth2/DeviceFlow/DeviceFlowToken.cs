@@ -52,7 +52,7 @@ public class DeviceFlowToken : MonoBehaviour
     //1.Device Code Request
     public async void GetDeviceCode()
     {
-        var client = new GitHubClient(new ProductHeaderValue("MyApp"));
+        var client = GitHubClientProvider.client;
         var request = new OauthDeviceFlowRequest(clientId);
         request.Scopes.Add("repo");
 
@@ -129,19 +129,22 @@ public class DeviceFlowToken : MonoBehaviour
             yield return new WaitForSeconds(5);
         }
     }
-    private void AssignToken(string result,string token_type, string scope)
+    private async void AssignToken(string result,string token_type, string scope)
     {
-        //Initialize the save system
-        SaveSystem.INIT("/Saves/");
+        try
+        {
+            // Save the access token to a file
+            var credentialStore = FileCredentialStore.Instance;
+            await credentialStore.SaveCredentials(result, token_type, scope);
 
-        //Turn the access token info into a json format
-        AccessTokenResponse saveToken = new AccessTokenResponse() { access_token = result, token_type=token_type, scope= scope };
-        string json = JsonUtility.ToJson(saveToken);
-        SaveSystem.Save(json, "/accessToken.txt", "/Saves/");
-
-        //UI panel switch
-        AuthenticateInfoUI.SetActive(false);
-        uiAfterCompletion.SetActive(true);
+            //UI panel switch
+            AuthenticateInfoUI.SetActive(false);
+            uiAfterCompletion.SetActive(true);
+        }catch(Exception ex)
+        {
+            Debug.LogError(ex.ToString());
+        }
+        
     }
 }
 

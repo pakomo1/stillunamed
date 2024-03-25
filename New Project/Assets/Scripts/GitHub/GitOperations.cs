@@ -1,47 +1,13 @@
 using LibGit2Sharp;
 using Octokit;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GitOperations : MonoBehaviour
-{
-    public static async Task<string> CloneRepositoryAsync(string sourceUrl, string destinationPath)
-    {
-        var co = new CloneOptions();
-
-        string token = GetAccessToken();
-        User user = await GitHubClientProvider.client.User.Current();
-        string username = user.Login;
-
-        print("Username: " + username);
-        print("Token: " +token);
-
-        co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = username, Password = token };
-
-        Directory.CreateDirectory(destinationPath);
-
-        string clonedRepoPath = await Task.Run(() => LibGit2Sharp.Repository.Clone(sourceUrl, destinationPath, co));
-        return clonedRepoPath;
-    }
-    private static string GetAccessToken()
-    {
-        try
-        {
-            string json = SaveSystem.Load("accessToken.txt", "/Saves/");
-            var loadedJson = JsonUtility.FromJson<AccessTokenResponse>(json);
-            return loadedJson.access_token;
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-    }
+{  
     //check if the user is the owner of the repository
     public static async Task<bool> IsUserRepoOwnerAsync(string username, string repoLink)
     {
@@ -70,5 +36,78 @@ public class GitOperations : MonoBehaviour
         var ownerName = url.Segments[url.Segments.Length - 2].Trim('/');
 
         await GitHubClientProvider.client.Repository.Collaborator.Invite(ownerName, repoName, username);
+    }
+
+    public static int CountUnpushedCommits(string repoPath, string branchName = "main")
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            var localBranch = repo.Branches[branchName];
+            var trackingBranch = localBranch.TrackedBranch;
+            if (trackingBranch == null)
+            {
+                // If there is no tracking branch then all commits are unpushed
+                return localBranch.Commits.Count();
+            }
+            else
+            {
+                // If there is a tracking branch then count the commits that are in the local branch but not in the tracking branch
+                return localBranch.Commits.TakeWhile(c => c != trackingBranch.Tip).Count();
+            }
+        }
+    }
+    public static async Task<string> CloneRepositoryAsync(string sourceUrl, string destinationPath)
+    {
+        var co = new CloneOptions();
+        var credentails = await GetCredentialsAsync();
+        co.CredentialsProvider = (_url, _user, _cred) => credentails;
+
+        Directory.CreateDirectory(destinationPath);
+        string clonedRepoPath = await Task.Run(() => LibGit2Sharp.Repository.Clone(sourceUrl, destinationPath, co));
+        return clonedRepoPath;
+    }
+
+    public static async void PushChanges(string repoPath, string branchName = "main")
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            var credentails = await GetCredentialsAsync();
+            var localBranch = repo.Branches[branchName];
+            var remote = repo.Network.Remotes["origin"];
+
+            var pushOptions = new PushOptions
+            {
+                CredentialsProvider = (_url, _user, _cred) => credentails
+            };
+
+            repo.Network.Push(remote, @"refs/heads/" + branchName, pushOptions);
+        }
+    }
+
+    public static async Task PullChanges(string repoPath, string branchName = "main")
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            var credentials = await GetCredentialsAsync();  
+            var pullOptions = new PullOptions
+            {
+                FetchOptions = new FetchOptions
+                {
+                    CredentialsProvider = (_url, _user, _cred) => credentials
+                }
+            };
+
+            // Pull the latest changes
+            Commands.Pull(repo, new LibGit2Sharp.Signature(credentials.Username, "email", DateTimeOffset.Now), pullOptions);
+        }
+    }
+    public static async Task<UsernamePasswordCredentials> GetCredentialsAsync()
+    {
+        var user = await GitHubClientProvider.client.User.Current();
+        string username = user.Login;
+        var credentials = await FileCredentialStore.Instance.GetAccessToken();
+        string token = credentials.Password;
+
+        return new UsernamePasswordCredentials { Username = username, Password = token };
     }
 }

@@ -24,7 +24,7 @@ public class ValidAccessToken : MonoBehaviour
     {
         try
         {
-            accessToken = GetAccessToken();
+            accessToken = await GetAccessToken();
             GitHubClientProvider.GetGitHubClient(accessToken);
             var client = GitHubClientProvider.client;
 
@@ -57,13 +57,12 @@ public class ValidAccessToken : MonoBehaviour
             print("An error occurred: " + ex);
         }
     }
-    public string GetAccessToken()
+    public async Task<string> GetAccessToken()
     {
         try
         {
-            string json = SaveSystem.Load("accessToken.txt", "/Saves/");
-            var loadedJson = JsonUtility.FromJson<AccessTokenResponse>(json);
-            return loadedJson.access_token;
+            var credentials =await FileCredentialStore.Instance.GetAccessToken();
+            return credentials.Password;
         }catch(Exception ex)
         {
             return ex.Message;

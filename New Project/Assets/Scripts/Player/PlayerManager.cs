@@ -44,7 +44,7 @@ public class PlayerManager : NetworkBehaviour
                 Debug.LogError(e.Message);
             }
         });
-        _username = "pakomo1";
+       // _username = "pakomo1";
         StopInteractingWithUI();
         LocalPlayer = this;
 
