@@ -27,6 +27,14 @@ public class GitManager : MonoBehaviour
         LoadStatusImages();
         DisplayChangedFiles();
     }
+    private void OnDisable()
+    {
+        textEditor.disableInput = false;
+    }
+    private void OnEnable()
+    {
+        textEditor.disableInput = true;
+    }
 
     // Update is called once per frame
     void Update()
@@ -100,7 +108,6 @@ public class GitManager : MonoBehaviour
         {
             // Check out the desired branch
             Commands.Checkout(repo, branchName);
-            //
             foreach (var file in filesToCommit)
             {
                 Commands.Stage(repo, file);
@@ -126,12 +133,12 @@ public class GitManager : MonoBehaviour
             // Check if the file is empty
             if (string.IsNullOrEmpty(changesContent))
             {
-                // If the file is empty, display a custom message
+                // If the file is empty display a custom message
                 changesDisplayField.SetText("Empty file");
             }
             else
             {
-                // If the file is not empty, parse and display the changes
+                // If the file is not empty parse and display the changes
                 StringBuilder parsedChanges = new StringBuilder();
                 using (StringReader reader = new StringReader(changesContent))
                 {
@@ -152,12 +159,11 @@ public class GitManager : MonoBehaviour
     public void Show(InGameTextEditor.TextEditor textEditor)
     {
         this.textEditor = textEditor;
-        textEditor.disableInput = true;
         gameObject.SetActive(true);
     }
 
     public void Hide()
     {
-        gameObject.SetActive(false);
+        textEditor.disableInput = false;
     }
 }

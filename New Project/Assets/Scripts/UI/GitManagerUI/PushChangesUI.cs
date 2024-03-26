@@ -7,7 +7,8 @@ using UnityEngine;
 public class PushChangesUI : MonoBehaviour
 {
     [SerializeField]private GitManager gitManager;
-    [SerializeField] private GameObject commitsCountHolder;
+    [SerializeField]private GameObject commitsCountHolder;
+    [SerializeField]private GameObject changedFilesContent;
     [SerializeField]private TextMeshProUGUI unpushedCommitsCountLbl;
     private string branch;
     private int commitsCount;
@@ -43,11 +44,20 @@ public class PushChangesUI : MonoBehaviour
         GitOperations.PushChanges(GameSceneMetadata.githubRepoPath, branch);
         commitsCountHolder.SetActive(false);
         print("Changes have been pushed to the origin");
+        ClearChangedFiles();
     }   
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+    //clears the content of the changed files
+    public void ClearChangedFiles()
+    {
+        foreach (Transform child in changedFilesContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

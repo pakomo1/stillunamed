@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class GitOperations : MonoBehaviour
 {  
@@ -71,16 +72,23 @@ public class GitOperations : MonoBehaviour
     {
         using (var repo = new LibGit2Sharp.Repository(repoPath))
         {
-            var credentails = await GetCredentialsAsync();
-            var localBranch = repo.Branches[branchName];
-            var remote = repo.Network.Remotes["origin"];
-
-            var pushOptions = new PushOptions
+            try
             {
-                CredentialsProvider = (_url, _user, _cred) => credentails
-            };
+                var credentails = await GetCredentialsAsync();
+                var localBranch = repo.Branches[branchName];
+                var remote = repo.Network.Remotes["origin"];
 
-            repo.Network.Push(remote, @"refs/heads/" + branchName, pushOptions);
+                var pushOptions = new PushOptions
+                {
+                    CredentialsProvider = (_url, _user, _cred) => credentails
+                };
+
+                repo.Network.Push(remote, @"refs/heads/" + branchName, pushOptions);
+            }catch(Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+          
         }
     }
 
@@ -88,17 +96,25 @@ public class GitOperations : MonoBehaviour
     {
         using (var repo = new LibGit2Sharp.Repository(repoPath))
         {
-            var credentials = await GetCredentialsAsync();  
-            var pullOptions = new PullOptions
+            try
             {
-                FetchOptions = new FetchOptions
+                var credentials = await GetCredentialsAsync();
+                var pullOptions = new PullOptions
                 {
-                    CredentialsProvider = (_url, _user, _cred) => credentials
-                }
-            };
-
-            // Pull the latest changes
-            Commands.Pull(repo, new LibGit2Sharp.Signature(credentials.Username, "email", DateTimeOffset.Now), pullOptions);
+                    FetchOptions = new FetchOptions
+                    {
+                        CredentialsProvider = (_url, _user, _cred) => credentials
+                    }
+                };
+                var user = await GitHubClientProvider.client.User.Current();
+                var email = user.Email ?? $"{user.Login}@users.noreply.github.com";
+                // Pull the latest changes
+                Commands.Pull(repo, new LibGit2Sharp.Signature(credentials.Username, email, DateTimeOffset.Now), pullOptions);
+            }catch(Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+          
         }
     }
     public static async Task<UsernamePasswordCredentials> GetCredentialsAsync()
