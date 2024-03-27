@@ -133,9 +133,12 @@ public class GameLobby : MonoBehaviour
                 }
               
             }
-            string[] cloneDirectory = StandaloneFileBrowser.OpenFolderPanel("Selct a folder","", false);
-            string repoPath = @$"{cloneDirectory[0]}\{repoName}";
-            
+            string cloneDirectory =await SelectFolder();
+            string repoPath = @$"{cloneDirectory}\{repoName}";
+
+
+            repoPath = Path.Combine(repoPath, repoName);
+
             //check if the repsitory exits
             if (LibGit2Sharp.Repository.IsValid(repoPath)) 
             {
@@ -191,6 +194,24 @@ public class GameLobby : MonoBehaviour
             OnCreateLobbyFailed?.Invoke(this, EventArgs.Empty);
         }
 
+    }
+    public Task<string> SelectFolder()
+    {
+        var tcs = new TaskCompletionSource<string>();
+
+        SimpleFileBrowser.FileBrowser.ShowLoadDialog((path) =>
+        {
+            // This is called when the user selects a directory
+            tcs.SetResult(path[0]);
+        },
+        () =>
+        {
+            // This is called when the user cancels the dialog
+            tcs.SetResult(null);
+        },
+        SimpleFileBrowser.FileBrowser.PickMode.Folders, false, null, "Select Folder", "Select");
+
+        return tcs.Task;
     }
 
     private void GameLobby_OnLobbyJoinStarted(object sender, LobbyJoinEventArgs args)
