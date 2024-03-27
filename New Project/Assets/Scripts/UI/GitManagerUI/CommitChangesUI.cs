@@ -6,11 +6,13 @@ using UnityEngine.UI;
 using System;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
+using LibGit2Sharp;
 public class CommitChangesUI : MonoBehaviour
 {
     [SerializeField]private TMP_InputField commitMessageInput;
     [SerializeField]private TMP_InputField commitDescription;
-   // [SerializeField]private TextMeshProUGUI changesCount;
+    [SerializeField]private GameObject changedFilesContent;
+    [SerializeField]private TextMeshProUGUI changesCount;
     [SerializeField]private Button commitButton;
     [SerializeField]private GitManager gitManager;
     // Start is called before the first frame update
@@ -26,7 +28,7 @@ public class CommitChangesUI : MonoBehaviour
             await gitManager.CommitChangesAsync(GameSceneMetadata.githubRepoPath, commitMessageInput.text, commitDescription.text);
             commitMessageInput.text = "";
             commitDescription.text = "";
-           
+           ClearChangedFiles();
         }
         catch (Exception ex)
         {
@@ -34,7 +36,18 @@ public class CommitChangesUI : MonoBehaviour
             Debug.LogError($"Commit failed: {ex.Message}");
         }
     }
-
+    public void ClearChangedFiles()
+    {
+        foreach (Transform child in changedFilesContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        using (var repo = new Repository(GameSceneMetadata.githubRepoPath))
+        {
+            var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
+            changesCount.text = "Changed Files: " + changes.Count;
+        }
+    }
     // Update is called once per frame
     void Update()
     {

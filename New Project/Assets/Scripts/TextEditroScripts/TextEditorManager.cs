@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 public class TextEditorManager : MonoBehaviour
 {
-    [SerializeField]private InGameTextEditor.TextEditor textEditor;
+    [SerializeField] private InGameTextEditor.TextEditor textEditor;
     [SerializeField] private GenerateForDirectory directoryManager;
     [SerializeField] private GameObject fileManagerContent;
     [SerializeField] private GitManager gitManagerUi;
@@ -28,6 +28,17 @@ public class TextEditorManager : MonoBehaviour
         OnTextEditorLoaded += TextEditorManager_OnTextEditorLoaded;
     }
 
+    private void OnDisable()
+    {
+        /*textEditorHolder.SetActive(false);
+        textEditorData = null;
+        textEditor.SetText("");
+        directoryManager.ClearDirectory(fileManagerContent.transform);
+        textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;*/
+        PlayerManager.LocalPlayer.StopInteractingWithUI();
+        textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;
+    }
+
     private void TextEditorManager_OnTextEditorLoaded(object sender, EventArgs e)
     {
         isTextEditorLoaded = true;
@@ -35,18 +46,15 @@ public class TextEditorManager : MonoBehaviour
 
     private async void Update()
     {
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl))
         {
-            PlayerManager.LocalPlayer.StopInteractingWithUI();
-            textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;
-        }
-        if(Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.LeftControl))
-        {
-           await SaveChangesAsync();
+            await SaveChangesAsync();
+            GitOperations.MarkFileAsResolved(GameSceneMetadata.githubRepoPath, textEditorData.PathToTheSelectedFile.ToString());
         }
 
-         // Check if the text has changed
-        if (isTextEditorLoaded&&textEditor != null && textEditor.Text != previousText )
+
+        // Check if the text has changed
+        if (isTextEditorLoaded && textEditor != null && textEditor.Text != previousText)
         {
             // Update the DisplayText of TextEditorData
             textEditorData.DisplayText = textEditor.Text;
@@ -58,23 +66,28 @@ public class TextEditorManager : MonoBehaviour
 
     private async void OnFileSelectedHandlerAsync(FixedString128Bytes filePath)
     {
-         string fileContent = await File.ReadAllTextAsync(filePath.ToString());
-         print(fileContent);
-         textEditor.SetText(fileContent);
+        if (Path.GetExtension(filePath.ToString()).ToLower() == ".pdf")
+        {
+            print("Cannot load pdf files");
+            return;
+        }
+        textEditor.CaretPosition = new InGameTextEditor.TextPosition(0, 0);
+        string fileContent = await File.ReadAllTextAsync(filePath.ToString());
+        print(fileContent);
+        textEditor.SetText(fileContent);
     }
     public void LoadEditorData(TextEditorData data)
     {
 
-        print(data.OwnerUsername);
         textEditorHolder.SetActive(true);
 
         textEditorData = data;
         string text = data.DisplayText.ToString();
-        textEditor.CaretPosition = new InGameTextEditor.TextPosition(0, 0);
+        //textEditor.CaretPosition = new InGameTextEditor.TextPosition(0, 0);
         textEditorData.OnSelectedFileChanged += OnFileSelectedHandlerAsync;
 
         textEditor.SetText(text);
-        directoryManager.GenerateForDirectoy(fileManagerContent.transform,textEditorData.WorkingDirectory.Value, textEditorData);
+        directoryManager.GenerateForDirectoy(fileManagerContent.transform, textEditorData.WorkingDirectory.Value, textEditorData);
         OnTextEditorLoaded?.Invoke(this, EventArgs.Empty);
 
         if (textEditorData.PathToTheSelectedFile == "")
@@ -83,6 +96,7 @@ public class TextEditorManager : MonoBehaviour
             if (files.Length > 0)
             {
                 textEditorData.PathToTheSelectedFile = files[0];
+                textEditorData.WorkingDirectory = Path.GetDirectoryName(textEditorData.PathToTheSelectedFile.ToString());
             }
         }
     }
@@ -97,6 +111,20 @@ public class TextEditorManager : MonoBehaviour
     }
     public void ShowGitManager()
     {
-        gitManagerUi.Show();
+        gitManagerUi.Show(textEditor);
+    }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+    //writes text to the text editor
+    public void WriteText(string text)
+    {
+        textEditor.SetText(text);
     }
 }

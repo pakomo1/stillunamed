@@ -1,14 +1,17 @@
 using LibGit2Sharp;
 using Octokit;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 
 public class GitOperations : MonoBehaviour
 {  
+    public static Action OnConflictsFound;
     //check if the user is the owner of the repository
     public static async Task<bool> IsUserRepoOwnerAsync(string username, string repoLink)
     {
@@ -68,27 +71,41 @@ public class GitOperations : MonoBehaviour
         return clonedRepoPath;
     }
 
-    public static async void PushChanges(string repoPath, string branchName = "main")
+    public static async Task PushChangesAsync(string repoPath, string branchName = "main")
     {
         using (var repo = new LibGit2Sharp.Repository(repoPath))
         {
             try
             {
-                var credentails = await GetCredentialsAsync();
+                var credentials = await GetCredentialsAsync();
                 var localBranch = repo.Branches[branchName];
                 var remote = repo.Network.Remotes["origin"];
 
+                // Pull the latest changes
+                await PullChanges(repoPath, branchName);
+
+                // Check for conflicts
+                if (repo.Index.Conflicts.Any())
+                {
+                    // If there are unresolved conflicts, get the conflicted files
+                    List<string> conflictedFiles = GetConflictedFiles(repoPath);
+
+                    OnConflictsFound?.Invoke();
+                    // Throw an exception to stop the push
+                    throw new Exception("There are unresolved conflicts. Please resolve them before pushing changes.");
+                }
+
                 var pushOptions = new PushOptions
                 {
-                    CredentialsProvider = (_url, _user, _cred) => credentails
+                    CredentialsProvider = (_url, _user, _cred) => credentials
                 };
 
                 repo.Network.Push(remote, @"refs/heads/" + branchName, pushOptions);
-            }catch(Exception ex)
-            {
-                Debug.LogError(ex);
             }
-          
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 
@@ -112,7 +129,7 @@ public class GitOperations : MonoBehaviour
                 Commands.Pull(repo, new LibGit2Sharp.Signature(credentials.Username, email, DateTimeOffset.Now), pullOptions);
             }catch(Exception ex)
             {
-                Debug.LogError(ex);
+                throw ex;
             }
           
         }
@@ -125,5 +142,42 @@ public class GitOperations : MonoBehaviour
         string token = credentials.Password;
 
         return new UsernamePasswordCredentials { Username = username, Password = token };
+    }
+    public static List<string> GetConflictedFiles(string repoPath)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            var conflicts = repo.Index.Conflicts;
+            List<string> conflictedFiles = new List<string>();
+
+            foreach (var conflict in conflicts)
+            {
+                conflictedFiles.Add(conflict.Ancestor.Path);
+            }
+
+            return conflictedFiles;
+        }
+    }
+    public static bool HasUnresolvedConflicts(string repoPath)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            return repo.Index.Conflicts.Any();
+        }
+    }
+    public static void MarkFileAsResolved(string repoPath, string filePath)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            Commands.Stage(repo, filePath);
+        }
+    }
+    public static bool HasChanges(string repoPath)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
+            return changes.Count() > 0;
+        }
     }
 }

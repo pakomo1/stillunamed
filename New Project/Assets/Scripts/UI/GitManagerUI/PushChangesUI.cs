@@ -1,3 +1,4 @@
+using LibGit2Sharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ public class PushChangesUI : MonoBehaviour
     [SerializeField]private GitManager gitManager;
     [SerializeField]private GameObject commitsCountHolder;
     [SerializeField]private GameObject changedFilesContent;
+    [SerializeField] private TextMeshProUGUI changedFilesCount;
     [SerializeField]private TextMeshProUGUI unpushedCommitsCountLbl;
     private string branch;
     private int commitsCount;
@@ -39,12 +41,19 @@ public class PushChangesUI : MonoBehaviour
         }   
         unpushedCommitsCountLbl.text = commitsCount.ToString();
     }
-    public void PushChanges()
+    public async void PushChanges()
     {
-        GitOperations.PushChanges(GameSceneMetadata.githubRepoPath, branch);
-        commitsCountHolder.SetActive(false);
-        print("Changes have been pushed to the origin");
-        ClearChangedFiles();
+        try
+        {
+            await GitOperations.PushChangesAsync(GameSceneMetadata.githubRepoPath, branch);
+            commitsCountHolder.SetActive(false);
+            print("Changes have been pushed to the origin");
+        }
+        catch(Exception ex)
+        {
+            Debug.LogError(ex);
+        }
+     
     }   
 
     // Update is called once per frame
@@ -53,11 +62,5 @@ public class PushChangesUI : MonoBehaviour
         
     }
     //clears the content of the changed files
-    public void ClearChangedFiles()
-    {
-        foreach (Transform child in changedFilesContent.transform)
-        {
-            Destroy(child.gameObject);
-        }
-    }
+ 
 }

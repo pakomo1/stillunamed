@@ -5,26 +5,28 @@ using System.IO;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class FileManager : MonoBehaviour
 {
     [SerializeField] private GameObject fileManagerContent;
     [SerializeField] private GameObject InputNameBackgorund;
     [SerializeField] private TMP_InputField nameOf;
-     private static TextEditorManager textEditorManager;
-     private GenerateForDirectory generateForDirectory;
-     private static string fileName;
-     private static string directoryName;
+    [SerializeField] private TextEditorManager textEditorManager;
+    private TextEditorData textEditorData;
+    private GenerateForDirectory generateForDirectory;
+    private static string fileName;
+    private static string directoryName;
+
     // Start is called before the first frame update
     void Start()
     {
         generateForDirectory =gameObject.GetComponent<GenerateForDirectory>();
-        textEditorManager = gameObject.GetComponentInParent<TextEditorManager>();
+        textEditorData = textEditorManager.textEditorData;
         directroyPrefab.OnFileCreationRequested += OnFileCreationRequestedHandler;
         directroyPrefab.OnDirectoryCreationRequested += OnDirectoryCreationRequestedHandler;
     }
-
-
 
     void Update()
     {
@@ -33,6 +35,7 @@ public class FileManager : MonoBehaviour
             InputNameBackgorund.SetActive(false);
         }
     }
+
     private void OnDirectoryCreationRequestedHandler(object sender, EventArgs e)
     {
         StartWaitingForInput((input) =>
@@ -46,6 +49,7 @@ public class FileManager : MonoBehaviour
         StartWaitingForInput(input => {
             fileName = input;
             CreateFile();
+            generateForDirectory.GenerateForDirectoy(fileManagerContent.transform, textEditorData.StartingDirecotry.ToString(), textEditorData);
         });
     }
 
@@ -77,7 +81,7 @@ public class FileManager : MonoBehaviour
     //File
     public void CreateFile()
     {
-        string fullPath = Path.Combine(textEditorManager.textEditorData.WorkingDirectory.ToString(), fileName);
+        string fullPath = Path.Combine(textEditorManager.textEditorData.WorkingDirectory.Value, fileName);
         if (!File.Exists(fullPath))
         {
             using (File.Create(fullPath))

@@ -134,7 +134,7 @@ public class GameLobby : MonoBehaviour
               
             }
             string[] cloneDirectory = StandaloneFileBrowser.OpenFolderPanel("Selct a folder","", false);
-            string repoPath = $"{cloneDirectory[0]}/{repoName}";
+            string repoPath = @$"{cloneDirectory[0]}\{repoName}";
             
             //check if the repsitory exits
             if (LibGit2Sharp.Repository.IsValid(repoPath)) 
