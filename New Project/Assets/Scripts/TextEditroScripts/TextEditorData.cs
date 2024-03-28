@@ -9,13 +9,13 @@ public class TextEditorData : NetworkBehaviour
 {
     private NetworkVariable<int> id = new NetworkVariable<int>();
     private NetworkVariable<FixedString128Bytes> username = new NetworkVariable<FixedString128Bytes>();
-    private NetworkVariable<FixedString128Bytes> startingDirecotry = new NetworkVariable<FixedString128Bytes>(GameSceneMetadata.githubRepoPath, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<FixedString128Bytes> startingDirecotry = new NetworkVariable<FixedString128Bytes>(GameSceneMetadata.GithubRepoLink, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     private NetworkVariable<FixedString4096Bytes> displayText = new NetworkVariable<FixedString4096Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     private NetworkVariable<FixedString128Bytes> pathToTheSelectedFile = new NetworkVariable<FixedString128Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>(GameSceneMetadata.githubRepoPath, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>(GameSceneMetadata.GithubRepoPath, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
     public delegate void DisplayTextChangedHandler(FixedString128Bytes newText);

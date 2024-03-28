@@ -50,7 +50,7 @@ public class IssueUIManager : MonoBehaviour
     public async void Show(RepositoryIssueRequest issueRequest)
     {
 
-        (string ownerName,string repoName) = GitHelperMethods.GetOwnerAndRepo(GameSceneMetadata.githubRepoLink);
+        (string ownerName,string repoName) = GitHelperMethods.GetOwnerAndRepo(GameSceneMetadata.GithubRepoLink);
         gameObject.SetActive(true);
 
         await issuesNetworkManager.GetIssuesForRepoAsync(ownerName, repoName, issueRequest);

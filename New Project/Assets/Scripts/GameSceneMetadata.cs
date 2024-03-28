@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GameSceneMetadata : MonoBehaviour
 {
-    public static string githubRepoLink = "https://github.com/pakomo1/DZI.git";
-    public static string githubRepoPath = "C:\\Users\\Maixm\\Desktop\\DZI\\DZI";
+    private static string githubRepoLink;
+    private static string githubRepoPath;
+
+    public static string GithubRepoLink { get => githubRepoLink; set => githubRepoLink = value; }
+    public static string GithubRepoPath { get => githubRepoPath; set => githubRepoPath = value; }
 }

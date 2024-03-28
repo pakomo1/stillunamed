@@ -29,9 +29,9 @@ public class GitManager : MonoBehaviour
         LoadStatusImages();
         DisplayChangedFiles();
         GitOperations.OnConflictsFound += GitOperations_OnConflictsFound;
-        if (GitOperations.HasUnresolvedConflicts(GameSceneMetadata.githubRepoPath))
+        if (GitOperations.HasUnresolvedConflicts(GameSceneMetadata.GithubRepoPath))
         {
-            List<string> conflictedFiles = GitOperations.GetConflictedFiles(GameSceneMetadata.githubRepoPath);
+            List<string> conflictedFiles = GitOperations.GetConflictedFiles(GameSceneMetadata.GithubRepoPath);
             conflictedFilesUI.DisplayConflictedFiles(conflictedFiles);
         }
 
@@ -39,7 +39,7 @@ public class GitManager : MonoBehaviour
 
     private void GitOperations_OnConflictsFound()
     {
-        List<string> conflictedFiles = GitOperations.GetConflictedFiles(GameSceneMetadata.githubRepoPath);
+        List<string> conflictedFiles = GitOperations.GetConflictedFiles(GameSceneMetadata.GithubRepoPath);
         conflictedFilesUI.DisplayConflictedFiles(conflictedFiles);
         conflictedFilesUI.Show();
     }
@@ -58,13 +58,13 @@ public class GitManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        conflictButton.gameObject.SetActive(GitOperations.HasUnresolvedConflicts(GameSceneMetadata.githubRepoPath));
+        conflictButton.gameObject.SetActive(GitOperations.HasUnresolvedConflicts(GameSceneMetadata.GithubRepoPath));
        
     }
 
     public void DisplayChangedFiles()
     {
-        using (var repo = new Repository(GameSceneMetadata.githubRepoPath))
+        using (var repo = new Repository(GameSceneMetadata.GithubRepoPath))
         {
             var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
             totalchangesLbl.text = "Total Changes: " + changes.Count;
@@ -151,7 +151,7 @@ public class GitManager : MonoBehaviour
     }
     private void OnChangeClicked(string filePath)
     {
-        using (var repo = new Repository(GameSceneMetadata.githubRepoPath))
+        using (var repo = new Repository(GameSceneMetadata.GithubRepoPath))
         {
             selectedChangedFile.text = filePath;
             // Get the changes between the current version of the file and the version in the last commit
@@ -208,7 +208,7 @@ public class GitManager : MonoBehaviour
         while (true)
         {
             ClearChangedFiles();
-            if (GitOperations.HasChanges(GameSceneMetadata.githubRepoPath))
+            if (GitOperations.HasChanges(GameSceneMetadata.GithubRepoPath))
             {
                 // If there are changes, update the UI
                 DisplayChangedFiles();

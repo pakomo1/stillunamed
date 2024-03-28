@@ -25,6 +25,7 @@ public class RepositoryContentNavigation : MonoBehaviour
     [SerializeField] private ValidAccessToken validAccessToken;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
     [SerializeField] private branchesTemplate branchesTemplate;
+    [SerializeField] private FilesContentNavigation filesContentNavigation; 
     private void Awake()
     {
         addfileButton.onClick.AddListener(() =>
@@ -74,7 +75,8 @@ public class RepositoryContentNavigation : MonoBehaviour
         
         repoContentUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = repoData.Name;
         print(repoData.Name);
-        repoFilesTemplate.GenerateRepoFiles(repoContents,repoData, currentBranch);
+        filesContentNavigation.Breadcrumb.Clear();
+        repoFilesTemplate.GenerateRepoFiles(repoContents,repoData, currentBranch,filesContentNavigation.Breadcrumb);
     }
     
    

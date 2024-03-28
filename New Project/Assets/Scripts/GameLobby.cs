@@ -135,10 +135,6 @@ public class GameLobby : MonoBehaviour
             }
             string cloneDirectory =await SelectFolder();
             string repoPath = @$"{cloneDirectory}\{repoName}";
-
-
-            repoPath = Path.Combine(repoPath, repoName);
-
             //check if the repsitory exits
             if (LibGit2Sharp.Repository.IsValid(repoPath)) 
             {
@@ -176,8 +172,8 @@ public class GameLobby : MonoBehaviour
                 }
             });
 
-            GameSceneMetadata.githubRepoLink = currentRepository;
-            GameSceneMetadata.githubRepoPath = repoPath;
+            GameSceneMetadata.GithubRepoLink = currentRepository;
+            GameSceneMetadata.GithubRepoPath = repoPath;
             NetworkManager.Singleton.StartHost();
 
             OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;

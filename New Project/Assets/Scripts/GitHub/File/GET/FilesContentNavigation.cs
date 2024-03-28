@@ -9,42 +9,46 @@ using Octokit;
 
 public class FilesContentNavigation : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI contentDisplayField;
-    [SerializeField] private ApiRequestHelper apiRequestHelper;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
-    [SerializeField] private TextMeshProUGUI currentFileTextField;
-    [SerializeField] private TextMeshProUGUI dirPathNavigationText;
-    [SerializeField] private TextMeshProUGUI filePathNavigationText;
+    public List<string> Breadcrumb { get; private set; } = new List<string>(); // The breadcrumb list is now public
 
-    [SerializeField] private GetRepositoryFiles getRepositoryFiles;
-    public async void ShowFileContent( RepositoryContent fileOrDir, Repository repository, string currentbranch)
+    public async void ShowFileContent(RepositoryContent fileOrDir, Repository repository, string currentbranch)
     {
-        var client = GitHubClientProvider.client;
         try
         {
             if (fileOrDir.Type == "dir")
             {
+                Breadcrumb.Add(fileOrDir.Path); // Add the directory to the breadcrumb
+
                 var content = await GetRepositoryFiles.GetRepoFiles(repository.Owner.Login, repository.Name, fileOrDir.Path, currentbranch);
 
-                dirPathNavigationText.text = $"{repository.Name}/{fileOrDir.Path}";
-                repoFilesTemplate.GenerateRepoFiles(content, repository, currentbranch);
+                repoFilesTemplate.GenerateRepoFiles(content, repository, currentbranch, Breadcrumb);
 
             }
             else if (fileOrDir.Type == "file")
             {
                 string fileName = Path.GetFileName(fileOrDir.Path);
-                //  string result = System.Text.Encoding.UTF8.GetString();
-
-                filePathNavigationText.text = $"{repository.Name}/{fileName}";
-                contentDisplayField.text = fileOrDir.Content;
-                currentFileTextField.text = fileOrDir.Name;
+                print(fileName);
             }
-        }catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             print(ex.Message);
         }
-       
-        
     }
 
+    public async void NavigateUp(Repository repository, string currentbranch)
+    {
+        if (Breadcrumb.Count > 0)
+        {
+            Breadcrumb.RemoveAt(Breadcrumb.Count - 1); // Remove the last directory from the breadcrumb
+
+            string path = Breadcrumb.Count > 0 ? Breadcrumb[Breadcrumb.Count - 1] : "\\"; // The path is null if the breadcrumb is empty
+
+            var content = await GetRepositoryFiles.GetRepoFiles(repository.Owner.Login, repository.Name, path, currentbranch);
+
+            repoFilesTemplate.GenerateRepoFiles(content, repository, currentbranch, Breadcrumb);
+        }
+    }
 }
+

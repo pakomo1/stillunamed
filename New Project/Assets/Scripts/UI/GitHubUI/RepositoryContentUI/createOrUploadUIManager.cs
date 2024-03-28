@@ -10,9 +10,7 @@ public class createOrUploadUIManager : MonoBehaviour
     [SerializeField] private Button createFileButton;
     [SerializeField] private Button uploadFileButton;
 
-    [SerializeField] private FileContentUIManager fileContentUI;
     [SerializeField] private SingleActiveChild singleActiveChild;
-
     [SerializeField] private fileMakeUpManager fileMakeUpManager;
     [SerializeField] private RepoContentNavigation repositoryContentNavigation;
 

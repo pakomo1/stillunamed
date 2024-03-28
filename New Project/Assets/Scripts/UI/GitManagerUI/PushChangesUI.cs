@@ -19,7 +19,7 @@ public class PushChangesUI : MonoBehaviour
     {
         branch = "main";
         gitManager.onChangesCommitted += GitManager_onChangesCommitted;
-        commitsCount = GitOperations.CountUnpushedCommits(GameSceneMetadata.githubRepoPath,branch);
+        commitsCount = GitOperations.CountUnpushedCommits(GameSceneMetadata.GithubRepoPath,branch);
         if (commitsCount > 0)
         {
             commitsCountHolder.SetActive(true);
@@ -34,7 +34,7 @@ public class PushChangesUI : MonoBehaviour
     private void GitManager_onChangesCommitted(object sender, EventArgs e)
     {
         //should add the proper branch
-        commitsCount = GitOperations.CountUnpushedCommits(GameSceneMetadata.githubRepoPath,branch);
+        commitsCount = GitOperations.CountUnpushedCommits(GameSceneMetadata.GithubRepoPath,branch);
         if (commitsCount > 0)
         {
             commitsCountHolder.SetActive(true);
@@ -45,7 +45,7 @@ public class PushChangesUI : MonoBehaviour
     {
         try
         {
-            await GitOperations.PushChangesAsync(GameSceneMetadata.githubRepoPath, branch);
+            await GitOperations.PushChangesAsync(GameSceneMetadata.GithubRepoPath, branch);
             commitsCountHolder.SetActive(false);
             print("Changes have been pushed to the origin");
         }

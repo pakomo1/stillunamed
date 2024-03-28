@@ -1,14 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using System;
-using TMPro;
-using UnityEditor;
-using Unity.VisualScripting;
 using System.Threading.Tasks;
-using Octokit;
-using System.Linq;
 public class PlayerManager : NetworkBehaviour
 {
     private string _username;
@@ -34,7 +28,7 @@ public class PlayerManager : NetworkBehaviour
                 string currentUsername = await GetGitUsernme();
                 SetUsername(currentUsername);
 
-                var isOwner = await GitOperations.IsUserRepoOwnerAsync(_username, GameSceneMetadata.githubRepoLink);
+                var isOwner = await GitOperations.IsUserRepoOwnerAsync(_username, GameSceneMetadata.GithubRepoLink);
                 if (isOwner)
                 {
                     GameLobby.OnPlayerTriesToJoin += GameLobby_OnPlayerTriesToJoin;
@@ -60,10 +54,10 @@ public class PlayerManager : NetworkBehaviour
     private async void GameLobby_OnPlayerTriesToJoin(object sender, LobbyJoinEventArgs e)
     {
         string username = e.Username;
-        bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.githubRepoLink);
+        bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
         if (!isCollaborator)
         {
-            await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.githubRepoLink);
+            await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
         }
     }
 

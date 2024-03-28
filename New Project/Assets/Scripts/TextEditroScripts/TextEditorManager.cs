@@ -14,6 +14,7 @@ public class TextEditorManager : MonoBehaviour
     [SerializeField] private GitManager gitManagerUi;
     [SerializeField] private GameObject textEditorHolder;
     public TextEditorData textEditorData;
+    private GoStateTracer textEditorHolderStateTracer;
     private string previousText;
 
     public static TextEditorManager Instance { get; private set; }
@@ -26,17 +27,22 @@ public class TextEditorManager : MonoBehaviour
             Instance = gameObject.GetComponent<TextEditorManager>();
         }
         OnTextEditorLoaded += TextEditorManager_OnTextEditorLoaded;
+        textEditorHolderStateTracer = GetComponent<GoStateTracer>();
+        textEditorHolderStateTracer.OnActiveStateChanged += OnActiveStateChangeHandler;
     }
 
-    private void OnDisable()
+    private void OnActiveStateChangeHandler(bool activeself)
     {
         /*textEditorHolder.SetActive(false);
         textEditorData = null;
         textEditor.SetText("");
         directoryManager.ClearDirectory(fileManagerContent.transform);
         textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;*/
-        PlayerManager.LocalPlayer.StopInteractingWithUI();
-        textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;
+        if (!activeself)
+        {
+            PlayerManager.LocalPlayer.StopInteractingWithUI();
+            textEditorData.OnSelectedFileChanged -= OnFileSelectedHandlerAsync;
+        }
     }
 
     private void TextEditorManager_OnTextEditorLoaded(object sender, EventArgs e)
@@ -49,7 +55,7 @@ public class TextEditorManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S) && Input.GetKey(KeyCode.LeftControl))
         {
             await SaveChangesAsync();
-            GitOperations.MarkFileAsResolved(GameSceneMetadata.githubRepoPath, textEditorData.PathToTheSelectedFile.ToString());
+            GitOperations.MarkFileAsResolved(GameSceneMetadata.GithubRepoPath, textEditorData.PathToTheSelectedFile.ToString());
         }
 
 

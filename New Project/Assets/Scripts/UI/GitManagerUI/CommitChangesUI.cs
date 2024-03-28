@@ -25,7 +25,7 @@ public class CommitChangesUI : MonoBehaviour
     {
         try
         {
-            await gitManager.CommitChangesAsync(GameSceneMetadata.githubRepoPath, commitMessageInput.text, commitDescription.text);
+            await gitManager.CommitChangesAsync(GameSceneMetadata.GithubRepoPath, commitMessageInput.text, commitDescription.text);
             commitMessageInput.text = "";
             commitDescription.text = "";
            ClearChangedFiles();
@@ -42,7 +42,7 @@ public class CommitChangesUI : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        using (var repo = new Repository(GameSceneMetadata.githubRepoPath))
+        using (var repo = new Repository(GameSceneMetadata.GithubRepoPath))
         {
             var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
             changesCount.text = "Changed Files: " + changes.Count;

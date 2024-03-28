@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class commitMessageUIManager : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class commitMessageUIManager : MonoBehaviour
     [SerializeField] private TMP_InputField commitMessage;
     [SerializeField] private Button commitBtn;
     [SerializeField] private Button closeBtn;
-
+    public event EventHandler OnCommit;
 
     private string path;
     private Repository currentRepositroy;
@@ -51,8 +52,8 @@ public class commitMessageUIManager : MonoBehaviour
     }
     private async void CommitFileToRepo(Repository repository, CreateFileRequest fileRequest)
     {
-
         path = $"{path}{fileName.text}";
         await AddFile.CreateFile(repository.Owner.Login, repository.Name, path , fileRequest);
+        OnCommit.Invoke(this, EventArgs.Empty);
     }
 }

@@ -14,16 +14,24 @@ public class RepoFilesTemplate : MonoBehaviour
     [SerializeField] private Sprite file;
     [SerializeField] private Sprite dir;
     [SerializeField] private FilesContentNavigation filesContentNavigation;
-    [SerializeField] private ApiRequestHelper apiRequestHelper;
     [SerializeField] private GameObject repositoryContentUI;
     [SerializeField] private GameObject FileContentCode;
-    [SerializeField] private TextMeshProUGUI pathToDirectory;
 
-    public void GenerateRepoFiles(IReadOnlyCollection<RepositoryContent> repoFiles, Repository repository, string currentbranch)
+    public void GenerateRepoFiles(IReadOnlyCollection<RepositoryContent> repoFiles, Repository repository, string currentbranch, List<string> breadcrumb)
     {
         ClearFiled();
         repoFiles = repoFiles.OrderByDescending(item => item.Type == "dir").ToList();
-       
+        // Add a ".." button to navigate up
+        if (breadcrumb.Count > 0)
+        {
+            var button = Instantiate(fileTemplate, transform);
+            TextMeshProUGUI filename = button.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            button.name = "..";
+            filename.text = "..";
+            button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.NavigateUp(repository, currentbranch); });
+            button.SetActive(true);
+        }
+
         foreach (var item in repoFiles)
         {
             var button = Instantiate(fileTemplate, transform);
