@@ -28,6 +28,14 @@ public class SingleActiveChild : MonoBehaviour
             children[i].SetActive(checkIndex(i,index));
         }
     }
+    //Call this method with the index of the child you want to activate
+    public void ActivateOneChild(int index)
+    {
+        for (int i = 0; i < children.Length; i++)
+        {
+            children[i].SetActive(i == index);
+        }
+    }
     private bool checkIndex(int index1, int chosenIndex)
     {
         if (index1 == chosenIndex)

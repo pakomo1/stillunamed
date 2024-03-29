@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft;
 using System;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Octokit;
 
 public class RepostoryViewerManager : MonoBehaviour
 {
@@ -14,17 +15,51 @@ public class RepostoryViewerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI repositoryNameLbl;
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
     [SerializeField] private FilesContentNavigation filesContentNavigation;
+    [SerializeField] private SingleActiveChild singleActiveChild;
     public string currentBranch = "main";
 
-    private void OnEnable()
+    [SerializeField] private Button codeButton;
+    [SerializeField] private Button issuesButton;
+    [SerializeField] private Button CommitsButton;
+
+    [SerializeField] private CommitButtonTemplate commitButtonTemplate;
+
+    private string owner;
+    private string repo;
+
+    private void Start()
     {
-        var uri = new Uri(GameSceneMetadata.GithubRepoLink);
-        var segments = uri.AbsolutePath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-        string owner = segments[0];
-        string repo = segments[1];
+        string[] ownerandrepo = GameSceneMetadata.GetOwnerAndRepoName();
+        owner = ownerandrepo[0];
+        repo = ownerandrepo[1];
         SetProfilePicture(owner);
         repoOwnerName.text = owner;
-        GenerateRepoFiles(owner,repo);
+
+        singleActiveChild.ActivateOneChild(0);
+        GenerateRepoFiles(owner, repo);
+
+        codeButton.onClick.AddListener(() =>
+        {
+            singleActiveChild.ActivateOneChild(0);
+            GenerateRepoFiles(owner, repo);
+        });
+
+        issuesButton.onClick.AddListener(() =>
+        {
+
+        });
+
+        CommitsButton.onClick.AddListener(() =>
+        {
+            singleActiveChild.ActivateOneChild(1);
+            GenerateCommits(owner, repo);
+        });
+        GameSceneMetadata.OnBranchChanged += GameSceneMetadata_OnBranchChanged; 
+    }
+
+    private void GameSceneMetadata_OnBranchChanged()
+    {
+        print(GameSceneMetadata.CurrentBranch);
     }
 
     private async void SetProfilePicture(string username)
@@ -51,6 +86,14 @@ public class RepostoryViewerManager : MonoBehaviour
 
         filesContentNavigation.Breadcrumb.Clear(); // Clear the breadcrumb when generating the root files
         repoFilesTemplate.GenerateRepoFiles(contents, repository, currentBranch, filesContentNavigation.Breadcrumb);
+    }
+    //gets the commits of the repository and generates them
+    private async void GenerateCommits(string owner, string repoName)
+    {
+        var request = new CommitRequest { Sha = currentBranch };
+        var commits = await GitHubClientProvider.client.Repository.Commit.GetAll(owner, repoName, request);
+
+        commitButtonTemplate.CreateButtonsForCommits(commits);
     }
 
 }
