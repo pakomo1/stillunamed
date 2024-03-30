@@ -25,7 +25,7 @@ public class CommitChangesUI : MonoBehaviour
     {
         try
         {
-            await gitManager.CommitChangesAsync(GameSceneMetadata.GithubRepoPath, commitMessageInput.text, commitDescription.text);
+            await gitManager.CommitChangesAsync(GameSceneMetadata.GithubRepoPath, commitMessageInput.text, commitDescription.text,GameSceneMetadata.CurrentBranch);
             commitMessageInput.text = "";
             commitDescription.text = "";
            ClearChangedFiles();

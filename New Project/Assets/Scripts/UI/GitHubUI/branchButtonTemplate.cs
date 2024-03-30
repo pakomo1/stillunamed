@@ -27,10 +27,10 @@ public class branchButtonTemplate : MonoBehaviour
         }
     }
 
-    private void SelectBranch(Branch branch, TextMeshProUGUI branchNameTextMesh)
+    private async void SelectBranch(Branch branch, TextMeshProUGUI branchNameTextMesh)
     {
         currentBranch = branch;
-        GameSceneMetadata.CurrentBranch = branch.Name;
+        GameSceneMetadata.CurrentBranch = branch.Name; 
         // Update the text of the selected branch button
         TextMeshProUGUI currentBranchTextMesh = currentBranchButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         currentBranchTextMesh.text = branchNameTextMesh.text;

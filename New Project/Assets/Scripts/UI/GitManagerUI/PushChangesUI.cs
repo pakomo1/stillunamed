@@ -17,7 +17,7 @@ public class PushChangesUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        branch = "main";
+        branch = GameSceneMetadata.CurrentBranch;
         gitManager.onChangesCommitted += GitManager_onChangesCommitted;
         commitsCount = GitOperations.CountUnpushedCommits(GameSceneMetadata.GithubRepoPath,branch);
         if (commitsCount > 0)

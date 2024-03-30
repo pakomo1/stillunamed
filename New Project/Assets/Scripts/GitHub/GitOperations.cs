@@ -82,7 +82,7 @@ public class GitOperations : MonoBehaviour
                 var remote = repo.Network.Remotes["origin"];
 
                 // Pull the latest changes
-                await PullChanges(repoPath, branchName);
+                await PullChangesAsync(repoPath, branchName);
 
                 // Check for conflicts
                 if (repo.Index.Conflicts.Any())
@@ -109,7 +109,7 @@ public class GitOperations : MonoBehaviour
         }
     }
 
-    public static async Task PullChanges(string repoPath, string branchName = "main")
+    public static async Task PullChangesAsync(string repoPath, string branchName = "main")
     {
         using (var repo = new LibGit2Sharp.Repository(repoPath))
         {
@@ -178,6 +178,28 @@ public class GitOperations : MonoBehaviour
         {
             var changes = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
             return changes.Count() > 0;
+        }
+    }
+    public static void SwitchBranch(string repositoryPath, string branchName)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repositoryPath))
+        {
+            var branch = repo.Branches[branchName];
+
+            // If the branch doesn't exist locally, create a tracking branch
+            if (branch == null)
+            {
+                var remoteBranch = repo.Branches[$"origin/{branchName}"];
+                if (remoteBranch == null)
+                {
+                    throw new Exception($"Branch {branchName} does not exist");
+                }
+
+                branch = repo.CreateBranch(branchName, remoteBranch.Tip);
+                repo.Branches.Update(branch, b => b.TrackedBranch = remoteBranch.CanonicalName);
+            }
+
+            Commands.Checkout(repo, branch);
         }
     }
 }

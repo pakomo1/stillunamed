@@ -59,6 +59,7 @@ public class RepostoryViewerManager : MonoBehaviour
     private void GameSceneMetadata_OnBranchChanged()
     {
         print(GameSceneMetadata.CurrentBranch);
+        GitOperations.SwitchBranch(GameSceneMetadata.GithubRepoPath, GameSceneMetadata.CurrentBranch);
     }
 
     private async void SetProfilePicture(string username)
