@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft;
 using System;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Octokit;
 
 public class RepostoryViewerManager : MonoBehaviour

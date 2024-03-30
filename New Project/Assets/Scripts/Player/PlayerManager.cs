@@ -9,7 +9,7 @@ public class PlayerManager : NetworkBehaviour
     private TextEditorData _textEditor;
     public static event EventHandler<PlayerSpawnArgs> OnAnyPlayerSpawn;
   //  [SerializeField] private TextMeshProUGUI _usernameText;
-    [SerializeField] private GameObject EditorPrefab;
+    [SerializeField] private GameObject EditorDataPrefab;
     public static event EventHandler OnEditorSpawned; 
 
     public static PlayerManager LocalPlayer { get; private set; }
@@ -115,7 +115,7 @@ public class PlayerManager : NetworkBehaviour
         var computer = computers.GetChild(computerId);
 
         // Instantiate the text editor for this computer and make it a child of the computer
-        GameObject Editor = Instantiate(EditorPrefab);
+        GameObject Editor = Instantiate(EditorDataPrefab);
         NetworkObject networkObjectEditor = Editor.GetComponent<NetworkObject>();
         if (networkObjectEditor != null)
         {
@@ -125,7 +125,7 @@ public class PlayerManager : NetworkBehaviour
         Editor.transform.SetParent(computer.transform);
         var thiseditorData = Editor.GetComponent<TextEditorData>();
         thiseditorData.Id = computerId;
-
+        thiseditorData.InitializePaths();
         Editor.SetActive(false);
 
         //assign it to the player

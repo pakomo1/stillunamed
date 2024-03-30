@@ -1,5 +1,4 @@
 using Octokit;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System;
 using System.IO;
 using System.Security.Cryptography;
