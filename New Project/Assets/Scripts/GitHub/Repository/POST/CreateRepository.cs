@@ -1,7 +1,9 @@
 using Newtonsoft.Json;
+using Octokit;
 using System;
 using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -14,76 +16,62 @@ public class CreateRepository : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameOfRepo;
     [SerializeField] private ValidAccessToken validAccessToken;
     [SerializeField] private FilteringController filteringController;
+    [SerializeField] private GameObject createdPopUp;
     private string url = "https://api.github.com/user/repos";
     private bool isPrivate;
     private bool readmeInitialized;
 
-    public void ActivateRequest()
-    {
-        StartCoroutine(SendRequestToCreateRepository());
-    }
-
-    private IEnumerator SendRequestToCreateRepository()
+    public async void ActivateRequest()
     {
         Toggle chosenVisibilityOption = visibilityOptions.ActiveToggles().FirstOrDefault();
-        var accessToken = validAccessToken.GetAccessToken();
-
         if (chosenVisibilityOption.name == "PrivateRadioBtn")
         {
-            isPrivate = true;//true
+            isPrivate = true;
         }
         else
         {
-            isPrivate = false;//false
+            isPrivate = false;
         }
 
         if (readmeFileInitBtn.isOn)
         {
-            readmeInitialized = true;//true
+            readmeInitialized = true;
         }
         else
         {
-            readmeInitialized = false;//false
+            readmeInitialized = false;
         }
 
-        RequestParameters requestparam = new RequestParameters
+        var newRepository = new NewRepository(nameOfRepo.text.Trim())
         {
-            name = nameOfRepo.text,
             Private = isPrivate,
-            auto_init = readmeInitialized
+            AutoInit = readmeInitialized
         };
-        string jsonText = JsonConvert.SerializeObject(requestparam, Formatting.Indented);
-        using (var www = UnityWebRequest.PostWwwForm(url, jsonText))
+
+        var client = GitHubClientProvider.client;
+
+        try
         {
-            www.SetRequestHeader("Authorization", "Bearer " + accessToken);
-            www.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(jsonText));
-            yield return www.SendWebRequest();
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                print("Repository response code " + www.responseCode);
-                if (www.responseCode == 201)
-                {
-                    print("Repository succesfully created");
-                    filteringController.Refresh();
-                }
-                else
-                {
-                    print("Could not create repository");
-                }
-            }
-            else
-            {
-                Debug.Log("Error" + www.error);
-            }
+            var repository = await client.Repository.Create(newRepository);
+            Debug.Log("Repository successfully created");
+            filteringController.Refresh();
+            createdPopUp.SetActive(true);
+            ClearFields();
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Could not create repository: {ex.Message}");
         }
     }
-
-    [Serializable]
-    public class RequestParameters
+    //clears all fields
+    public void ClearFields()
     {
-        public string name;
-        [JsonProperty("private")]
-        public bool Private;
-        public bool auto_init;
+        nameOfRepo.text = "";
+        readmeFileInitBtn.isOn = false;
+        visibilityOptions.SetAllTogglesOff();
+    }
+    public void ClosePopUp()
+    {
+        createdPopUp.SetActive(false);
     }
 }
