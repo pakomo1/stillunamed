@@ -31,10 +31,12 @@ public class SearchRepoButtonTemplate : MonoBehaviour
             string about = repo.Description;
 
             var topics = await GitHubClientProvider.client.Repository.GetAllTopics(repo.Id);
-            CreateTopicButtonTemplate(topics);
 
             var button = Instantiate(buttonTemplate, transform);
             button.gameObject.SetActive(true);
+
+            //create topic buttons
+            CreateTopicButtonTemplate(topics,button.transform.GetChild(2));
 
             var footer = button.transform.Find("Footer");
             var repositoryName = button.transform.Find("repositoryName");
@@ -53,11 +55,11 @@ public class SearchRepoButtonTemplate : MonoBehaviour
         OnFinishedGeneratingRepoButtons?.Invoke(this, EventArgs.Empty);
     }
 
-    private void CreateTopicButtonTemplate(RepositoryTopics topics)
+    private void CreateTopicButtonTemplate(RepositoryTopics topics, Transform parent)
     {
         foreach (var topic in topics.Names)
         {
-            var button = Instantiate(topicButtonTemplate, topicsContentHolder.transform);   
+            var button = Instantiate(topicButtonTemplate, parent);   
             button.gameObject.SetActive(true);
             button.transform.Find("topicName").GetComponent<TextMeshProUGUI>().text = topic;
         }
