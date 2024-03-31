@@ -21,6 +21,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private GameObject connectingUI;
     [SerializeField] private GameObject networkManager;
     [SerializeField] private GameObject content;
+    [SerializeField] private GameObject shouldLoginPopUp;
     [SerializeField] private Button createLobbyBtn;
     [SerializeField] private Button refreshButton;
     [SerializeField] private Button recentLobbiesButton;
@@ -48,6 +49,14 @@ public class LobbyUi : MonoBehaviour
         });
 
         recentLobbiesButton.onClick.AddListener(onClickRecenLobbyButton);
+    }
+    private void OnEnable()
+    {
+        if (!IsLoggedIn())
+        {
+            gameObject.SetActive(false);
+            shouldLoginPopUp.SetActive(true);
+        }
     }
 
     private void Awake()
@@ -126,5 +135,15 @@ public class LobbyUi : MonoBehaviour
     public void Hide()
     {
         menu.gameObject.SetActive(false);
+    }
+    //checks if there is an access token 
+    public bool IsLoggedIn()
+    {
+        return GitHubClientProvider.client.Connection.Credentials.AuthenticationType == AuthenticationType.Oauth;
+    }
+    //hide the login popup
+    public void HideLoginPopUp()
+    {
+        shouldLoginPopUp.SetActive(false);
     }
 }
