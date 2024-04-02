@@ -13,8 +13,9 @@ public class SearchRepoButtonTemplate : MonoBehaviour
 {
     [SerializeField]private Button buttonTemplate;
     [SerializeField]private Button topicButtonTemplate;
-    [SerializeField] private GameObject topicsContentHolder;
-    [SerializeField] private Image userImage;
+    [SerializeField]private GameObject topicsContentHolder;
+    [SerializeField]private RepoContentNavigation repositoryContentNavigationManager;
+    [SerializeField]private Image userImage;
 
     public event EventHandler OnFinishedGeneratingRepoButtons;
     public async void CreateButton(IReadOnlyList<Repository> repositories)
@@ -67,7 +68,7 @@ public class SearchRepoButtonTemplate : MonoBehaviour
 
     private void OnRepoButtonClick(Repository repo)
     {
-        throw new NotImplementedException();
+        repositoryContentNavigationManager.ShowRepositoryContent(repo.Owner.Login, repo.Name, "\\");
     }
     //clear content
     public void ClearContent()
