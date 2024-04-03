@@ -168,7 +168,8 @@ public class GameLobby : MonoBehaviour
             {
                 Data = new Dictionary<string, DataObject>
                 {
-                   { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                    { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) },
+                    { "repoLink", new DataObject(DataObject.VisibilityOptions.Member, currentRepository) } // Add this line
                 }
             });
 
@@ -216,19 +217,6 @@ public class GameLobby : MonoBehaviour
         print($"The player: {args.Username}");
     }
 
-    public async void QuickJoin()
-    {
-        try
-        {
-            joinedLobby = await LobbyService.Instance.QuickJoinLobbyAsync();
-            LobbyUi.StartClient();
-        }
-        catch (LobbyServiceException ex)
-        {
-            print(ex.Message);
-        }
-    }
-
     public void ListLobbies(List<Lobby> lobbies)
     {
         foreach (Lobby lobby in lobbies )
@@ -268,11 +256,36 @@ public class GameLobby : MonoBehaviour
         {
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
+            string  repoLink = joinedLobby.Data["repoLink"].Value;
 
             OnPlayerTriesToJoin?.Invoke(this, agrs);
 
             await dbManager.UpdateRecentLobbies(user.Login,joinedLobby.Id);
             await gameRelay.JoinRelay(relayCode);
+
+            string cloneDirectory = await SelectFolder();
+            string repoName = GitHelperMethods.GetOwnerAndRepo(repoLink).repoName;
+            string repoPath = @$"{cloneDirectory}\{repoName}";
+
+            if (LibGit2Sharp.Repository.IsValid(repoPath))
+            {
+                using (var repo = new LibGit2Sharp.Repository(repoPath))
+                {
+                    var remoteUrl = repo.Network.Remotes["origin"].Url;
+                    if (remoteUrl != repoLink)
+                    {
+                        throw new Exception("The repository at the path is not the expected repository.");
+                    }
+                }
+            }
+            else
+            {
+                await GitOperations.CloneRepositoryAsync(repoLink, repoPath);
+            }
+
+            GameSceneMetadata.GithubRepoLink = repoLink;
+            GameSceneMetadata.GithubRepoPath = repoPath;
+            GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
 
             OnLobbyJoinStarted?.Invoke(this, agrs);
             NetworkManager.Singleton.StartClient();

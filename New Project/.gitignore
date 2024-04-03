@@ -87,6 +87,6 @@ Assets/Firebase
 Assets/Plugins/tvOS/Firebase/
 Assets/Plugins/iOS
 Assets/StreamingAssets
-*.meta
+
 ProjectSettings/GvhProjectSettings.xml
 Assets/Data/google-services.json

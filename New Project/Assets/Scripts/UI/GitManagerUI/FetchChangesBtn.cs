@@ -23,7 +23,7 @@ public class FetchChangesBtn : MonoBehaviour
     IEnumerator FetchChanges()
     {
         imageToChange.sprite = fetchingSprite;
-        var fetchTask = GitOperations.FetchFromRemoteAsync(GameSceneMetadata.GithubRepoPath);
+        var fetchTask = GitOperations.FetchFromRemoteAsync(GameSceneMetadata.GithubRepoPath,GameSceneMetadata.CurrentBranch);
 
         yield return new WaitUntil(() => fetchTask.IsCompleted);
         imageToChange.sprite = normalSprite;
