@@ -12,6 +12,7 @@ public class PushChangesUI : MonoBehaviour
     [SerializeField]private GameObject changedFilesContent;
     [SerializeField] private TextMeshProUGUI changedFilesCount;
     [SerializeField]private TextMeshProUGUI unpushedCommitsCountLbl;
+    [SerializeField]private SingleActiveChild singleActiveChild;
     private string branch;
     private int commitsCount;
     // Start is called before the first frame update
@@ -48,6 +49,9 @@ public class PushChangesUI : MonoBehaviour
             await GitOperations.PushChangesAsync(GameSceneMetadata.GithubRepoPath, branch);
             commitsCountHolder.SetActive(false);
             print("Changes have been pushed to the origin");
+
+            //change to the fetch button
+            singleActiveChild.ActivateOneChild(1);
         }
         catch(Exception ex)
         {

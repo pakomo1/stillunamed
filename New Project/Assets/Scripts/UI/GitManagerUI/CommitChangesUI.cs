@@ -15,6 +15,8 @@ public class CommitChangesUI : MonoBehaviour
     [SerializeField]private TextMeshProUGUI changesCount;
     [SerializeField]private Button commitButton;
     [SerializeField]private GitManager gitManager;
+
+    [SerializeField]private SingleActiveChild singleActiveChild;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,9 @@ public class CommitChangesUI : MonoBehaviour
             commitMessageInput.text = "";
             commitDescription.text = "";
            ClearChangedFiles();
+
+            //change to the push button
+            singleActiveChild.ActivateOneChild(0);
         }
         catch (Exception ex)
         {
@@ -51,6 +56,6 @@ public class CommitChangesUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        commitButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Commit to {GameSceneMetadata.CurrentBranch}";
     }
 }

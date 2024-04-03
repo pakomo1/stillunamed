@@ -174,6 +174,7 @@ public class GameLobby : MonoBehaviour
 
             GameSceneMetadata.GithubRepoLink = currentRepository;
             GameSceneMetadata.GithubRepoPath = repoPath;
+            GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
             NetworkManager.Singleton.StartHost();
 
             OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;

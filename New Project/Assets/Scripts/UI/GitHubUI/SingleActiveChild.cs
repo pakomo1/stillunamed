@@ -20,7 +20,7 @@ public class SingleActiveChild : MonoBehaviour
         }
     }
 
-    // Call this method with the index of the child you want to activate
+    // Call this method with the index of the child you want to activate with check for sideBarUI
     public void ActivateChild(int index)
     {
         for (int i = 0; i < children.Length; i++)

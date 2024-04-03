@@ -189,7 +189,7 @@ public class GitOperations : MonoBehaviour
             // If the branch doesn't exist locally, create a tracking branch
             if (branch == null)
             {
-                var remoteBranch = repo.Branches[$"origin/{branchName}"];
+                var remoteBranch = repo.Branches[branchName];
                 if (remoteBranch == null)
                 {
                     throw new Exception($"Branch {branchName} does not exist");
@@ -200,6 +200,44 @@ public class GitOperations : MonoBehaviour
             }
 
             Commands.Checkout(repo, branch);
+        }
+    }
+    public static string GetCurrentBranch(string repoPath)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            return repo.Head.FriendlyName;
+        }
+    }
+    public static async Task FetchFromRemoteAsync(string repoPath, string remoteName = "origin")
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            // The remote to fetch from
+            var remote = repo.Network.Remotes[remoteName];
+
+            UsernamePasswordCredentials usernameAndPaswordCred = await GetCredentialsAsync();  
+            // The options for the fetch operation
+            var options = new FetchOptions
+            {
+                CredentialsProvider = (_url, _user, _cred) => usernameAndPaswordCred
+            };
+
+            // Perform the fetch
+            Commands.Fetch(repo, remote.Url, new string[] { }, options, logMessage: "");
+        }
+    }
+    public static List<TreeEntryChanges> GetChanges(string repoPath,string currentBranchName)
+    {
+        using (var repo = new LibGit2Sharp.Repository(repoPath))
+        {
+            // should use the "origin/" here because we are comparing the local branch with the remote branch
+            var branch = repo.Branches[$"origin/{currentBranchName}"];
+
+            // Get the changes between the current branch and its tracked branch
+            var changes = repo.Diff.Compare<TreeChanges>(branch.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
+
+            return changes.ToList();
         }
     }
 }

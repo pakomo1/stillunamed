@@ -18,7 +18,7 @@ public class GameSceneMetadata : MonoBehaviour
         set
         {
             currentBranch = value;
-            OnBranchChanged.Invoke();
+            OnBranchChanged?.Invoke();
         }
     }
 
