@@ -57,6 +57,7 @@ public class PlayerManager : NetworkBehaviour
         bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
         if (!isCollaborator)
         {
+            print("Sending invite");
             await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
         }
     }

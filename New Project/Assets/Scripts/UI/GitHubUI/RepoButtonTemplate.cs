@@ -42,7 +42,7 @@ public class RepoButtonTemplate : MonoBehaviour
         {
             button.transform.GetChild(3).GetComponent<Image>().color = Color.red;
         }
-        button.GetComponent<Button>().onClick.AddListener(() => repositoryContentNavigationManager.ShowRepositoryContent(currentRepo.Owner.Login, currentRepo.Name, "/"));
+        button.GetComponent<Button>().onClick.AddListener(() => repositoryContentNavigationManager.ShowRepositoryContent(currentRepo.Owner.Login, currentRepo.Name, "."));
         button.GetComponent<RepositoryData>().repository = currentRepo;
         return true;
     }

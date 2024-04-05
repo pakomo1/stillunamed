@@ -68,7 +68,7 @@ public class SearchRepoButtonTemplate : MonoBehaviour
 
     private void OnRepoButtonClick(Repository repo)
     {
-        repositoryContentNavigationManager.ShowRepositoryContent(repo.Owner.Login, repo.Name, "\\");
+        repositoryContentNavigationManager.ShowRepositoryContent(repo.Owner.Login, repo.Name, ".");
     }
     //clear content
     public void ClearContent()

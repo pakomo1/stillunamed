@@ -21,7 +21,7 @@ public class RepoContentNavigation : MonoBehaviour
     [SerializeField] private Image repoOwenerProfilePicture;
 
     [SerializeField] private Button addfileButton;
-    [SerializeField] private Button branchButtonTemplate;
+    [SerializeField] private Button branchButtonUI;
     public Repository currentRepository;
 
     [SerializeField] private ValidAccessToken validAccessToken;
@@ -29,7 +29,7 @@ public class RepoContentNavigation : MonoBehaviour
     [SerializeField] private branchesTemplate branchesTemplate;
     [SerializeField] private SingleActiveChild singleActiveChild;
     [SerializeField] private FilesContentNavigation filesContentNavigation;
-
+    private IReadOnlyCollection<RepositoryContent> repositoryContents;
     private event Action OnRepoContentLoadingStarted;
     private event Action OnRepoContentLoaded;
     private void Awake()
@@ -58,7 +58,15 @@ public class RepoContentNavigation : MonoBehaviour
         {
             OnRepoContentLoadingStarted?.Invoke();
             var repository = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
-            var repoContent = await GetRepositoryFiles.GetRepoFiles(repoOwner, repoName, path, branch);
+            try
+            {
+                repositoryContents = await GetRepositoryFiles.GetRepoFiles(repoOwner, repoName, path, branch);
+            }
+            catch (NotFoundException)
+            {
+                branch = "master";
+                repositoryContents = await GetRepositoryFiles.GetRepoFiles(repoOwner, repoName, path, branch);
+            }
             var repoBranches = await GetRepoBranches.GetBranches(repoOwner, repoName);
 
             currentRepository = repository;
@@ -69,7 +77,7 @@ public class RepoContentNavigation : MonoBehaviour
 
             singleActiveChild.ActivateChild(1);
             UpdateSideBarPanel(repository);
-            await UpdateRepositoryContentUI(repository, repoContent, branch);
+            await UpdateRepositoryContentUI(repository, repositoryContents, branch);
             OnRepoContentLoaded?.Invoke();
         }
         catch (HttpRequestException ex)
@@ -94,7 +102,7 @@ public class RepoContentNavigation : MonoBehaviour
 
     private async Task UpdateRepositoryContentUI(Repository repoData, IReadOnlyCollection<RepositoryContent> repoContents, string currentBranch)
     {
-        branchButtonTemplate.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentBranch;
+        branchButtonUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = currentBranch;
 
         await SetProfilePicture(repoData.Owner.Login);
         repoContentUI.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = repoData.Name;

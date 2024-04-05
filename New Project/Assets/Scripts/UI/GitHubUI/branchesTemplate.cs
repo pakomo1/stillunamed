@@ -4,10 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Octokit;
 using TMPro;
+using System;
 public class branchesTemplate : MonoBehaviour
 {
     [SerializeField] private Button branchButtonTemplate;
-    [SerializeField] private RepositoryContentNavigation repositoryContentNavigation;
+    [SerializeField] private RepoContentNavigation repositoryContentNavigation;
+    public event Action<string> OnBranchSelected;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,10 +29,12 @@ public class branchesTemplate : MonoBehaviour
         {
             var button = Instantiate(branchButtonTemplate, transform);
             button.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = branch.Name;
+            button.name = branch.Name;
 
             button.onClick.AddListener(() =>
             {
-                repositoryContentNavigation.ShowRepositoryContent(currentRepostiory.Owner.Login,currentRepostiory.Name, "/", branch.Name);  
+                repositoryContentNavigation.ShowRepositoryContent(currentRepostiory.Owner.Login,currentRepostiory.Name, ".", branch.Name);  
+                OnBranchSelected?.Invoke(branch.Name);
             });
             button.gameObject.SetActive(true);
         }
