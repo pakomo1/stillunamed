@@ -41,11 +41,5 @@ public class EscapeMenuFunctionalityConnected : MonoBehaviour
         onPlayerDisconect.Invoke(this, EventArgs.Empty);
         NetworkManager.Singleton.Shutdown();
         Loader.Load(Loader.Scene.Scene);
-
-        if (GameLobby.Instance.isLobbyHost())
-        {
-            GameLobby.Instance.ShutDownLobby(GameLobby.Instance.joinedLobby.Id);
-        }
-        
     }
 }

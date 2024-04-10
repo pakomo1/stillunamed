@@ -53,6 +53,7 @@ public class OpenComputer : NetworkBehaviour
     {
 
     }
+    //TODO: when the client tries to connect it cant find the textEditorManager.Instance
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();

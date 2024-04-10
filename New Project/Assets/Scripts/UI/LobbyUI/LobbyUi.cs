@@ -84,31 +84,35 @@ public class LobbyUi : MonoBehaviour
             explorerLable.text = "Recent Lobbies";
             string username = GitHubClientProvider.client.User.Current().Result.Login;
             var recentLobbies = await dbManager.GetRecentLobbies(username);
-            if(recentLobbies.Count == 0)
+
+            List<Lobby> recentLobbiesList = new List<Lobby>();
+            for (int i = 0; i < recentLobbies.Count; i++)
+            {
+                try
+                {
+                    var lobby = await gameLobby.GetLobbyById(recentLobbies[i]);
+                    recentLobbiesList.Add(lobby);
+                }
+                catch (LobbyServiceException)
+                {
+                    recentLobbies.RemoveAt(i);
+                    i--; // Decrement the index as we've removed an item
+                }
+            }
+
+            gameLobby.ListLobbies(recentLobbiesList);
+
+            if (recentLobbies.Count == 0)
             {
                 noLobbiesFound.gameObject.SetActive(true);
                 noLobbiesFound.text = "There are no active lobbies that you have joined recently";
                 return;
             }
-            List<Lobby> recentLobbiesList = new List<Lobby>();
-            foreach (var lobbyID in recentLobbies)
-            {
-                var lobby = await gameLobby.GetLobbyById(lobbyID);
-                if (lobby == null)
-                {
-                    await dbManager.RemoveRecentLobby(username, lobbyID);
-                    continue;
-                }
-                recentLobbiesList.Add(lobby);
-            }
-
-            gameLobby.ListLobbies(recentLobbiesList);
-            
         }catch(Exception ex)
         {
-            print(ex);
-        }
-       
+            Debug.LogError(ex);
+        }   
+        
     }
 
     public static void StartHost()

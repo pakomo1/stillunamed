@@ -5033,7 +5033,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.7947, y: -78.3109}
+  m_AnchoredPosition: {x: -0.000012875, y: -125}
   m_SizeDelta: {x: 211.7303, y: 48.9677}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &322974579
@@ -6497,8 +6497,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -595, y: 280.36}
-  m_SizeDelta: {x: 160, y: 50.145004}
+  m_AnchoredPosition: {x: -572.52344, y: 280.36}
+  m_SizeDelta: {x: 204.953, y: 50.145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &456032732
 MonoBehaviour:
@@ -12563,6 +12563,7 @@ MonoBehaviour:
   showBranchesUIBtn: {fileID: 456032732}
   branchesUI: {fileID: 1486772457}
   branchContent: {fileID: 1804114531}
+  branchesTemplate: {fileID: 1804114535}
 --- !u!1 &878504855
 GameObject:
   m_ObjectHideFlags: 0
@@ -15140,7 +15141,8 @@ MonoBehaviour:
     NetworkTransport: {fileID: 990278317}
     PlayerPrefab: {fileID: 1762891872572860968, guid: 6c1ac98a22a6e81448cc92f508001606, type: 3}
     Prefabs:
-      NetworkPrefabsLists: []
+      NetworkPrefabsLists:
+      - {fileID: 11400000, guid: 9c9f0edc9ef3c3348aa285f624518c4c, type: 2}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -15156,12 +15158,7 @@ MonoBehaviour:
     LoadSceneTimeOut: 120
     SpawnTimeout: 1
     EnableNetworkLogs: 1
-    OldPrefabList:
-    - Override: 0
-      Prefab: {fileID: 4968037508646322105, guid: 0ed2ee5aba32d704995440985a536fea, type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
+    OldPrefabList: []
   RunInBackground: 1
   LogLevel: 1
 --- !u!4 &990278319
@@ -21900,7 +21897,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 25.00001}
   m_SizeDelta: {x: 379.3313, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1439464451
@@ -24536,7 +24533,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: There aren't any open lobbies
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -26718,8 +26715,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00074005, y: -20.627}
-  m_SizeDelta: {x: 260.28, y: 130}
+  m_AnchoredPosition: {x: -0.00074005, y: -2.1525}
+  m_SizeDelta: {x: 260.28, y: 166.95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1804114533
 MonoBehaviour:
@@ -26774,7 +26771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   branchButtonTemplate: {fileID: 1442648568}
-  repositoryContentNavigation: {fileID: 0}
+  repositoryContentNavigation: {fileID: 2101249306}
 --- !u!1 &1805590336
 GameObject:
   m_ObjectHideFlags: 0
@@ -31520,7 +31517,7 @@ MonoBehaviour:
   loadingContentScreen: {fileID: 1197468267}
   repoOwenerProfilePicture: {fileID: 1412745774}
   addfileButton: {fileID: 626826122}
-  branchButtonTemplate: {fileID: 1442648568}
+  branchButtonUI: {fileID: 456032732}
   validAccessToken: {fileID: 1342345044}
   repoFilesTemplate: {fileID: 216233983}
   branchesTemplate: {fileID: 1804114535}

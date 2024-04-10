@@ -98,5 +98,9 @@ public class TextEditorData : NetworkBehaviour
         WorkingDirectory = GameSceneMetadata.GithubRepoPath;
         StartingDirecotry = GameSceneMetadata.GithubRepoPath;
     }
-
+    //checks if is the owner
+    public bool IsEditorDataOwner(string username)
+    {
+        return OwnerUsername == username;
+    }
 }

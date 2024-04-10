@@ -3,12 +3,14 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 using System.Threading.Tasks;
+using Unity.Services.Lobbies;
+using Unity.Services.Authentication;
 public class PlayerManager : NetworkBehaviour
 {
     private string _username;
     private TextEditorData _textEditor;
     public static event EventHandler<PlayerSpawnArgs> OnAnyPlayerSpawn;
-  //  [SerializeField] private TextMeshProUGUI _usernameText;
+    //[SerializeField] private TextMeshProUGUI _usernameText;
     [SerializeField] private GameObject EditorDataPrefab;
     public static event EventHandler OnEditorSpawned; 
 
@@ -49,6 +51,26 @@ public class PlayerManager : NetworkBehaviour
         {
             StartCoroutine(WaitForComputersInitialization());
         }
+
+        if (IsLocalPlayer)
+        {
+            NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+        }
+    }
+
+    private async void NetworkManager_OnClientDisconnectCallback(ulong clientId)
+    {
+        try
+        {
+            string playerId = AuthenticationService.Instance.PlayerId;
+            await LobbyService.Instance.RemovePlayerAsync("lobbyId", playerId);
+            //TODO: remove the player from the lobby
+            //TODO: destroy the editorData that belongs to the player
+            Destroy(_textEditor);
+        }catch(Exception e)
+        {
+            Debug.LogError(e.Message);
+        }   
     }
 
     private async void GameLobby_OnPlayerTriesToJoin(object sender, LobbyJoinEventArgs e)
@@ -147,7 +169,6 @@ public class PlayerManager : NetworkBehaviour
     {
         _textEditor = textEditor;
     }
-   
 }
 public class PlayerSpawnArgs : EventArgs
 {

@@ -296,6 +296,7 @@ public class GameLobby : MonoBehaviour
             OnLobbyJoinFailed?.Invoke(this, EventArgs.Empty);
         }
     }
+
     public async Task<Lobby> GetLobbyById(string id)
     {
         try
@@ -305,8 +306,7 @@ public class GameLobby : MonoBehaviour
         }
         catch (LobbyServiceException ex)
         {
-            Debug.LogError("Failed to retrieve lobby: " + ex.Message);
-            return null;
+            throw ex;
         }
     }
 

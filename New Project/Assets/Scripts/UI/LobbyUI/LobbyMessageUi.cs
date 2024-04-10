@@ -34,6 +34,10 @@ public class ConnectingUI : MonoBehaviour
         GameLobby.Instance.OnCloneFailed += GameLobby_OnCloneFailed;
         GameLobby.Instance.OnCloneSuccess += GameLobby_OnCloneSuccess;
 
+        closeButton.onClick.AddListener(() =>
+        {
+           lobbyMessageUI.SetActive(false); 
+        });
     }
 
     private void GameLobby_OnCloneSuccess(object sender, EventArgs e)
