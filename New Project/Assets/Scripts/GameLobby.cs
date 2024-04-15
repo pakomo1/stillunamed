@@ -212,25 +212,20 @@ public class GameLobby : MonoBehaviour
         //prints the player id
         print(obj[0].Player.Id);
         Lobby lobby = await LobbyService.Instance.GetLobbyAsync(GameLobby.Instance.joinedLobby.Id);
-        Player player = lobby.Players.FirstOrDefault(p => p.Id == AuthenticationService.Instance.PlayerId.ToString());
-        if (player == null)
-        {
-            Debug.LogError("Player not found");
-            return;
-        }
+       
 
         // Retrieve the username from the player's data
-        string username = player.Data["username"].Value;
+        string username = obj[0].Player.Data["username"].Value;
 
         var user = GitHubClientProvider.client.User.Current().Result;
         var owner = joinedLobby.Players.FirstOrDefault(p => bool.Parse(p.Data["isOwner"].Value));
         if (owner != null)
         {
-            bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
+            bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, repositoryLink);
             if (!isCollaborator)
             {
                 print("Sending invite");
-                await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
+                await GitOperations.InviteUserToRepoAsync(username, repositoryLink);
             }
             else
             {
@@ -297,18 +292,21 @@ public class GameLobby : MonoBehaviour
     public async void JoinLobbyByID(string id)
     {
         var user = await GitHubClientProvider.client.User.Current();
-        var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, joinedLobby.Data["repoLink"].Value);
+
         var agrs = new LobbyJoinEventArgs(user.Login);
         try
         {
             JoinLobbyByIdOptions options = new JoinLobbyByIdOptions
             {
-                Player = GetPlayer(user.Login, isOwner)
+                Player = GetPlayer(user.Login, false)
             };
 
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id,options);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
             string  repoLink = joinedLobby.Data["repoLink"].Value;
+
+            var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);
+            options.Player = GetPlayer(user.Login, isOwner);
 
             OnPlayerTriesToJoin?.Invoke(this, agrs);
 
@@ -316,6 +314,13 @@ public class GameLobby : MonoBehaviour
             await gameRelay.JoinRelay(relayCode);
 
             string cloneDirectory = await SelectFolder();
+            //check the if the user has selected a cloneDirecotry
+            if (string.IsNullOrEmpty(cloneDirectory))
+            {
+                //leave the lobby
+                LeaveLobby();
+                throw new Exception("No directory selected");
+            }
             string repoName = GitHelperMethods.GetOwnerAndRepo(repoLink).repoName;
             string repoPath = @$"{cloneDirectory}\{repoName}";
 
