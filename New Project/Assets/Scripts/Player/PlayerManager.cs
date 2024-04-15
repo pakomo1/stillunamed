@@ -5,6 +5,8 @@ using System;
 using System.Threading.Tasks;
 using Unity.Services.Lobbies;
 using Unity.Services.Authentication;
+using System.Linq;
+using Unity.Services.Lobbies.Models;
 public class PlayerManager : NetworkBehaviour
 {
     private string _username;
@@ -29,12 +31,6 @@ public class PlayerManager : NetworkBehaviour
             {
                 string currentUsername = await GetGitUsernme();
                 SetUsername(currentUsername);
-
-                var isOwner = await GitOperations.IsUserRepoOwnerAsync(_username, GameSceneMetadata.GithubRepoLink);
-                if (isOwner)
-                {
-                    GameLobby.OnPlayerTriesToJoin += GameLobby_OnPlayerTriesToJoin;
-                }
             }catch(Exception e)
             {
                 Debug.LogError(e.Message);
@@ -51,10 +47,27 @@ public class PlayerManager : NetworkBehaviour
         {
             StartCoroutine(WaitForComputersInitialization());
         }
+    }
 
-        if (IsLocalPlayer)
+    private async void GameLobby_OnPlayerTriesToJoin(ulong clientId)
+    {
+        Lobby lobby = await LobbyService.Instance.GetLobbyAsync(GameLobby.Instance.joinedLobby.Id);
+        Player player = lobby.Players.FirstOrDefault(p => p.Id == AuthenticationService.Instance.PlayerId.ToString());
+
+        if (player == null)
         {
-            NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
+            Debug.LogError("Player not found");
+            return;
+        }
+
+        // Retrieve the username from the player's data
+        string username = player.Data["username"].Value;
+        print(username);
+        bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
+        if (!isCollaborator)
+        {
+            print("Sending invite");
+            await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
         }
     }
 
@@ -73,16 +86,7 @@ public class PlayerManager : NetworkBehaviour
         }   
     }
 
-    private async void GameLobby_OnPlayerTriesToJoin(object sender, LobbyJoinEventArgs e)
-    {
-        string username = e.Username;
-        bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
-        if (!isCollaborator)
-        {
-            print("Sending invite");
-            await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
-        }
-    }
+    
 
     public void StartInteractingWithUI()
     {

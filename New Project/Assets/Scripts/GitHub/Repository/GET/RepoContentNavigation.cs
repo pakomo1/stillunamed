@@ -52,6 +52,7 @@ public class RepoContentNavigation : MonoBehaviour
         loadingContentScreen.SetActive(true);
     }
 
+    //Shows the content of the repository
     public async void ShowRepositoryContent(string repoOwner, string repoName, string path, string branch = "main")
     {
         try
@@ -76,6 +77,8 @@ public class RepoContentNavigation : MonoBehaviour
             //ActivateObjectInContent.OnClickSwitchToThisUI(contentHolder, repoContentUI);
 
             singleActiveChild.ActivateChild(1);
+
+            //updates the sidebar panel with the repository data
             UpdateSideBarPanel(repository);
             await UpdateRepositoryContentUI(repository, repositoryContents, branch);
             OnRepoContentLoaded?.Invoke();

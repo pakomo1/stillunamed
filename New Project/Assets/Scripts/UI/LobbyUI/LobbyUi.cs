@@ -85,7 +85,7 @@ public class LobbyUi : MonoBehaviour
             string username = GitHubClientProvider.client.User.Current().Result.Login;
             var recentLobbies = await dbManager.GetRecentLobbies(username);
 
-            List<Lobby> recentLobbiesList = new List<Lobby>();
+            List<   Lobby> recentLobbiesList = new List<Lobby>();
             for (int i = 0; i < recentLobbies.Count; i++)
             {
                 try
@@ -96,7 +96,7 @@ public class LobbyUi : MonoBehaviour
                 catch (LobbyServiceException)
                 {
                     recentLobbies.RemoveAt(i);
-                    i--; // Decrement the index as we've removed an item
+                    i--;
                 }
             }
 
@@ -115,17 +115,7 @@ public class LobbyUi : MonoBehaviour
         
     }
 
-    public static void StartHost()
-    {
-        NetworkManager.Singleton.StartHost();
-    }
-    public static void StartClient()
-    {
-        Instance.OnTryToJoinGame?.Invoke(Instance, EventArgs.Empty);
-        NetworkManager.Singleton.OnClientDisconnectCallback += Instance.NetwrokManager_OnClientDisconnectCallback;
-        
-        NetworkManager.Singleton.StartClient();
-    }
+ 
 
     private void NetwrokManager_OnClientDisconnectCallback(ulong clientId)
     {

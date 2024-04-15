@@ -15,12 +15,17 @@ using System.Threading.Tasks;
 using TMPro;
 using Unity.Services.Relay;
 using Octokit;
+using Newtonsoft.Json;
+using System.Linq;
+using static UnityEngine.UIElements.UxmlAttributeDescription;
+using System.Globalization;
 
 public class GameLobby : MonoBehaviour
 {
     private string relayJoinCode = "relayCode";
 
     public Lobby joinedLobby;
+    public Lobby hostLobby;
     private float heartBeatTimer;
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameRelay gameRelay;
@@ -46,7 +51,7 @@ public class GameLobby : MonoBehaviour
     public event EventHandler OnCloneSuccess;
 
     //gamescene events
-    public static event EventHandler<LobbyJoinEventArgs> OnPlayerTriesToJoin;
+    public event EventHandler<LobbyJoinEventArgs> OnPlayerTriesToJoin;
 
     public static GameLobby Instance { get; private set; }
     private void Awake()
@@ -110,7 +115,8 @@ public class GameLobby : MonoBehaviour
         {
             
             var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(githubRepository);
-            
+            var user = await GitHubClientProvider.client.User.Current();
+            bool isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, githubRepository);
             string currentRepository = githubRepository;
             // check if the repository should be forked
             if (shouldFork)
@@ -158,8 +164,15 @@ public class GameLobby : MonoBehaviour
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
             {
                 IsPrivate = isPrivate,
+                Player = GetPlayer(user.Login, isOwner)
             });
             joinedLobby = lobby;
+            hostLobby = lobby;
+
+            //lobby events
+            var callbacks = new LobbyEventCallbacks();
+            callbacks.PlayerJoined += (List<LobbyPlayerJoined> obj) => { Callbacks_PlayerJoined(obj, githubRepository); };
+            await LobbyService.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
 
             Allocation allocation = await gameRelay.CreateRelay(lobby.MaxPlayers - 1);
             string joinCode = await gameRelay.GetRelayJoinCode(allocation);
@@ -193,6 +206,39 @@ public class GameLobby : MonoBehaviour
         }
 
     }
+
+    private async void Callbacks_PlayerJoined(List<LobbyPlayerJoined> obj, string repositoryLink)
+    {
+        //prints the player id
+        print(obj[0].Player.Id);
+        Lobby lobby = await LobbyService.Instance.GetLobbyAsync(GameLobby.Instance.joinedLobby.Id);
+        Player player = lobby.Players.FirstOrDefault(p => p.Id == AuthenticationService.Instance.PlayerId.ToString());
+        if (player == null)
+        {
+            Debug.LogError("Player not found");
+            return;
+        }
+
+        // Retrieve the username from the player's data
+        string username = player.Data["username"].Value;
+
+        var user = GitHubClientProvider.client.User.Current().Result;
+        var owner = joinedLobby.Players.FirstOrDefault(p => bool.Parse(p.Data["isOwner"].Value));
+        if (owner != null)
+        {
+            bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
+            if (!isCollaborator)
+            {
+                print("Sending invite");
+                await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
+            }
+            else
+            {
+                print("The player is already a colaborator");
+            }
+        }
+    }
+
     public Task<string> SelectFolder()
     {
         var tcs = new TaskCompletionSource<string>();
@@ -251,10 +297,16 @@ public class GameLobby : MonoBehaviour
     public async void JoinLobbyByID(string id)
     {
         var user = await GitHubClientProvider.client.User.Current();
+        var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, joinedLobby.Data["repoLink"].Value);
         var agrs = new LobbyJoinEventArgs(user.Login);
         try
         {
-            joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id);
+            JoinLobbyByIdOptions options = new JoinLobbyByIdOptions
+            {
+                Player = GetPlayer(user.Login, isOwner)
+            };
+
+            joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id,options);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
             string  repoLink = joinedLobby.Data["repoLink"].Value;
 
@@ -288,7 +340,7 @@ public class GameLobby : MonoBehaviour
             GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
 
             OnLobbyJoinStarted?.Invoke(this, agrs);
-            NetworkManager.Singleton.StartClient();
+            GitRoomMultiplayer.Instance.StartClient();
 
         } catch (Exception ex)
         {
@@ -326,9 +378,62 @@ public class GameLobby : MonoBehaviour
         try
         {
              await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
+            joinedLobby = null;
         }catch (LobbyServiceException ex)
         {
             print(ex.Message);
+        }
+    }
+    //leaves the lobby
+    public async void LeaveLobby()
+    {
+        if (joinedLobby != null)
+        {
+            try
+            {
+                await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+                joinedLobby = null;
+            }
+            catch (LobbyServiceException ex)
+            {
+                print(ex.Message);
+            }
+        }
+    }
+    private Player GetPlayer(string username, bool isOwner)
+    {
+       
+        return new Player
+        {
+            Data = new Dictionary<string, PlayerDataObject>
+            {
+               {
+                    "username", new PlayerDataObject(
+                    visibility: PlayerDataObject.VisibilityOptions.Public,
+                    value: username)
+               },
+               {
+                "isOwner", new PlayerDataObject(
+                visibility: PlayerDataObject.VisibilityOptions.Public,
+                value: isOwner.ToString())
+               }
+            }
+        };
+    }
+    //migrates the lobby host
+    private async void MigrateHost()
+    {
+        try
+        {
+            hostLobby = await Lobbies.Instance.UpdateLobbyAsync(hostLobby.Id, new UpdateLobbyOptions
+            {
+                HostId = joinedLobby.Players[1].Id
+            });
+            joinedLobby = hostLobby;
+        }
+        catch(LobbyServiceException e)
+        {
+            Debug.LogError(e.Message);
         }
     }
 }

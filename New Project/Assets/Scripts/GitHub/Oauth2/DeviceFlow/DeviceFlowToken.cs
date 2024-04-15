@@ -88,9 +88,9 @@ public class DeviceFlowToken : MonoBehaviour
         {
             using (UnityWebRequest www = UnityWebRequest.Post(tokenEndpoint, form))
             {
-                // Set the Accept header to application/json
                 www.SetRequestHeader("Accept", "application/json");
 
+                //pauses the coroutine until the web request is done
                 yield return www.SendWebRequest();
 
                 if (www.result == UnityWebRequest.Result.Success)
@@ -120,7 +120,6 @@ public class DeviceFlowToken : MonoBehaviour
                 }
                 else
                 {
-                    // If the response is not a 400 error, something went wrong
                     Debug.Log(www.error);
                     yield break;
                 }

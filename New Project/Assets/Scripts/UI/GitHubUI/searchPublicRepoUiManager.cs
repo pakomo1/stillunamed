@@ -20,11 +20,9 @@ public class searchPublicRepoUiManager : MonoBehaviour
     {
         searchInputField.onValueChanged.AddListener(OnSearchInputFieldChanged);
         searchInputField.onSubmit.AddListener(OnSearchInputFieldSubmitted);
-
         OnStartGeneratingRepoButtons += OnStartGeneratingRepoButtonsHandler;
         searchRepoButtonTemplate.OnFinishedGeneratingRepoButtons += OnFinishedGeneratingRepoButtons;
     }
-
     public async void OnSearchInputFieldSubmitted(string arg0)
     {
        Hide();
@@ -41,14 +39,12 @@ public class searchPublicRepoUiManager : MonoBehaviour
         }
        
     }
-
     private void OnFinishedGeneratingRepoButtons(object sender, EventArgs e)
     {
         print("Finished generating repo buttons");
         searchContent.SetActive(true);
         loadingUi.SetActive(false);
     }
-
     private void OnStartGeneratingRepoButtonsHandler(object sender, EventArgs e)
     {
         print("Started generating repo buttons");
@@ -56,8 +52,6 @@ public class searchPublicRepoUiManager : MonoBehaviour
         loadingUi.SetActive(true);
         searchContent.SetActive(false);
     }
-
-
     private void OnSearchInputFieldChanged(string searchInput)
     {
         request = new SearchRepositoriesRequest(searchInput)
