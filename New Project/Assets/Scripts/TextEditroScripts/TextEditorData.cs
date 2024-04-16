@@ -15,7 +15,7 @@ public class TextEditorData : NetworkBehaviour
 
     private NetworkVariable<FixedString128Bytes> pathToTheSelectedFile = new NetworkVariable<FixedString128Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>("\\", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
     public delegate void DisplayTextChangedHandler(FixedString128Bytes newText);

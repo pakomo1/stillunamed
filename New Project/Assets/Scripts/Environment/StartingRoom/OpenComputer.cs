@@ -53,13 +53,6 @@ public class OpenComputer : NetworkBehaviour
     {
 
     }
-    //TODO: when the client tries to connect it cant find the textEditorManager.Instance
-    public override void OnNetworkSpawn()
-    {
-        base.OnNetworkSpawn();
-        textEditorManager = TextEditorManager.Instance;
-    }
-
     
 
     private void Update()
@@ -71,8 +64,8 @@ public class OpenComputer : NetworkBehaviour
             //doesExist = transform.GetChild(0).TryGetComponent<TextEditorData>(out TextEditorData data);
             if (currentTextEditorData != null)
             {
+                TextEditorManager.Instance.LoadEditorData(currentTextEditorData); 
                 PlayerManager.LocalPlayer.StartInteractingWithUI();
-                textEditorManager.LoadEditorData(currentTextEditorData); 
             }
             else
             {

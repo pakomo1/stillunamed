@@ -7,6 +7,7 @@ using Unity.Services.Lobbies;
 using Unity.Services.Authentication;
 using System.Linq;
 using Unity.Services.Lobbies.Models;
+using System.Threading;
 public class PlayerManager : NetworkBehaviour
 {
     private string _username;
@@ -103,12 +104,12 @@ public class PlayerManager : NetworkBehaviour
 
     private void ComputersInitialized_OnValueChanged(bool previousValue, bool newValue)
     {
-        GetEditor();
+        SetEditor();
     }
     private IEnumerator WaitForComputersInitialization()
     {
         yield return new WaitUntil(() => ComputersManager.ComputersInitialized.Value);
-        GetEditor();
+        SetEditor();
     }
     private async Task<string> GetGitUsernme()
     {
@@ -116,7 +117,7 @@ public class PlayerManager : NetworkBehaviour
         return user.Login;
     }
    
-    private void GetEditor()
+    private void SetEditor()
     {
         var room = GameObject.Find("Room");
         var computers = room.transform.Find("Computers");
@@ -140,6 +141,7 @@ public class PlayerManager : NetworkBehaviour
         var room = GameObject.Find("Room");
         var computers = room.transform.Find("Computers");
         var computer = computers.GetChild(computerId);
+        ulong clientId = NetworkManager.LocalClientId;
 
         // Instantiate the text editor for this computer and make it a child of the computer
         GameObject Editor = Instantiate(EditorDataPrefab);
@@ -152,12 +154,12 @@ public class PlayerManager : NetworkBehaviour
         Editor.transform.SetParent(computer.transform);
         var thiseditorData = Editor.GetComponent<TextEditorData>();
         thiseditorData.Id = computerId;
-        thiseditorData.InitializePaths();
         Editor.SetActive(false);
 
         //assign it to the player
         SetTextEditor(Editor.GetComponent<TextEditorData>());
         thiseditorData.SetOwner(username);
+        StartCoroutine(InitializePathsAfterOwnershipChange(thiseditorData));
         OnEditorSpawned?.Invoke(this, EventArgs.Empty);
     }
     public void SetUsername(string username)
@@ -172,6 +174,11 @@ public class PlayerManager : NetworkBehaviour
     public void SetTextEditor(TextEditorData textEditor)
     {
         _textEditor = textEditor;
+    }
+    private IEnumerator InitializePathsAfterOwnershipChange(TextEditorData editorData)
+    {
+        yield return null;
+        editorData.InitializePaths();
     }
 }
 public class PlayerSpawnArgs : EventArgs

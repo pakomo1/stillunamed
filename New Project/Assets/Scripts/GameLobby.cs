@@ -62,7 +62,6 @@ public class GameLobby : MonoBehaviour
     }
     private void Start()
     {
-
     }
 
     private void Update()
@@ -350,6 +349,7 @@ public class GameLobby : MonoBehaviour
         } catch (Exception ex)
         {
             Debug.LogError(ex);
+            LeaveLobby();
             OnLobbyJoinFailed?.Invoke(this, EventArgs.Empty);
         }
     }
