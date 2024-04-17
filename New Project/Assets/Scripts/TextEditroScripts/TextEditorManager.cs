@@ -84,13 +84,17 @@ public class TextEditorManager : MonoBehaviour
     {
 
         textEditorHolder.SetActive(true);
-
+        if(data.WorkingDirectory.Value == "")
+        {
+            data.InitializePaths(GameSceneMetadata.GithubRepoPath);
+        }
         textEditorData = data;
         string text = data.DisplayText.ToString();
         //textEditor.CaretPosition = new InGameTextEditor.TextPosition(0, 0);
         textEditorData.OnSelectedFileChanged += OnFileSelectedHandlerAsync;
 
         textEditor.SetText(text);
+        print("The directory when loading"+textEditorData.WorkingDirectory.Value);
         directoryManager.GenerateForDirectoy(fileManagerContent.transform, textEditorData.WorkingDirectory.Value, textEditorData);
         OnTextEditorLoaded?.Invoke(this, EventArgs.Empty);
 

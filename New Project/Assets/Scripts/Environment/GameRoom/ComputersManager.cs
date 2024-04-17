@@ -43,7 +43,6 @@ public class ComputersManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
         if (IsServer)
         {
             StartCoroutine(InitializeComputersCoroutine(5));

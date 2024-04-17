@@ -15,7 +15,7 @@ public class TextEditorData : NetworkBehaviour
 
     private NetworkVariable<FixedString128Bytes> pathToTheSelectedFile = new NetworkVariable<FixedString128Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
-    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>("\\", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<FixedString128Bytes> workingDirecotry = new NetworkVariable<FixedString128Bytes>("", NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
 
     public delegate void DisplayTextChangedHandler(FixedString128Bytes newText);
@@ -93,10 +93,10 @@ public class TextEditorData : NetworkBehaviour
         OwnerUsername = owner;
     }
     //initialize path variables
-    public void InitializePaths()
+    public void InitializePaths(string dir)
     {
-        WorkingDirectory = GameSceneMetadata.GithubRepoPath;
-        StartingDirecotry = GameSceneMetadata.GithubRepoPath;
+        WorkingDirectory = dir;
+        StartingDirecotry = dir;
     }
     //checks if is the owner
     public bool IsEditorDataOwner(string username)

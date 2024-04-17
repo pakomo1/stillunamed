@@ -12,6 +12,8 @@ public class PlayerManager : NetworkBehaviour
 {
     private string _username;
     private TextEditorData _textEditor;
+    private TaskCompletionSource<bool> _usernameSetTcs = new TaskCompletionSource<bool>();
+
     public static event EventHandler<PlayerSpawnArgs> OnAnyPlayerSpawn;
     //[SerializeField] private TextMeshProUGUI _usernameText;
     [SerializeField] private GameObject EditorDataPrefab;
@@ -26,51 +28,21 @@ public class PlayerManager : NetworkBehaviour
     {
         if (!IsOwner) { return; }
 
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                string currentUsername = await GetGitUsernme();
-                SetUsername(currentUsername);
-            }catch(Exception e)
-            {
-                Debug.LogError(e.Message);
-            }
-        });
-       // _username = "pakomo1";
+       _= SetUsernameAsync();
+
         StopInteractingWithUI();
         LocalPlayer = this;
 
         if (IsHost)
         {
             ComputersManager.ComputersInitialized.OnValueChanged += ComputersInitialized_OnValueChanged;
-        }else if (IsClient)
+        }
+        else if (IsClient)
         {
             StartCoroutine(WaitForComputersInitialization());
         }
     }
 
-    private async void GameLobby_OnPlayerTriesToJoin(ulong clientId)
-    {
-        Lobby lobby = await LobbyService.Instance.GetLobbyAsync(GameLobby.Instance.joinedLobby.Id);
-        Player player = lobby.Players.FirstOrDefault(p => p.Id == AuthenticationService.Instance.PlayerId.ToString());
-
-        if (player == null)
-        {
-            Debug.LogError("Player not found");
-            return;
-        }
-
-        // Retrieve the username from the player's data
-        string username = player.Data["username"].Value;
-        print(username);
-        bool isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, GameSceneMetadata.GithubRepoLink);
-        if (!isCollaborator)
-        {
-            print("Sending invite");
-            await GitOperations.InviteUserToRepoAsync(username, GameSceneMetadata.GithubRepoLink);
-        }
-    }
 
     private async void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
@@ -78,47 +50,46 @@ public class PlayerManager : NetworkBehaviour
         {
             string playerId = AuthenticationService.Instance.PlayerId;
             await LobbyService.Instance.RemovePlayerAsync("lobbyId", playerId);
-            //TODO: remove the player from the lobby
-            //TODO: destroy the editorData that belongs to the player
-            Destroy(_textEditor);
         }catch(Exception e)
         {
             Debug.LogError(e.Message);
         }   
     }
-
-    
-
-    public void StartInteractingWithUI()
+    private async Task SetUsernameAsync()
     {
-        GetComponent<PlayerMovement>().IsInteractingWithUI = true;
-    }
-    public void StopInteractingWithUI()
-    {
-        GetComponent<PlayerMovement>().IsInteractingWithUI = false;
-    }
-    public bool isPlayerInteracting()
-    {
-        return GetComponent<PlayerMovement>().IsInteractingWithUI;
+        try
+        {
+            string currentUsername = await GetGitUsernme();
+            SetUsername(currentUsername);
+            _usernameSetTcs.SetResult(true);
+            print("Username set " + OwnerClientId);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.Message);
+        }
     }
 
+    //executes when the computers are initialized
     private void ComputersInitialized_OnValueChanged(bool previousValue, bool newValue)
     {
-        SetEditor();
+        _ = SetEditorAsync();
     }
+    //executes when the client is connected
     private IEnumerator WaitForComputersInitialization()
     {
         yield return new WaitUntil(() => ComputersManager.ComputersInitialized.Value);
-        SetEditor();
+        _ = SetEditorAsync();
     }
     private async Task<string> GetGitUsernme()
     {
         var user = await GitHubClientProvider.client.User.Current();
         return user.Login;
     }
-   
-    private void SetEditor()
+
+    private async Task SetEditorAsync()
     {
+        await _usernameSetTcs.Task;
         var room = GameObject.Find("Room");
         var computers = room.transform.Find("Computers");
 
@@ -128,7 +99,7 @@ public class PlayerManager : NetworkBehaviour
             
             if (computer.childCount == 0)
             {
-                RequestEditorSpawnServerRpc(i, _username);
+                RequestEditorSpawnServerRpc(i, _username, GameSceneMetadata.GithubRepoPath);
                 break;
             }
 
@@ -136,21 +107,18 @@ public class PlayerManager : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void RequestEditorSpawnServerRpc(int computerId,string username)
+    private void RequestEditorSpawnServerRpc(int computerId,string username, string dir)
     {
         var room = GameObject.Find("Room");
         var computers = room.transform.Find("Computers");
         var computer = computers.GetChild(computerId);
-        ulong clientId = NetworkManager.LocalClientId;
 
         // Instantiate the text editor for this computer and make it a child of the computer
         GameObject Editor = Instantiate(EditorDataPrefab);
         NetworkObject networkObjectEditor = Editor.GetComponent<NetworkObject>();
-        if (networkObjectEditor != null)
-        {
-            networkObjectEditor.Spawn();
-            networkObjectEditor.ChangeOwnership(OwnerClientId);
-        }
+      
+        networkObjectEditor.Spawn();
+
         Editor.transform.SetParent(computer.transform);
         var thiseditorData = Editor.GetComponent<TextEditorData>();
         thiseditorData.Id = computerId;
@@ -159,7 +127,7 @@ public class PlayerManager : NetworkBehaviour
         //assign it to the player
         SetTextEditor(Editor.GetComponent<TextEditorData>());
         thiseditorData.SetOwner(username);
-        StartCoroutine(InitializePathsAfterOwnershipChange(thiseditorData));
+        networkObjectEditor.ChangeOwnership(OwnerClientId);
         OnEditorSpawned?.Invoke(this, EventArgs.Empty);
     }
     public void SetUsername(string username)
@@ -175,10 +143,17 @@ public class PlayerManager : NetworkBehaviour
     {
         _textEditor = textEditor;
     }
-    private IEnumerator InitializePathsAfterOwnershipChange(TextEditorData editorData)
+    public void StartInteractingWithUI()
     {
-        yield return null;
-        editorData.InitializePaths();
+        GetComponent<PlayerMovement>().IsInteractingWithUI = true;
+    }
+    public void StopInteractingWithUI()
+    {
+        GetComponent<PlayerMovement>().IsInteractingWithUI = false;
+    }
+    public bool isPlayerInteracting()
+    {
+        return GetComponent<PlayerMovement>().IsInteractingWithUI;
     }
 }
 public class PlayerSpawnArgs : EventArgs

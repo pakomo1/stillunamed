@@ -67,6 +67,11 @@ public class GameLobby : MonoBehaviour
     private void Update()
     {
         HandleHeartBeatTimer();
+        
+    }
+    //lists the lobbies periodically
+    public  void ListLobbiesPeriodically()
+    {
     }
     private async void HandleHeartBeatTimer()
     {
@@ -188,6 +193,7 @@ public class GameLobby : MonoBehaviour
             GameSceneMetadata.GithubRepoLink = currentRepository;
             GameSceneMetadata.GithubRepoPath = repoPath;
             GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
+         
             NetworkManager.Singleton.StartHost();
 
             OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;
@@ -261,7 +267,6 @@ public class GameLobby : MonoBehaviour
     {
         foreach (Lobby lobby in lobbies )
         {
-            print(lobby.Name);
             lobbyTemplate.GenerateLobbie(lobby);
         }
     }

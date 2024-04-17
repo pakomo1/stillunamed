@@ -14,19 +14,7 @@ public class GitRoomMultiplayer : NetworkBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         GameLobby.Instance.OnPlayerTriesToJoin += Instance_OnPlayerTriesToJoin;
-        NetworkManager.OnClientDisconnectCallback += NetworkManager_OnClientDisconnectCallback;
     }
-
-    private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
-    {
-        if (clientId == NetworkManager.Singleton.LocalClientId)
-        {
-            // If the connection fails, remove the player from the lobby
-            string playerId = AuthenticationService.Instance.PlayerId;
-            LobbyService.Instance.RemovePlayerAsync(GameLobby.Instance.joinedLobby.Id, playerId);
-        }
-    }
-
     private void Instance_OnPlayerTriesToJoin(object sender, LobbyJoinEventArgs e)
     {
         print(e.Username);
