@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using static UnityEngine.UIElements.UxmlAttributeDescription;
 using System.Globalization;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 public class GameLobby : MonoBehaviour
 {
@@ -234,12 +235,6 @@ public class GameLobby : MonoBehaviour
                 print("Sending invite");
                 await GitOperations.InviteUserToRepoAsync(username, repositoryLink);
 
-                // Wait for the user to accept the invitation.
-                while (!isCollaborator)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(10)); // Wait for 10 seconds before checking again.
-                    isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, repositoryLink);
-                }
             }
             else
             {
@@ -380,10 +375,28 @@ public class GameLobby : MonoBehaviour
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
             string repoLink = joinedLobby.Data["repoLink"].Value;
 
+            bool isCollaborator = false;
+            // Wait for the user to accept the invitation.
+            while (!isCollaborator)
+            {
+                try
+                {
+                    isCollaborator = await GitOperations.IsUserCollaboratorAsync(user.Login, repoLink);
+                    if (isCollaborator)
+                    {
+                        break; // Exit the loop if the user is a collaborator.
+                    }
+                }
+                catch (Octokit.NotFoundException)
+                {
+                    // If the user does not have access to the repository, wait for 10 seconds and then try again.
+                    await Task.Delay(TimeSpan.FromSeconds(10));
+                }
+
+                OnPlayerTriesToJoin?.Invoke(this, args);
+            }
             var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);
             options.Player = GetPlayer(user.Login, isOwner);
-
-            OnPlayerTriesToJoin?.Invoke(this, args);
 
             await dbManager.UpdateRecentLobbies(user.Login, joinedLobby.Id);
             await gameRelay.JoinRelay(relayCode);

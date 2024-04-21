@@ -25,12 +25,19 @@ public class GitOperations : MonoBehaviour
     // Check if the user is a collaborator of the repository
     public static async Task<bool> IsUserCollaboratorAsync(string username, string repoLink)
     {
-        var url = new Uri(repoLink);
-        var repoName = url.Segments.Last();
-        var ownerName = url.Segments[url.Segments.Length - 2].Trim('/');
+        try
+        {
+            var url = new Uri(repoLink);
+            var repoName = url.Segments.Last();
+            var ownerName = url.Segments[url.Segments.Length - 2].Trim('/');
 
-        var collaborators = await GitHubClientProvider.client.Repository.Collaborator.GetAll(ownerName, repoName);
-        return collaborators.Any(c => c.Login == username);
+            var collaborators = await GitHubClientProvider.client.Repository.Collaborator.GetAll(ownerName, repoName);
+            return collaborators.Any(c => c.Login == username);
+        }catch(Exception ex)
+        {
+            throw ex;
+        }
+        
     }
     //invites a user to a repository
     public static async Task InviteUserToRepoAsync(string username, string repoLink)
