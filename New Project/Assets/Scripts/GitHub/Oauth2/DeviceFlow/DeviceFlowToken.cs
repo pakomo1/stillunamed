@@ -60,12 +60,9 @@ public class DeviceFlowToken : MonoBehaviour
 
         if (response != null)
         {
-            // Display the user code and verification URL to the user
-            Debug.Log("Please go to " + response.VerificationUri + " and enter this code: " + response.UserCode);
             AuthenticateInfoUI.SetActive(true);
             url.text = response.VerificationUri;
             usercode.text = response.UserCode;
-
 
             // Store the device code for later
             deviceCode = response.DeviceCode;

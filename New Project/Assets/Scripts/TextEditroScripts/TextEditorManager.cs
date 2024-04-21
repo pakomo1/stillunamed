@@ -82,7 +82,6 @@ public class TextEditorManager : MonoBehaviour
     }
     public void LoadEditorData(TextEditorData data)
     {
-
         textEditorHolder.SetActive(true);
         if(data.WorkingDirectory.Value == "")
         {
@@ -94,7 +93,6 @@ public class TextEditorManager : MonoBehaviour
         textEditorData.OnSelectedFileChanged += OnFileSelectedHandlerAsync;
 
         textEditor.SetText(text);
-        print("The directory when loading"+textEditorData.WorkingDirectory.Value);
         directoryManager.GenerateForDirectoy(fileManagerContent.transform, textEditorData.WorkingDirectory.Value, textEditorData);
         OnTextEditorLoaded?.Invoke(this, EventArgs.Empty);
 

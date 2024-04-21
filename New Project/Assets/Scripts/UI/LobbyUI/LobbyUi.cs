@@ -85,7 +85,7 @@ public class LobbyUi : MonoBehaviour
             string username = GitHubClientProvider.client.User.Current().Result.Login;
             var recentLobbies = await dbManager.GetRecentLobbies(username);
 
-            List<   Lobby> recentLobbiesList = new List<Lobby>();
+            List<Lobby> recentLobbiesList = new List<Lobby>();
             for (int i = 0; i < recentLobbies.Count; i++)
             {
                 try

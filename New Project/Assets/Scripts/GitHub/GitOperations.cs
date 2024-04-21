@@ -231,11 +231,12 @@ public class GitOperations : MonoBehaviour
     {
         using (var repo = new LibGit2Sharp.Repository(repoPath))
         {
-            // should use the "origin/" here because we are comparing the local branch with the remote branch
-            var branch = repo.Branches[$"origin/{currentBranchName}"];
-
-            // Get the changes between the current branch and its tracked branch
-            var changes = repo.Diff.Compare<TreeChanges>(branch.Tip.Tree, DiffTargets.Index | DiffTargets.WorkingDirectory);
+            // Get the local branch
+            var localBranch = repo.Branches[currentBranchName];
+            // Get the remote branch
+            var remoteBranch = repo.Branches[$"origin/{currentBranchName}"];
+            // Get the changes between the local branch and the remote branch
+            var changes = repo.Diff.Compare<TreeChanges>(localBranch.Tip.Tree, remoteBranch.Tip.Tree);
 
             return changes.ToList();
         }

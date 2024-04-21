@@ -23,6 +23,7 @@ using System.Globalization;
 public class GameLobby : MonoBehaviour
 {
     private string relayJoinCode = "relayCode";
+    private string joinLobbyCode = "joinLobbyCode";
 
     public Lobby joinedLobby;
     public Lobby hostLobby;
@@ -40,7 +41,7 @@ public class GameLobby : MonoBehaviour
 
     public event EventHandler<LobbyJoinEventArgs> OnLobbyJoinStarted;
     public event EventHandler OnLobbyJoinFailed;
-    
+
     //git events
     public event EventHandler OnForkStarted;
     public event EventHandler<GitOperationsEventArgs> OnForkFailed;
@@ -67,10 +68,10 @@ public class GameLobby : MonoBehaviour
     private void Update()
     {
         HandleHeartBeatTimer();
-        
+
     }
     //lists the lobbies periodically
-    public  void ListLobbiesPeriodically()
+    public void ListLobbiesPeriodically()
     {
     }
     private async void HandleHeartBeatTimer()
@@ -117,7 +118,7 @@ public class GameLobby : MonoBehaviour
         OnCreateLobbyStarted?.Invoke(this, EventArgs.Empty);
         try
         {
-            
+
             var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(githubRepository);
             var user = await GitHubClientProvider.client.User.Current();
             bool isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, githubRepository);
@@ -125,28 +126,26 @@ public class GameLobby : MonoBehaviour
             // check if the repository should be forked
             if (shouldFork)
             {
-
                 OnForkStarted?.Invoke(this, EventArgs.Empty);
                 try
                 {
-                    //forke that shit
                     var forkedRepo = await Forks.ForkRepository(owner, repoName);
                     //set the current repository string to the forked repository link
                     currentRepository = forkedRepo.HtmlUrl;
 
                     OnForkSuccess?.Invoke(this, EventArgs.Empty);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     OnForkFailed?.Invoke(this, new GitOperationsEventArgs(ex.Message));
                     return;
                 }
-              
+
             }
-            string cloneDirectory =await SelectFolder();
+            string cloneDirectory = await SelectFolder();
             string repoPath = @$"{cloneDirectory}\{repoName}";
             //check if the repsitory exits
-            if (LibGit2Sharp.Repository.IsValid(repoPath)) 
+            if (LibGit2Sharp.Repository.IsValid(repoPath))
             {
                 print("This repo exists");
             }
@@ -158,12 +157,13 @@ public class GameLobby : MonoBehaviour
                 {
                     // The repository has not been cloned yet.
                     await GitOperations.CloneRepositoryAsync(currentRepository, repoPath);
-                }catch(Exception er)
+                }
+                catch (Exception er)
                 {
                     OnCloneFailed.Invoke(this, new GitOperationsEventArgs(er.Message));
                     return;
                 }
-               
+
             }
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
             {
@@ -173,7 +173,7 @@ public class GameLobby : MonoBehaviour
             joinedLobby = lobby;
             hostLobby = lobby;
 
-            //lobby events
+            //lobby events. The lobby service is listening for these events
             var callbacks = new LobbyEventCallbacks();
             callbacks.PlayerJoined += (List<LobbyPlayerJoined> obj) => { Callbacks_PlayerJoined(obj, githubRepository); };
             await LobbyService.Instance.SubscribeToLobbyEventsAsync(lobby.Id, callbacks);
@@ -186,14 +186,15 @@ public class GameLobby : MonoBehaviour
                 Data = new Dictionary<string, DataObject>
                 {
                     { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) },
-                    { "repoLink", new DataObject(DataObject.VisibilityOptions.Member, currentRepository) } // Add this line
+                    { "repoLink", new DataObject(DataObject.VisibilityOptions.Member, currentRepository) }, // Add this line
+                    { joinLobbyCode, new DataObject(DataObject.VisibilityOptions.Member, lobby.LobbyCode) }
                 }
             });
-
+    
             GameSceneMetadata.GithubRepoLink = currentRepository;
             GameSceneMetadata.GithubRepoPath = repoPath;
             GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
-         
+
             NetworkManager.Singleton.StartHost();
 
             OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;
@@ -217,7 +218,7 @@ public class GameLobby : MonoBehaviour
         //prints the player id
         print(obj[0].Player.Id);
         Lobby lobby = await LobbyService.Instance.GetLobbyAsync(GameLobby.Instance.joinedLobby.Id);
-       
+
 
         // Retrieve the username from the player's data
         string username = obj[0].Player.Data["username"].Value;
@@ -265,7 +266,7 @@ public class GameLobby : MonoBehaviour
 
     public void ListLobbies(List<Lobby> lobbies)
     {
-        foreach (Lobby lobby in lobbies )
+        foreach (Lobby lobby in lobbies)
         {
             lobbyTemplate.GenerateLobbie(lobby);
         }
@@ -300,21 +301,18 @@ public class GameLobby : MonoBehaviour
         var agrs = new LobbyJoinEventArgs(user.Login);
         try
         {
-            JoinLobbyByIdOptions options = new JoinLobbyByIdOptions
-            {
-                Player = GetPlayer(user.Login, false)
-            };
+            JoinLobbyByIdOptions options = new JoinLobbyByIdOptions();
 
-            joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id,options);
+            joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id, options);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
-            string  repoLink = joinedLobby.Data["repoLink"].Value;
+            string repoLink = joinedLobby.Data["repoLink"].Value;
 
             var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);
             options.Player = GetPlayer(user.Login, isOwner);
 
             OnPlayerTriesToJoin?.Invoke(this, agrs);
 
-            await dbManager.UpdateRecentLobbies(user.Login,joinedLobby.Id);
+            await dbManager.UpdateRecentLobbies(user.Login, joinedLobby.Id);
             await gameRelay.JoinRelay(relayCode);
 
             string cloneDirectory = await SelectFolder();
@@ -335,7 +333,7 @@ public class GameLobby : MonoBehaviour
                     var remoteUrl = repo.Network.Remotes["origin"].Url;
                     if (remoteUrl != repoLink)
                     {
-                        throw new Exception("The repository at the path is not the expected repository.");
+                        throw new Exception("You should select a different path because there is already a repository here");
                     }
                 }
             }
@@ -351,7 +349,8 @@ public class GameLobby : MonoBehaviour
             OnLobbyJoinStarted?.Invoke(this, agrs);
             GitRoomMultiplayer.Instance.StartClient();
 
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             Debug.LogError(ex);
             LeaveLobby();
@@ -387,9 +386,10 @@ public class GameLobby : MonoBehaviour
     {
         try
         {
-             await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
+            await LobbyService.Instance.DeleteLobbyAsync(lobbyId);
             joinedLobby = null;
-        }catch (LobbyServiceException ex)
+        }
+        catch (LobbyServiceException ex)
         {
             print(ex.Message);
         }
@@ -412,7 +412,7 @@ public class GameLobby : MonoBehaviour
     }
     private Player GetPlayer(string username, bool isOwner)
     {
-       
+
         return new Player
         {
             Data = new Dictionary<string, PlayerDataObject>
@@ -441,7 +441,7 @@ public class GameLobby : MonoBehaviour
             });
             joinedLobby = hostLobby;
         }
-        catch(LobbyServiceException e)
+        catch (LobbyServiceException e)
         {
             Debug.LogError(e.Message);
         }

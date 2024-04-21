@@ -14,7 +14,6 @@ public class CreateLobbyUI : MonoBehaviour
     [SerializeField] private TMP_InputField lobbyName;
     [SerializeField] private TMP_InputField repoLink;
     [SerializeField] private TMP_InputField maxPlayerCount;
-    [SerializeField] private Toggle isPrivate;
 
     [SerializeField] private GameObject alertForkingUI;
     [SerializeField] private Button continueButton;
@@ -47,6 +46,7 @@ public class CreateLobbyUI : MonoBehaviour
             {
                 bool createFork = true;
                 bool isOwner = await CheckIfUserIsOwnerOfRepo(repoLink.text);
+                bool isPrivate = await CheckIfRepoIsPrivate(repoLink.text);
                 if (isOwner)
                 {
                    createFork = false;
@@ -60,12 +60,10 @@ public class CreateLobbyUI : MonoBehaviour
                         return;
                     }
                 }
-                gameLobby.CreateLobby(lobbyName.text, repoLink.text, isPrivate.isOn, int.Parse(maxPlayerCount.text), createFork);
+                gameLobby.CreateLobby(lobbyName.text, repoLink.text,isPrivate, int.Parse(maxPlayerCount.text), createFork);
                 lobbyName.text = "";
                 repoLink.text = "";
                 maxPlayerCount.text = "0";
-
-                Lobby joinedLobby = gameLobby.GetLobby();
 
                 Hide();
             }
@@ -112,7 +110,22 @@ public class CreateLobbyUI : MonoBehaviour
             return false;
         }
     }
-  
+    //checks if the repository is private
+    public async Task<bool> CheckIfRepoIsPrivate(string url)
+    {
+        try
+        {
+            var (owner, repoName) = GitHelperMethods.GetOwnerAndRepo(url);
+            var repository = await GitHubClientProvider.client.Repository.Get(owner, repoName);
+            return repository.Private;
+        }
+        catch (Exception ex)
+        {
+            //Display exception
+            print("Repository NotFound");
+            return false;
+        }
+    }
     public void Show(Repository repository =null)
     {
         if(repository != null)
