@@ -217,13 +217,14 @@ public class GameLobby : MonoBehaviour
     {
         //prints the player id
         print(obj[0].Player.Id);
-        Lobby lobby = await LobbyService.Instance.GetLobbyAsync(GameLobby.Instance.joinedLobby.Id);
+        Lobby lobby = await LobbyService.Instance.GetLobbyAsync(Instance.joinedLobby.Id);
 
 
         // Retrieve the username from the player's data
         string username = obj[0].Player.Data["username"].Value;
 
         var user = GitHubClientProvider.client.User.Current().Result;
+        //so this value will be null if there is no owner set
         var owner = joinedLobby.Players.FirstOrDefault(p => bool.Parse(p.Data["isOwner"].Value));
         if (owner != null)
         {
@@ -232,6 +233,13 @@ public class GameLobby : MonoBehaviour
             {
                 print("Sending invite");
                 await GitOperations.InviteUserToRepoAsync(username, repositoryLink);
+
+                // Wait for the user to accept the invitation.
+                while (!isCollaborator)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(10)); // Wait for 10 seconds before checking again.
+                    isCollaborator = await GitOperations.IsUserCollaboratorAsync(username, repositoryLink);
+                }
             }
             else
             {
@@ -302,6 +310,7 @@ public class GameLobby : MonoBehaviour
         try
         {
             JoinLobbyByIdOptions options = new JoinLobbyByIdOptions();
+            options.Player = GetPlayer(user.Login, false);
 
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id, options);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
@@ -357,7 +366,70 @@ public class GameLobby : MonoBehaviour
             OnLobbyJoinFailed?.Invoke(this, EventArgs.Empty);
         }
     }
+    public async void JoinPrivateLobby(string code)
+    {
+        var user = await GitHubClientProvider.client.User.Current();
 
+        var args = new LobbyJoinEventArgs(user.Login);
+        try
+        {
+            JoinLobbyByCodeOptions options = new JoinLobbyByCodeOptions();
+            options.Player = GetPlayer(user.Login, false);
+
+            joinedLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(code, options);
+            string relayCode = joinedLobby.Data[relayJoinCode].Value;
+            string repoLink = joinedLobby.Data["repoLink"].Value;
+
+            var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);
+            options.Player = GetPlayer(user.Login, isOwner);
+
+            OnPlayerTriesToJoin?.Invoke(this, args);
+
+            await dbManager.UpdateRecentLobbies(user.Login, joinedLobby.Id);
+            await gameRelay.JoinRelay(relayCode);
+
+            string cloneDirectory = await SelectFolder();
+            //check the if the user has selected a cloneDirecotry
+            if (string.IsNullOrEmpty(cloneDirectory))
+            {
+                //leave the lobby
+                LeaveLobby();
+                throw new Exception("No directory selected");
+            }
+            string repoName = GitHelperMethods.GetOwnerAndRepo(repoLink).repoName;
+            string repoPath = @$"{cloneDirectory}\{repoName}";
+
+            if (LibGit2Sharp.Repository.IsValid(repoPath))
+            {
+                using (var repo = new LibGit2Sharp.Repository(repoPath))
+                {
+                    var remoteUrl = repo.Network.Remotes["origin"].Url;
+                    if (remoteUrl != repoLink)
+                    {
+                        throw new Exception("You should select a different path because there is already a repository here");
+                    }
+                }
+            }
+            else
+            {
+                await GitOperations.CloneRepositoryAsync(repoLink, repoPath);
+            }
+
+            GameSceneMetadata.GithubRepoLink = repoLink;
+            GameSceneMetadata.GithubRepoPath = repoPath;
+            GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
+
+            OnLobbyJoinStarted?.Invoke(this, args);
+            GitRoomMultiplayer.Instance.StartClient();
+
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError(ex);
+            LeaveLobby();
+            OnLobbyJoinFailed?.Invoke(this, EventArgs.Empty);
+        }
+    }
     public async Task<Lobby> GetLobbyById(string id)
     {
         try
