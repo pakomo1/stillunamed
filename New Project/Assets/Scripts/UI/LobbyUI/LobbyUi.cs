@@ -14,6 +14,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private GameLobby gameLobby;
     [SerializeField] private CreateLobbyUI createLobbyUI;
     [SerializeField] private DataBaseManager dbManager;
+    [SerializeField] private JoinLobbyByCodeUiManager joinLobbyByCodeUiManager;
 
     [SerializeField] private TextMeshProUGUI noLobbiesFound;
     [SerializeField] private TextMeshProUGUI explorerLable;
@@ -25,6 +26,7 @@ public class LobbyUi : MonoBehaviour
     [SerializeField] private Button createLobbyBtn;
     [SerializeField] private Button refreshButton;
     [SerializeField] private Button recentLobbiesButton;
+    [SerializeField] private Button joinLobbyByCodeBtn;
 
 
 
@@ -47,6 +49,10 @@ public class LobbyUi : MonoBehaviour
             Clear();
             gameLobby.GetAllPublicLobbies();
         });
+        joinLobbyByCodeBtn.onClick.AddListener(() =>
+        {
+            joinLobbyByCodeUiManager.Show();
+        }); 
 
         recentLobbiesButton.onClick.AddListener(onClickRecenLobbyButton);
     }
