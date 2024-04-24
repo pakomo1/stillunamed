@@ -105,7 +105,6 @@ public class LobbyUi : MonoBehaviour
                     i--;
                 }
             }
-
             gameLobby.ListLobbies(recentLobbiesList);
 
             if (recentLobbies.Count == 0)

@@ -7,19 +7,11 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.Services.Relay.Models;
 using System;
-using UnityEditor;
-using System.IO;
-using LibGit2Sharp;
-using SFB;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.Services.Relay;
-using Octokit;
-using Newtonsoft.Json;
 using System.Linq;
-using static UnityEngine.UIElements.UxmlAttributeDescription;
-using System.Globalization;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using Unity.Services.Vivox;
+
 
 public class GameLobby : MonoBehaviour
 {
@@ -35,7 +27,6 @@ public class GameLobby : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI noLobbiesFound;
     [SerializeField] private TextMeshProUGUI explorerLable;
-
     //lobby events
     public event EventHandler OnCreateLobbyStarted;
     public event EventHandler OnCreateLobbyFailed;
@@ -105,12 +96,14 @@ public class GameLobby : MonoBehaviour
             options.SetProfile(UnityEngine.Random.Range(0, 1000).ToString());
 
             await UnityServices.InitializeAsync(options);
+            await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            await VivoxService.Instance.InitializeAsync();
+
             AuthenticationService.Instance.SignedIn += () =>
             {
                 print("Singed in" + AuthenticationService.Instance.PlayerId);
             };
 
-            await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }
 
     }
@@ -164,7 +157,6 @@ public class GameLobby : MonoBehaviour
                     OnCloneFailed.Invoke(this, new GitOperationsEventArgs(er.Message));
                     return;
                 }
-
             }
             Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyname, maxPlayers, new CreateLobbyOptions()
             {
@@ -174,6 +166,9 @@ public class GameLobby : MonoBehaviour
             joinedLobby = lobby;
             hostLobby = lobby;
 
+            VivoxManager.Instance.LoginToVivoxAsync(user.Login);
+            
+
             //lobby events. The lobby service is listening for these events
             var callbacks = new LobbyEventCallbacks();
             callbacks.PlayerJoined += (List<LobbyPlayerJoined> obj) => { Callbacks_PlayerJoined(obj, githubRepository); };
@@ -181,6 +176,10 @@ public class GameLobby : MonoBehaviour
 
             Allocation allocation = await gameRelay.CreateRelay(lobby.MaxPlayers - 1);
             string joinCode = await gameRelay.GetRelayJoinCode(allocation);
+
+
+            string channelName = "channel-" + joinedLobby.Id;
+            VivoxManager.Instance.JoinhannelAsync(channelName);
 
             await LobbyService.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions
             {
@@ -197,8 +196,6 @@ public class GameLobby : MonoBehaviour
             GameSceneMetadata.CurrentBranch = GitOperations.GetCurrentBranch(repoPath);
 
             NetworkManager.Singleton.StartHost();
-
-            OnLobbyJoinStarted += GameLobby_OnLobbyJoinStarted;
 
             //here you should make a couple of scenece with different room sizes
             Loader.LoadNetwrok(Loader.Scene.GameScene);
@@ -262,11 +259,6 @@ public class GameLobby : MonoBehaviour
         return tcs.Task;
     }
 
-    private void GameLobby_OnLobbyJoinStarted(object sender, LobbyJoinEventArgs args)
-    {
-        print($"The player: {args.Username}");
-    }
-
     public void ListLobbies(List<Lobby> lobbies)
     {
         foreach (Lobby lobby in lobbies)
@@ -310,6 +302,9 @@ public class GameLobby : MonoBehaviour
             joinedLobby = await Lobbies.Instance.JoinLobbyByIdAsync(id, options);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
             string repoLink = joinedLobby.Data["repoLink"].Value;
+            
+            //Login to the vivox
+            VivoxManager.Instance.LoginToVivoxAsync(user.Login);
 
             var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);
             options.Player = GetPlayer(user.Login, isOwner);
@@ -318,6 +313,10 @@ public class GameLobby : MonoBehaviour
 
             await dbManager.UpdateRecentLobbies(user.Login, joinedLobby.Id);
             await gameRelay.JoinRelay(relayCode);
+
+            //join the channel
+            string channelName = "channel-" + joinedLobby.Id;
+            VivoxManager.Instance.JoinhannelAsync(channelName);
 
             string cloneDirectory = await SelectFolder();
             //check the if the user has selected a cloneDirecotry
@@ -374,6 +373,7 @@ public class GameLobby : MonoBehaviour
             joinedLobby = await Lobbies.Instance.JoinLobbyByCodeAsync(code, options);
             string relayCode = joinedLobby.Data[relayJoinCode].Value;
             string repoLink = joinedLobby.Data["repoLink"].Value;
+            string channelName = "channel-" + joinedLobby.Id;
 
             bool isCollaborator = false;
             // Wait for the user to accept the invitation.

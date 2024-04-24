@@ -20,7 +20,6 @@ public class createOrUploadUIManager : MonoBehaviour
     {
         createFileButton.onClick.AddListener(() =>
         {
-            
             singleActiveChild.ActivateChild(2);
             fileMakeUpManager.Show(repositoryContentNavigation.currentRepository, pathToFile.text);
         });

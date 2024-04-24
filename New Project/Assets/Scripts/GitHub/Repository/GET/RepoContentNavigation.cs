@@ -58,9 +58,11 @@ public class RepoContentNavigation : MonoBehaviour
         try
         {
             OnRepoContentLoadingStarted?.Invoke();
+            //gets the repository
             var repository = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
             try
             {
+                //gets the repository contents
                 repositoryContents = await GetRepositoryFiles.GetRepoFiles(repoOwner, repoName, path, branch);
             }
             catch (NotFoundException)
@@ -68,6 +70,7 @@ public class RepoContentNavigation : MonoBehaviour
                 branch = "master";
                 repositoryContents = await GetRepositoryFiles.GetRepoFiles(repoOwner, repoName, path, branch);
             }
+            //gets the branches of the repository
             var repoBranches = await GetRepoBranches.GetBranches(repoOwner, repoName);
 
             currentRepository = repository;
