@@ -167,7 +167,6 @@ public class GameLobby : MonoBehaviour
             hostLobby = lobby;
 
             VivoxManager.Instance.LoginToVivoxAsync(user.Login);
-            
 
             //lobby events. The lobby service is listening for these events
             var callbacks = new LobbyEventCallbacks();
@@ -176,7 +175,6 @@ public class GameLobby : MonoBehaviour
 
             Allocation allocation = await gameRelay.CreateRelay(lobby.MaxPlayers - 1);
             string joinCode = await gameRelay.GetRelayJoinCode(allocation);
-
 
             string channelName = "channel-" + joinedLobby.Id;
             VivoxManager.Instance.JoinhannelAsync(channelName);
@@ -392,7 +390,6 @@ public class GameLobby : MonoBehaviour
                     // If the user does not have access to the repository, wait for 10 seconds and then try again.
                     await Task.Delay(TimeSpan.FromSeconds(10));
                 }
-
                 OnPlayerTriesToJoin?.Invoke(this, args);
             }
             var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);

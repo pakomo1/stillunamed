@@ -63,7 +63,7 @@ public class OfLinePlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnMove(InputValue _value)
+    public void OnMove(InputValue _value)
     {
         movementDirection = _value.Get<Vector2>() * moveSpeed;
     }

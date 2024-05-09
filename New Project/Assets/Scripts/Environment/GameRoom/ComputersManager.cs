@@ -21,11 +21,6 @@ public class ComputersManager : NetworkBehaviour
 
     private void InitializeComputers(int count)
     {
-        float computerWidth = computerPrefab.GetComponent<Renderer>().bounds.size.x; // Width of a computer
-        float roomWidth = room.GetComponent<BoxCollider2D>().bounds.size.x; // Width of the room
-        float totalComputersWidth = count * computerWidth; // Total width of all computers
-        float space = ((roomWidth - totalComputersWidth) / (count + 1)) * 0.01f; // Space between each computer
-
         for (int i = 0; i < count; i++)
         {
             GameObject computer = Instantiate(computerPrefab);
@@ -54,6 +49,6 @@ public class ComputersManager : NetworkBehaviour
         // Wait for the next frame to ensure that TextEditorManager.Instance has been initialized
         yield return null;
 
-        InitializeComputers(count);
-    }
+            InitializeComputers(count);
+        }
 }

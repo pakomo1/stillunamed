@@ -15,7 +15,6 @@ public class PushChangesUI : MonoBehaviour
     [SerializeField]private SingleActiveChild singleActiveChild;
     private string branch;
     private int commitsCount;
-    // Start is called before the first frame update
     void Start()
     {
         branch = GameSceneMetadata.CurrentBranch;
@@ -34,7 +33,6 @@ public class PushChangesUI : MonoBehaviour
 
     private void GitManager_onChangesCommitted(object sender, EventArgs e)
     {
-        //should add the proper branch
         commitsCount = GitOperations.CountUnpushedCommits(GameSceneMetadata.GithubRepoPath,branch);
         if (commitsCount > 0)
         {
@@ -59,12 +57,5 @@ public class PushChangesUI : MonoBehaviour
         }
      
     }   
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    //clears the content of the changed files
  
 }

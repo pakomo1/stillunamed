@@ -31,8 +31,7 @@ public class GitManager : MonoBehaviour
         GitOperations.OnConflictsFound += GitOperations_OnConflictsFound;
         if (GitOperations.HasUnresolvedConflicts(GameSceneMetadata.GithubRepoPath))
         {
-            List<string> conflictedFiles = GitOperations.GetConflictedFiles(GameSceneMetadata.GithubRepoPath);
-            conflictedFilesUI.DisplayConflictedFiles(conflictedFiles);
+            GitOperations_OnConflictsFound();
         }
 
     }
@@ -59,7 +58,6 @@ public class GitManager : MonoBehaviour
     void Update()
     {
         conflictButton.gameObject.SetActive(GitOperations.HasUnresolvedConflicts(GameSceneMetadata.GithubRepoPath));
-       
     }
 
     public void DisplayChangedFiles()
@@ -215,7 +213,7 @@ public class GitManager : MonoBehaviour
             }
 
             // Wait for a certain amount of time before checking again
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(10);
         }
     }
 }

@@ -118,8 +118,8 @@ public class PlayerManager : NetworkBehaviour
         NetworkObject networkObjectEditor = Editor.GetComponent<NetworkObject>();
       
         networkObjectEditor.Spawn();
-
         Editor.transform.SetParent(computer.transform);
+
         var thiseditorData = Editor.GetComponent<TextEditorData>();
         thiseditorData.Id = computerId;
         Editor.SetActive(false);

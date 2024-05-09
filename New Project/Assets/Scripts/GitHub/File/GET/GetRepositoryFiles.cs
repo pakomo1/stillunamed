@@ -16,9 +16,18 @@ public class GetRepositoryFiles : MonoBehaviour
     [SerializeField] private GameObject repoPanelContent;
     void Start()
     {
-        repoPanelContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
+        StartCoroutine(WaitAndInvoke());
     }
 
+
+    private IEnumerator WaitAndInvoke()
+    {
+        // Wait for one frame
+        yield return null;
+
+        // Now invoke the button click event
+        repoPanelContent.transform.GetChild(0).GetComponent<Button>().onClick.Invoke();
+    }
     public static async Task<IReadOnlyCollection<RepositoryContent>> GetRepoFiles( string owner, string repo, string path, string branch = "main")
     {
         var contents =  await GitHubClientProvider.client.Repository.Content.GetAllContentsByRef(owner, repo, path, branch);

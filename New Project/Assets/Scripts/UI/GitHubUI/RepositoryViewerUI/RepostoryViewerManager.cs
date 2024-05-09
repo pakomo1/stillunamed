@@ -15,11 +15,13 @@ public class RepostoryViewerManager : MonoBehaviour
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
     [SerializeField] private FilesContentNavigation filesContentNavigation;
     [SerializeField] private SingleActiveChild singleActiveChild;
+    [SerializeField] private IssueUIManager issueUIManager;
     public string currentBranch = "main";
 
     [SerializeField] private Button codeButton;
     [SerializeField] private Button issuesButton;
     [SerializeField] private Button CommitsButton;
+    [SerializeField] private Button showViewerUI;
 
     [SerializeField] private CommitButtonTemplate commitButtonTemplate;
 
@@ -45,7 +47,13 @@ public class RepostoryViewerManager : MonoBehaviour
 
         issuesButton.onClick.AddListener(() =>
         {
-
+            //craets an issue request
+            RepositoryIssueRequest issueRequest = new RepositoryIssueRequest()
+            {
+                Filter = IssueFilter.All
+            };
+            singleActiveChild.ActivateOneChild(2);
+            issueUIManager.Generate(issueRequest);
         });
 
         CommitsButton.onClick.AddListener(() =>
@@ -55,7 +63,14 @@ public class RepostoryViewerManager : MonoBehaviour
         });
         GameSceneMetadata.OnBranchChanged += GameSceneMetadata_OnBranchChanged; 
     }
-
+    private void OnEnable()
+    {
+        PlayerManager.LocalPlayer.StartInteractingWithUI();
+    }
+    private void OnDisable()
+    {
+        PlayerManager.LocalPlayer.StopInteractingWithUI();
+    }
     private void GameSceneMetadata_OnBranchChanged()
     {
         print(GameSceneMetadata.CurrentBranch);
@@ -79,6 +94,10 @@ public class RepostoryViewerManager : MonoBehaviour
             repoOwenerProfilePicture.sprite = sprite;
         }
     }
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }   
     private async void GenerateRepoFiles(string owner, string repoName)
     {
         var contents = await GitHubClientProvider.client.Repository.Content.GetAllContents(owner, repoName);

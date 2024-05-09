@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 using Octokit;
-using System;
-using UnityEditor;
-
+using Application = UnityEngine.Application;
 public class ValidAccessToken : MonoBehaviour
 {
     [SerializeField] private OpenServer openServer;
@@ -17,6 +15,7 @@ public class ValidAccessToken : MonoBehaviour
 
     private void Start()
     {
+        print(Application.persistentDataPath);
         ValidateToken();
     }
 

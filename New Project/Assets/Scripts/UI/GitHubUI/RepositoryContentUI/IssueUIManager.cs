@@ -36,7 +36,7 @@ public class IssueUIManager : MonoBehaviour
                     Filter = currentFilter
                 };
                 print(currentFilter);
-                Show(issueRequest);
+                Generate(issueRequest);
             });
         }
     }
@@ -47,16 +47,11 @@ public class IssueUIManager : MonoBehaviour
 
     }
 
-    public async void Show(RepositoryIssueRequest issueRequest)
+    public async void Generate(RepositoryIssueRequest issueRequest)
     {
-
         (string ownerName,string repoName) = GitHelperMethods.GetOwnerAndRepo(GameSceneMetadata.GithubRepoLink);
-        gameObject.SetActive(true);
-
         await issuesNetworkManager.GetIssuesForRepoAsync(ownerName, repoName, issueRequest);
-
         issueTemplate.GenerateIssues(issuesNetworkManager.issues);
-     
     }
     public void Hide()
     {

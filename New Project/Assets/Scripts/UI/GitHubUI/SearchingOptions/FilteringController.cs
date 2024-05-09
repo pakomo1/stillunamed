@@ -11,6 +11,7 @@ using System;
 public class FilteringController : MonoBehaviour
 {
     [SerializeField] private ValidAccessToken validAccessToken;
+    [SerializeField] private GameObject BeforeAuthUi;
     [SerializeField] private GameObject contentHolder;  
     [SerializeField] private GameObject searchBar;
     [SerializeField] private TextMeshProUGUI availabilityButton;
@@ -119,6 +120,10 @@ public class FilteringController : MonoBehaviour
 
     public void Refresh()
     {
+        if (BeforeAuthUi.activeSelf)
+        {
+            BeforeAuthUi.SetActive(false);
+        }
         GetContent();
         foreach (GameObject item in elements)
         {

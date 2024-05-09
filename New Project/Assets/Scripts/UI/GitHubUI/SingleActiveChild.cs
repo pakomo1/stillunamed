@@ -10,7 +10,7 @@ public class SingleActiveChild : MonoBehaviour
     [SerializeField]private SideBarManagerUI sideBarManagerUI;
 
 
-    void Start()
+    void Awake()
     {
         // Get all child GameObjects
         children = new GameObject[transform.childCount];

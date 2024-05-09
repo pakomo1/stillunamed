@@ -18,10 +18,12 @@ public class RepoContentNavigation : MonoBehaviour
     [SerializeField] private GameObject createOrUploadUi;
     [SerializeField] private GameObject branchContent;
     [SerializeField] private GameObject loadingContentScreen;
+    [SerializeField] private GameObject githubMainPanel;
     [SerializeField] private Image repoOwenerProfilePicture;
 
     [SerializeField] private Button addfileButton;
     [SerializeField] private Button branchButtonUI;
+    [SerializeField] private Button createLobbyBtn;
     public Repository currentRepository;
 
     [SerializeField] private ValidAccessToken validAccessToken;
@@ -29,15 +31,23 @@ public class RepoContentNavigation : MonoBehaviour
     [SerializeField] private branchesTemplate branchesTemplate;
     [SerializeField] private SingleActiveChild singleActiveChild;
     [SerializeField] private FilesContentNavigation filesContentNavigation;
+    [SerializeField] private LobbyUi lobbyUi;
+    [SerializeField] private CreateLobbyUI createLobbyUI;
     private IReadOnlyCollection<RepositoryContent> repositoryContents;
     private event Action OnRepoContentLoadingStarted;
     private event Action OnRepoContentLoaded;
+
+    private Repository selectedRepo;
     private void Awake()
     {
         addfileButton.onClick.AddListener(() =>
         {
             createOrUploadUi.SetActive(!createOrUploadUi.activeSelf);
         });
+        createLobbyBtn.onClick.AddListener(() =>
+        {
+            createLobbyOnClickHandler();
+        }); 
         OnRepoContentLoadingStarted += RepoContentNavigation_OnRepoContentLoadingStarted;
         OnRepoContentLoaded += RepoContentNavigation_OnRepoContentLoaded;
     }
@@ -60,6 +70,7 @@ public class RepoContentNavigation : MonoBehaviour
             OnRepoContentLoadingStarted?.Invoke();
             //gets the repository
             var repository = await GitHubClientProvider.client.Repository.Get(repoOwner, repoName);
+            selectedRepo = repository;
             try
             {
                 //gets the repository contents
@@ -131,5 +142,13 @@ public class RepoContentNavigation : MonoBehaviour
             // Assign the Sprite to the Image component
             repoOwenerProfilePicture.sprite = sprite;
         }
+    }
+    public void createLobbyOnClickHandler()
+    {
+        print("The button has been pressed");
+        githubMainPanel.SetActive(false);
+
+        lobbyUi.Show();
+        createLobbyUI.Show(selectedRepo);
     }
 }
