@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
@@ -17,8 +15,12 @@ public class lobbyTemplate : MonoBehaviour
         GameObject lobbyGameObject = Instantiate(buttonTemplate, transform);
         lobbyGameObject.SetActive(true);
 
+        string repoLink = lobby.Data["repoLink"].Value;
+
         lobbyGameObject.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = lobby.Name;
         lobbyGameObject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = joinedPlyersCountAndMaxPlayers;
+        lobbyGameObject.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = repoLink;
+
 
         Button lobbuButton = lobbyGameObject.GetComponent<Button>();
         lobbuButton.onClick.AddListener(()=> { OnClickLobbyButton(lobby); });

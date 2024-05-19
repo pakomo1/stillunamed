@@ -1,15 +1,14 @@
-using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using TMPro;
 using UnityEngine;
 using Octokit;
 
 public class FilesContentNavigation : MonoBehaviour
 {
     [SerializeField] private RepoFilesTemplate repoFilesTemplate;
+    [SerializeField] private SingleActiveChild singleActiveChild;
+    [SerializeField] private InGameTextEditor.TextEditor textEditor;
+
     public List<string> Breadcrumb { get; private set; } = new List<string>(); // The breadcrumb list is now public
 
     public async void ShowFileContent(RepositoryContent fileOrDir, Repository repository, string currentbranch)
@@ -27,13 +26,20 @@ public class FilesContentNavigation : MonoBehaviour
             }
             else if (fileOrDir.Type == "file")
             {
-                string fileName = Path.GetFileName(fileOrDir.Path);
-                print(fileName);
+                var client = GitHubClientProvider.client;
+                var fileContent = await client.Repository.Content.GetRawContent(repository.Owner.Login, repository.Name, fileOrDir.Path);
+
+                //convert the filecontent to string
+                string fileContentString = System.Text.Encoding.UTF8.GetString(fileContent);
+                textEditor.SetText(fileContentString);
+                textEditor.disableInput = true;
+
+                singleActiveChild.ActivateChild(4);
             }
         }
         catch (Exception ex)
         {
-            print(ex.Message);
+            print(ex);
         }
     }
 

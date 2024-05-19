@@ -20,10 +20,11 @@ public class PlayerMovement : NetworkBehaviour
     //Animation States
     private const string WALKFRONT = "WalkFront";
     private const string WALKBACK = "WalkBack";
-    private const string WALKSIDE = "WalkSide";
-    
+    private const string WALKRIGHT = "RightWalk";
+    private const string WALKLEFT = "LeftWalk";
+
     private int idleAnimStateNum;
-    private string[] idleAnimStates = new string[3] { "idleFront", "IdleBack", "IdleSide" };
+    private string[] idleAnimStates = new string[3] { "idleFront", "idleLeft", "idleRight" };
 
     public bool IsInteractingWithUI { get; set; }
     private void Awake()
@@ -67,10 +68,10 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         //Change the rotation of the Player
-        if (movementDirection.x != 0)
+       /* if (movementDirection.x != 0)
         {
             transform.localScale = new Vector3(Mathf.Clamp(movementDirection.x, -1, 1), 1, 1);
-        }
+        }*/
 
         //Change the Animation states depending on the player input
         if (movementDirection.x == 0 && movementDirection.y == 0)
@@ -80,16 +81,21 @@ public class PlayerMovement : NetworkBehaviour
         else if (movementDirection.y > 0)
         {
             animCtrl.ChangeAnimationState(WALKBACK);
-            idleAnimStateNum = 1;
+            idleAnimStateNum = 0;
         }
         else if (movementDirection.y < 0)
         {
             animCtrl.ChangeAnimationState(WALKFRONT);
             idleAnimStateNum = 0;
         }
-        else if (movementDirection.x != 0)
+        else if (movementDirection.x < 0)
         {
-            animCtrl.ChangeAnimationState(WALKSIDE);
+            animCtrl.ChangeAnimationState(WALKLEFT);
+            idleAnimStateNum = 1;
+        }
+        else if (movementDirection.x > 0)
+        {
+            animCtrl.ChangeAnimationState(WALKRIGHT);
             idleAnimStateNum = 2;
         }
     }

@@ -29,6 +29,8 @@ public class RepoFilesTemplate : MonoBehaviour
             button.name = "..";
             filename.text = "..";
             button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.NavigateUp(repository, currentbranch); });
+            //removes the image of the button 
+            button.transform.GetChild(1).gameObject.SetActive(false);
             button.SetActive(true);
         }
 
@@ -46,11 +48,6 @@ public class RepoFilesTemplate : MonoBehaviour
             }
             else if(item.Type == "file")
             {
-                button.GetComponent<Button>().onClick.AddListener(() => 
-                {
-                    ActivateObjectInContent.OnClickSwitchToThisUI(repositoryContentUI, FileContentCode);
-                });
-
                 image.sprite = file;    
             }
             button.GetComponent<Button>().onClick.AddListener(() => { filesContentNavigation.ShowFileContent(item, repository, currentbranch); });

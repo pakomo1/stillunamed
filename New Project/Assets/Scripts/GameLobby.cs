@@ -21,6 +21,7 @@ public class GameLobby : MonoBehaviour
     public Lobby joinedLobby;
     public Lobby hostLobby;
     private float heartBeatTimer;
+    [SerializeField] private GameObject acceptInvitationUI;
     [SerializeField] private lobbyTemplate lobbyTemplate;
     [SerializeField] private GameRelay gameRelay;
     [SerializeField] private DataBaseManager dbManager;
@@ -137,6 +138,10 @@ public class GameLobby : MonoBehaviour
 
             }
             string cloneDirectory = await SelectFolder();
+            if (string.IsNullOrEmpty(cloneDirectory))
+            {
+                throw new LobbyServiceException(LobbyExceptionReason.InvalidArgument,"No directory selected");
+            }
             string repoPath = @$"{cloneDirectory}\{repoName}";
             //check if the repsitory exits
             if (LibGit2Sharp.Repository.IsValid(repoPath))
@@ -184,7 +189,7 @@ public class GameLobby : MonoBehaviour
                 Data = new Dictionary<string, DataObject>
                 {
                     { relayJoinCode, new DataObject(DataObject.VisibilityOptions.Member, joinCode) },
-                    { "repoLink", new DataObject(DataObject.VisibilityOptions.Member, currentRepository) }, // Add this line
+                    { "repoLink", new DataObject(DataObject.VisibilityOptions.Public, currentRepository) },
                     { joinLobbyCode, new DataObject(DataObject.VisibilityOptions.Member, lobby.LobbyCode) }
                 }
             });
@@ -373,25 +378,34 @@ public class GameLobby : MonoBehaviour
             string repoLink = joinedLobby.Data["repoLink"].Value;
             string channelName = "channel-" + joinedLobby.Id;
 
-            bool isCollaborator = false;
+            acceptInvitationUI.SetActive(true);
             // Wait for the user to accept the invitation.
-            while (!isCollaborator)
+            await Task.Run(async () =>
             {
-                try
+                bool isCollaborator = false;
+                while (!isCollaborator)
                 {
-                    isCollaborator = await GitOperations.IsUserCollaboratorAsync(user.Login, repoLink);
-                    if (isCollaborator)
+                    try
                     {
-                        break; // Exit the loop if the user is a collaborator.
+                        isCollaborator = await GitOperations.IsUserCollaboratorAsync(user.Login, repoLink);
+                        if (isCollaborator)
+                        {
+                            MainThreadDispatcher.Enqueue(() =>
+                            {
+                                // Execute any Unity API calls or updates here, on the main thread
+                                // For example, updating UI elements or activating game objects
+                                acceptInvitationUI.SetActive(false);
+                            });
+                            break; // Exit the loop if the user is a collaborator.
+                        }
+                    }
+                    catch (Octokit.NotFoundException)
+                    {
+                        // If the user does not have access to the repository, wait for 10 seconds and then try again.
+                        await Task.Delay(TimeSpan.FromSeconds(10));
                     }
                 }
-                catch (Octokit.NotFoundException)
-                {
-                    // If the user does not have access to the repository, wait for 10 seconds and then try again.
-                    await Task.Delay(TimeSpan.FromSeconds(10));
-                }
-                OnPlayerTriesToJoin?.Invoke(this, args);
-            }
+            });
             var isOwner = await GitOperations.IsUserRepoOwnerAsync(user.Login, repoLink);
             options.Player = GetPlayer(user.Login, isOwner);
 
