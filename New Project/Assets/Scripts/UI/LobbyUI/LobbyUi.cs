@@ -47,6 +47,7 @@ public class LobbyUi : MonoBehaviour
         refreshButton.onClick.AddListener(() =>
         {
             Clear();
+            noLobbiesFound.gameObject.SetActive(false);
             gameLobby.GetAllPublicLobbies();
         });
         joinLobbyByCodeBtn.onClick.AddListener(() =>
