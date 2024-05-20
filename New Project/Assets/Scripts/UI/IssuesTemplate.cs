@@ -11,7 +11,7 @@ public class IssuesTemplate : MonoBehaviour
     [SerializeField] private Button issueButtonTemplate;
     [SerializeField] private Sprite openIssueImage;
     [SerializeField] private Sprite closeIssueImage;
-    public void GenerateIssues(NetworkList<SerializedIssues> issues)
+    public void GenerateIssues(IReadOnlyCollection<Issue> issues)
     {
         ClearIssues();
         foreach (var issue in issues)

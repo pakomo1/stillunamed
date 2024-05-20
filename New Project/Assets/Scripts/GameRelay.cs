@@ -19,7 +19,7 @@ public class GameRelay : MonoBehaviour
         try
         {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
-            RelayServerData serverData = new RelayServerData(allocation, "udp");
+            RelayServerData serverData = new RelayServerData(allocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
             return allocation;
         }
@@ -35,7 +35,7 @@ public class GameRelay : MonoBehaviour
         {
            JoinAllocation joinallocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
-            RelayServerData serverData = new RelayServerData(joinallocation, "udp");
+            RelayServerData serverData = new RelayServerData(joinallocation, "dtls");
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(serverData);
             return joinallocation;
         }

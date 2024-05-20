@@ -1,3 +1,4 @@
+using Firebase.Auth;
 using LibGit2Sharp;
 using Octokit;
 using System;
@@ -196,7 +197,7 @@ public class GitOperations : MonoBehaviour
             // If the branch doesn't exist locally, create a tracking branch
             if (branch == null)
             {
-                var remoteBranch = repo.Branches[branchName];
+                var remoteBranch = repo.Branches[$"origin/{branchName}"];
                 if (remoteBranch == null)
                 {
                     throw new Exception($"Branch {branchName} does not exist");
@@ -234,18 +235,26 @@ public class GitOperations : MonoBehaviour
             Commands.Fetch(repo, remote.Url, new string[] { }, options, logMessage: "");
         }
     }
-    public static List<TreeEntryChanges> GetChanges(string repoPath,string currentBranchName)
+    public static async Task<int> GetChanges(string repoPath,string currentBranchName)
     {
         using (var repo = new LibGit2Sharp.Repository(repoPath))
         {
-            // Get the local branch
-            var localBranch = repo.Branches[currentBranchName];
-            // Get the remote branch
-            var remoteBranch = repo.Branches[$"origin/{currentBranchName}"];
-            // Get the changes between the local branch and the remote branch
-            var changes = repo.Diff.Compare<TreeChanges>(localBranch.Tip.Tree, remoteBranch.Tip.Tree);
 
-            return changes.ToList();
+            var remote = repo.Network.Remotes["origin"];
+
+            UsernamePasswordCredentials usernameAndPaswordCred = await GetCredentialsAsync();
+            var options = new FetchOptions
+            {
+                CredentialsProvider = (_url, _user, _cred) => usernameAndPaswordCred
+            };
+
+            Commands.Fetch(repo, remote.Name, new string[] {$"+refs/heads/{currentBranchName}:refs/remotes/origin/{currentBranchName}" }, options, logMessage: "");
+
+            var localBranch = repo.Branches[repo.Head.FriendlyName];
+            var remoteTrackingBranch = localBranch.TrackedBranch;
+            var changes = repo.Diff.Compare<TreeChanges>(localBranch.Tip.Tree, remoteTrackingBranch.Tip.Tree);
+
+            return changes.Count();
         }
     }
 }

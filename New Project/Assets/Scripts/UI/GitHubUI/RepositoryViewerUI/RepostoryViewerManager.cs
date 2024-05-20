@@ -35,6 +35,7 @@ public class RepostoryViewerManager : MonoBehaviour
         repo = ownerandrepo[1];
         SetProfilePicture(owner);
         repoOwnerName.text = owner;
+        repositoryNameLbl.text = repo;  
 
         singleActiveChild.ActivateOneChild(0);
         GenerateRepoFiles(owner, repo);
@@ -50,7 +51,7 @@ public class RepostoryViewerManager : MonoBehaviour
             //craets an issue request
             RepositoryIssueRequest issueRequest = new RepositoryIssueRequest()
             {
-                Filter = IssueFilter.All
+                Filter = IssueFilter.All,
             };
             singleActiveChild.ActivateOneChild(2);
             issueUIManager.Generate(issueRequest);
@@ -73,8 +74,11 @@ public class RepostoryViewerManager : MonoBehaviour
     }
     private void GameSceneMetadata_OnBranchChanged()
     {
-        print(GameSceneMetadata.CurrentBranch);
+        currentBranch = GameSceneMetadata.CurrentBranch;
         GitOperations.SwitchBranch(GameSceneMetadata.GithubRepoPath, GameSceneMetadata.CurrentBranch);
+        GenerateRepoFiles(owner, repo);
+        GenerateCommits(owner, repo);
+        issueUIManager.Generate(new RepositoryIssueRequest() { Filter = IssueFilter.All });
     }
 
     private async void SetProfilePicture(string username)
@@ -100,7 +104,7 @@ public class RepostoryViewerManager : MonoBehaviour
     }   
     private async void GenerateRepoFiles(string owner, string repoName)
     {
-        var contents = await GitHubClientProvider.client.Repository.Content.GetAllContents(owner, repoName);
+        var contents = await GitHubClientProvider.client.Repository.Content.GetAllContentsByRef(owner, repoName,".",GameSceneMetadata.CurrentBranch);
         var repository = await GitHubClientProvider.client.Repository.Get(owner, repoName);
 
         filesContentNavigation.Breadcrumb.Clear(); // Clear the breadcrumb when generating the root files
@@ -114,5 +118,4 @@ public class RepostoryViewerManager : MonoBehaviour
 
         commitButtonTemplate.CreateButtonsForCommits(commits);
     }
-
 }

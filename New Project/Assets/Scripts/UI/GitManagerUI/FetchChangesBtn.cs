@@ -13,6 +13,7 @@ public class FetchChangesBtn : MonoBehaviour
     [SerializeField] private TextMeshProUGUI changesText;
     [SerializeField] private SingleActiveChild singleActiveChild;
      private Button button;
+    private int changes;
 
     void Start()
     {
@@ -25,15 +26,22 @@ public class FetchChangesBtn : MonoBehaviour
         imageToChange.sprite = fetchingSprite;
         var fetchTask = GitOperations.FetchFromRemoteAsync(GameSceneMetadata.GithubRepoPath,GameSceneMetadata.CurrentBranch);
 
+        // Add a small delay
+        yield return new WaitForSeconds(1);
+
         yield return new WaitUntil(() => fetchTask.IsCompleted);
         imageToChange.sprite = normalSprite;
-        var changes = GitOperations.GetChanges(GameSceneMetadata.GithubRepoPath, GameSceneMetadata.CurrentBranch);
-
-        if (changes.Count > 0)
+      
+        GetChanges();
+        if (changes > 0)
         {
-            changesText.text = $"{changes.Count}";
+            changesText.text = $"{changes}";
             singleActiveChild.ActivateOneChild(2);
         }
         print("Fetched");
     }
+    private async void GetChanges()
+    {
+        changes = await GitOperations.GetChanges(GameSceneMetadata.GithubRepoPath, GameSceneMetadata.CurrentBranch);
+    }   
 }

@@ -10,9 +10,8 @@ public class IssueUIManager : MonoBehaviour
     [SerializeField] private IssuesTemplate issueTemplate;
     [SerializeField] private Button filterButton;
     [SerializeField] private GameObject filterPanel;
-    [SerializeField] private IssuesNetworkManager issuesNetworkManager;
 
-    private IssueFilter currentFilter = IssueFilter.All;
+    private IssueFilter currentFilter = IssueFilter.Created;
     private Dictionary<string, IssueFilter> filters= new Dictionary<string, IssueFilter>()
     {
         {"YourIssuesFilterButton",IssueFilter.Created},
@@ -33,7 +32,7 @@ public class IssueUIManager : MonoBehaviour
                 currentFilter = filters[filterButton.name];
                 RepositoryIssueRequest issueRequest = new RepositoryIssueRequest()
                 {
-                    Filter = currentFilter
+                    Filter = IssueFilter.Created
                 };
                 print(currentFilter);
                 Generate(issueRequest);
@@ -50,8 +49,8 @@ public class IssueUIManager : MonoBehaviour
     public async void Generate(RepositoryIssueRequest issueRequest)
     {
         (string ownerName,string repoName) = GitHelperMethods.GetOwnerAndRepo(GameSceneMetadata.GithubRepoLink);
-        await issuesNetworkManager.GetIssuesForRepoAsync(ownerName, repoName, issueRequest);
-        issueTemplate.GenerateIssues(issuesNetworkManager.issues);
+        var issues = await GetIssuesForRepository.GetIssuesForRepo(ownerName, repoName, issueRequest);
+        issueTemplate.GenerateIssues(issues);
     }
     public void Hide()
     {

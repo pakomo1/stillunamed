@@ -21,7 +21,7 @@ public class GenerateForDirectory : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void GenerateForDirectoy(Transform parentPanel, string directory,TextEditorData textEditorData, int depth = 0)
+    public void GenerateForDirectoy(Transform parentPanel, string directory,TextEditorData textEditorData, int depth = 1)
     {
         ClearGameObject(parentPanel);
         var directoriesInDir = Directory.GetDirectories(directory);
@@ -38,19 +38,21 @@ public class GenerateForDirectory : MonoBehaviour
                 var directoryEntry = Instantiate(directoryPrefab, parentPanel);
                 var directoryEntryButton = directoryEntry.GetComponent<Button>();
 
-                directoryEntry.name = Path.GetFileName(item);
+                directoryEntry.name = item;
                 var textComponent = directoryEntry.transform.GetChild(0).gameObject;
                 textComponent.GetComponent<TextMeshProUGUI>().text = Path.GetFileName(item);
 
                 // Adjust the position of the GameObject
-                directoryEntry.transform.localPosition = new Vector3(depth * 10, directoryEntry.transform.localPosition.y, directoryEntry.transform.localPosition.z);
 
-                //textComponent.margin = new Vector4(depth * 10, textComponent.margin.y, textComponent.margin.z, textComponent.margin.w); // Add left padding
+                
 
                 directoryEntry.tag = "directory";
 
                 var direcotryContentHolder = Instantiate(dirContentHolder, parentPanel);
                 direcotryContentHolder.name = $"{directoryEntry.name}ContentHolder";
+
+                var group = direcotryContentHolder.GetComponent<VerticalLayoutGroup>();
+                group.padding.left = depth*5;
 
                 directoryEntryButton.onClick.AddListener(() => {
                     ExpandDirecotryContent(direcotryContentHolder.transform, item , textEditorData); 
@@ -86,15 +88,18 @@ public class GenerateForDirectory : MonoBehaviour
     {
         bool isActive = panel.gameObject.activeSelf;
 
+
         if (isActive)
         {
-            textEditorData.WorkingDirectory = Path.GetDirectoryName(textEditorData.WorkingDirectory.ToString());
+            // If the directory is being collapsed, set the WorkingDirectory to its parent directory
+            textEditorData.WorkingDirectory = Directory.GetParent(directory).FullName;
         }
         else
         {
-            textEditorData.WorkingDirectory = Path.Combine(textEditorData.WorkingDirectory.ToString(), Path.GetFileName(directory));
+            // If the directory is being expanded, set the WorkingDirectory to its full path
+            textEditorData.WorkingDirectory = directory;
         }
-
+        print(textEditorData.WorkingDirectory.Value);
         panel.gameObject.SetActive(!isActive);
     }
 

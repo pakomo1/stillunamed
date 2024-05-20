@@ -14,6 +14,7 @@ public class CommitButtonTemplate : MonoBehaviour
     [SerializeField]private GameObject commitButtonTemplate;
     public async void CreateButtonsForCommits(IReadOnlyList<GitHubCommit> commits)
     {
+        ClearCommits();
         foreach (var commit in commits)
         {
             var button = Instantiate(commitButtonTemplate, transform);
@@ -50,6 +51,14 @@ public class CommitButtonTemplate : MonoBehaviour
             texture.LoadImage(imageData); 
             var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
             return sprite;
+        }
+    }
+    //clears the commits 
+    public void ClearCommits()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
         }
     }
     private string GetRelativeTime(DateTimeOffset dateTime)

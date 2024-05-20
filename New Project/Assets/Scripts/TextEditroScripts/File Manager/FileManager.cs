@@ -42,6 +42,7 @@ public class FileManager : MonoBehaviour
         {
             directoryName = input;
             CreateDirectory();
+            generateForDirectory.GenerateForDirectoy(fileManagerContent.transform, textEditorData.StartingDirecotry.ToString(), textEditorData);
         });
     }
     private void OnFileCreationRequestedHandler(object sender, EventArgs e)
@@ -84,6 +85,7 @@ public class FileManager : MonoBehaviour
         string fullPath = Path.Combine(textEditorManager.textEditorData.WorkingDirectory.Value, fileName);
         if (!File.Exists(fullPath))
         {
+            print(fullPath);
             using (File.Create(fullPath))
             {
                 Debug.Log("File created: " + fullPath);
@@ -121,6 +123,7 @@ public class FileManager : MonoBehaviour
     public void CreateDirectory()
     {
         string fullPath = Path.Combine(textEditorManager.textEditorData.WorkingDirectory.ToString(), directoryName);
+        print(fullPath);
         if (!Directory.Exists(fullPath))
         {
             Directory.CreateDirectory(fullPath);
